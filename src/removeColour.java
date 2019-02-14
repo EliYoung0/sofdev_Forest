@@ -5,7 +5,7 @@ import java.io.*;
 
 public class removeColour {
     //Initiation of universal variable
-    static BufferedImage blueLessInput = removeBlue.blueLessOutput;
+    private static BufferedImage blueLessInput = removeBlue.blueLessOutput;
     static BufferedImage colourLessOutput;
 
     public static void removeColourMain() {

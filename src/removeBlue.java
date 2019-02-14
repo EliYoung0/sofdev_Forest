@@ -5,13 +5,13 @@ import java.io.*;
 
 public class removeBlue {
     //Initiation of variables for before and after, and for transfer to the removeColour class
-    static BufferedImage withBlueInput;
+    private static BufferedImage withBlueInput;
     static BufferedImage blueLessOutput;
 
     public static void removeBlueMain(){
         initiateImage();
         removeBlueMethod();
-        //printImage();
+        printImage();
     }
 
     //This method imports an image and assigns it to withBlueInput and catches if file path is corrupted
