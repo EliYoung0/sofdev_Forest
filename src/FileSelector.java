@@ -10,6 +10,7 @@ public class FileSelector extends Container {
 
     public FileSelector(JFrame UI){
         setLayout(new BorderLayout());
+        setPreferredSize(new Dimension(600,500));
 
         JPanel fileBrowser = createBrowser();
         JButton open = new JButton("Open");
