@@ -1,34 +1,33 @@
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.Raster;
-import java.io.File;
-import java.io.IOException;
+import java.awt.image.*;
+import javax.imageio.ImageIO;
+import java.io.*;
 
 public class removeBlue {
-    private static BufferedImage memeBuff;
+    static BufferedImage inputBuff;
+    static BufferedImage outputBuff;
 
     public static void main(String[] args) {
-        initiateMeme();
-        removeBlue();
+        initiateImage();
+        removeBlueMethod();
         printImage();
     }
 
     //This method imports an image and catches if file path is corrupted
-    private static void initiateMeme() {
+    private static void initiateImage() {
         try {
-            memeBuff = ImageIO.read(new File("./resources/Dhogwarts.jpg")); //This needs to be changed to connect with the GUI, and multiple file-paths
-        } catch (IOException e) { System.out.println("You Done Fucked Up"); }
+            inputBuff = ImageIO.read(new File("./resources/XXXXXXXXXXXXX")); //This needs to be changed to connect with the GUI, and multiple file-paths
+        } catch (IOException e) { System.out.println("There was an error in removeBlue.initiateImage()"); }
     }
 
-    private static void removeBlue(){
+    //This method removes the blue from the image, and returns outputBuff, which is inputBuff but blueless.
+    private static void removeBlueMethod(){
         Object dataElements = null;
-        ColorModel colourModel = memeBuff.getColorModel();
-        Raster raster = memeBuff.getRaster();
+        ColorModel colourModel = inputBuff.getColorModel();
+        Raster raster = inputBuff.getRaster();
 
-        for(int y = 0; y < memeBuff.getHeight(); y++) {
-            for (int x = 0; x < memeBuff.getWidth(); x++) {
+        for(int y = 0; y < inputBuff.getHeight(); y++) {
+            for (int x = 0; x < inputBuff.getWidth(); x++) {
                 //Get colours in 0-255 values
                 dataElements = raster.getDataElements(x, y, dataElements);
                 int red = colourModel.getRed(dataElements);
@@ -39,19 +38,16 @@ public class removeBlue {
                 Color colour = new Color(red,green,blue);
                 int rgb = colour.getRGB();
 
-                memeBuff.setRGB(x, y, rgb);
-
-                //int alpha = colourModel.getAlpha(dataElements);
-                //Testing print
-                //System.out.println("RGB: " + rgb);
+                outputBuff.setRGB(x, y, rgb);
             }
         }
     }
 
+    //This method
     private static void printImage(){
-        File memeFile = new File("DhogwartsBlueLess.jpg");
+        File outputFile = new File("outputImage.jpg");
         try {
-            ImageIO.write(memeBuff, "jpg", memeFile);
-        } catch (IOException e) {System.out.println("You almost made it, then you fucked up.");}
+            ImageIO.write(outputBuff, "jpg", outputFile);
+        } catch (IOException e) {System.out.println("There was an error in removeBlue.printImage()");}
     }
 }
