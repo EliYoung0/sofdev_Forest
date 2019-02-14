@@ -4,30 +4,32 @@ import javax.imageio.ImageIO;
 import java.io.*;
 
 public class removeBlue {
-    static BufferedImage inputBuff;
-    static BufferedImage outputBuff;
+    //Initiation of variables for before and after, and for transfer to the removeColour class
+    static BufferedImage withBlueInput;
+    static BufferedImage blueLessOutput;
 
-    public static void main(String[] args) {
+    public static void removeBlueMain(){
         initiateImage();
         removeBlueMethod();
-        printImage();
+        //printImage();
     }
 
-    //This method imports an image and catches if file path is corrupted
+    //This method imports an image and assigns it to withBlueInput and catches if file path is corrupted
     private static void initiateImage() {
         try {
-            inputBuff = ImageIO.read(new File("./resources/XXXXXXXXXXXXX")); //This needs to be changed to connect with the GUI, and multiple file-paths
+            withBlueInput = ImageIO.read(new File("./resources/meme.jpg")); //This needs to be changed to connect with the GUI, and multiple file-paths
         } catch (IOException e) { System.out.println("There was an error in removeBlue.initiateImage()"); }
     }
 
-    //This method removes the blue from the image, and returns outputBuff, which is inputBuff but blueless.
+    //This method removes the blue from the image, withBlueInput, and returns blueLessOutput.
     private static void removeBlueMethod(){
         Object dataElements = null;
-        ColorModel colourModel = inputBuff.getColorModel();
-        Raster raster = inputBuff.getRaster();
+        ColorModel colourModel = withBlueInput.getColorModel();
+        Raster raster = withBlueInput.getRaster();
+        blueLessOutput = withBlueInput;
 
-        for(int y = 0; y < inputBuff.getHeight(); y++) {
-            for (int x = 0; x < inputBuff.getWidth(); x++) {
+        for(int y = 0; y < withBlueInput.getHeight(); y++) {
+            for (int x = 0; x < withBlueInput.getWidth(); x++) {
                 //Get colours in 0-255 values
                 dataElements = raster.getDataElements(x, y, dataElements);
                 int red = colourModel.getRed(dataElements);
@@ -38,16 +40,16 @@ public class removeBlue {
                 Color colour = new Color(red,green,blue);
                 int rgb = colour.getRGB();
 
-                outputBuff.setRGB(x, y, rgb);
+                blueLessOutput.setRGB(x, y, rgb);
             }
         }
     }
 
-    //This method
+    //This method prints out blueLessOutput to a file after removal of blue hues
     private static void printImage(){
-        File outputFile = new File("outputImage.jpg");
+        File outputFile = new File("blueLessOutput.jpg");
         try {
-            ImageIO.write(outputBuff, "jpg", outputFile);
+            ImageIO.write(blueLessOutput, "jpg", outputFile);
         } catch (IOException e) {System.out.println("There was an error in removeBlue.printImage()");}
     }
 }
