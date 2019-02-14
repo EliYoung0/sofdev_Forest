@@ -2,33 +2,33 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class FileSelector extends Container {
-    public FileSelector(){
+
+
+    private JTextArea address;
+
+    public FileSelector(JFrame UI){
         setLayout(new BorderLayout());
 
         JPanel fileBrowser = createBrowser();
         JButton open = new JButton("Open");
-        OpenAction o = new OpenAction();
+        OpenAction o = new OpenAction(UI,this);
         open.addActionListener(o);
         add(fileBrowser,BorderLayout.CENTER);
-
-        open.setSize(200,100);
-        add(open,BorderLayout.AFTER_LAST_LINE);
+        add(open,BorderLayout.PAGE_END);
     }
 
     private JPanel createBrowser() {
         JPanel fb = new JPanel();
         fb.setLayout(new BoxLayout(fb,BoxLayout.X_AXIS));
-        JTextArea address = new JTextArea(1,20);
+        address = new JTextArea(1,20);
         JButton browse = new JButton("Browse");
         browse.addActionListener(e -> {
             JFileChooser chooser = new JFileChooser();
             FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & GIF Images", "jpg");
             chooser.setFileFilter(filter);
-            chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             int returnVal = chooser.showOpenDialog(chooser);
             if(returnVal == JFileChooser.APPROVE_OPTION) {
                 address.setText(chooser.getSelectedFile().getAbsolutePath());
@@ -38,4 +38,9 @@ public class FileSelector extends Container {
         fb.add(browse);
         return fb;
     }
+
+    public JTextArea getAddress() {
+        return address;
+    }
+
 }

@@ -5,7 +5,7 @@ public class UI extends JFrame {
         //Replace with better name
         this.setTitle("Forest Program");
         this.setSize(600,500);
-        this.setContentPane(new FileSelector());
+        this.setContentPane(new FileSelector(this));
         pack();
     }
 }
