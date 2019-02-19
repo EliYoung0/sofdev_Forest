@@ -1,7 +1,7 @@
 public class Main {
 
     public static void main(String[] args) {
-        removeBlue.removeBlueMain();
+        removeBlue.removeBlueMain("./resources/meme.jpg");
         removeColour.removeColourMain();
         BasicBlackAndWhite.BasicBlackAndWhiteMain();
     }

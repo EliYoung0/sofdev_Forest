@@ -8,16 +8,16 @@ public class removeBlue {
     private static BufferedImage withBlueInput;
     static BufferedImage blueLessOutput;
 
-    public static void removeBlueMain(){
-        initiateImage();
+    public static void removeBlueMain(String filepath){
+        initiateImage(filepath);
         removeBlueMethod();
         printImage();
     }
 
     //This method imports an image and assigns it to withBlueInput and catches if file path is corrupted
-    private static void initiateImage() {
+    private static void initiateImage(String filepath) {
         try {
-            withBlueInput = ImageIO.read(new File("./resources/Dhogwarts.jpg")); //This needs to be changed to connect with the GUI, and multiple file-paths
+            withBlueInput = ImageIO.read(new File(filepath)); //This needs to be changed to connect with the GUI, and multiple file-paths
         } catch (IOException e) { System.out.println("There was an error in removeBlue.initiateImage()"); }
     }
 
