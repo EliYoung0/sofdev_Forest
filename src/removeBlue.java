@@ -33,7 +33,7 @@ public class removeBlue {
                 //Get colours in 0-255 values
                 dataElements = raster.getDataElements(x, y, dataElements);
                 int red = colourModel.getRed(dataElements);
-                int green = colourModel.getRed(dataElements);
+                int green = colourModel.getGreen(dataElements);
                 int blue = 0;
 
                 //Turn to bits
