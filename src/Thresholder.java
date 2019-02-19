@@ -6,17 +6,24 @@ import java.io.File;
 import java.io.IOException;
 
 public class Thresholder extends Container {
-    public Thresholder (String path) {
+    public Thresholder (String path, UI ui) {
         setLayout(new BorderLayout());
 
         JPanel algPanel = new JPanel();
         JTextField threshold = new JTextField(10);
         JButton update = new JButton("Update");
-
-        JButton proceed = new JButton("Proceed");
-        proceed.addActionListener(e -> {
-
+        update.addActionListener(e -> {
+            Processing p = ui.getProc();
+            p.imageProc(Integer.parseInt(threshold.getText()));
+            BufferedImage image = p.blackAndWhiteOutput;
+            int height = image.getHeight();
+            int width = image.getWidth();
+            Image i = image.getScaledInstance((500 * width) / height, 500, Image.SCALE_SMOOTH);
+            JLabel imageLabel = new JLabel(new ImageIcon(i));
+            add(imageLabel,BorderLayout.LINE_START);
+            ui.pack();
         });
+        JButton proceed = new JButton("Proceed");
 
         algPanel.add(threshold);
         algPanel.add(update);

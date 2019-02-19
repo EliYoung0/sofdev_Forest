@@ -1,5 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -38,7 +36,7 @@ public class OpenAction implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String path = outer.getAddress().getText();
         if(new File(path).exists()) {
-            Thresholder thresholder = new Thresholder(path);
+            Thresholder thresholder = new Thresholder(path,ui);
             outer.setVisible(false);
             ui.setProc(path);
             ui.setContentPane(thresholder);

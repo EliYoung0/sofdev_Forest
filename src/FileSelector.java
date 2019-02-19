@@ -10,13 +10,13 @@ public class FileSelector extends Container {
 
     private JTextArea address;
 
-    public FileSelector(JFrame UI){
+    public FileSelector(UI ui){
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(600,500));
 
         JPanel fileBrowser = createBrowser();
         JButton open = new JButton("Open");
-        OpenAction o = new OpenAction(UI,this);
+        OpenAction o = new OpenAction(ui,this);
         open.addActionListener(o);
         add(fileBrowser,BorderLayout.CENTER);
         add(open,BorderLayout.PAGE_END);
