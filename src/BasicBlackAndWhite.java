@@ -9,6 +9,9 @@ public class BasicBlackAndWhite {
     //Initiation of universal variable
     private static BufferedImage colourLessInput = removeColour.colourLessOutput;
     static BufferedImage blackAndWhiteOutput;
+    private static double whitePixels=0;
+    private static double blackPixels=0;
+    private static double gapFraction=0.0;
 
     public static void BasicBlackAndWhiteMain() {
         blackAndWhiteMethod();
@@ -22,8 +25,9 @@ public class BasicBlackAndWhite {
         Raster raster = colourLessInput.getRaster();
         blackAndWhiteOutput = colourLessInput;
 
+        //needs to be reworked to take input from algorithms in order to determine threshold
         Scanner reader = new Scanner(System.in);
-        System.out.print("What threshold would you like to use? (Values 0-255\n");
+        System.out.print("What threshold would you like to use? (Values 0-255): \n");
         int threshold = reader.nextInt();
 
         for(int y = 0; y < colourLessInput.getHeight(); y++) {
@@ -44,12 +48,18 @@ public class BasicBlackAndWhite {
                 Color white = new Color(255,255,255);
                 if(red>=threshold) {
                     blackAndWhiteOutput.setRGB(x, y, white.getRGB());
+                    whitePixels++;
                 }
                 else {
                     blackAndWhiteOutput.setRGB(x, y, black.getRGB());
+                    blackPixels++;
                 }
             }
         }
+
+        gapFraction=(whitePixels/blackPixels);
+        System.out.println("Gap fraction = " + gapFraction);
+
     }
 
     //This method
@@ -59,4 +69,6 @@ public class BasicBlackAndWhite {
             ImageIO.write(blackAndWhiteOutput, "jpg", outputFile);
         } catch (IOException e) {System.out.println("There was an error in BasicBlackAndWhite.printImage()");}
     }
+
+
 }
