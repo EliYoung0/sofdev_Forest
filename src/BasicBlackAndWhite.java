@@ -13,22 +13,19 @@ public class BasicBlackAndWhite {
     private static double blackPixels=0;
     private static double gapFraction=0.0;
 
-    public static void BasicBlackAndWhiteMain() {
-        blackAndWhiteMethod();
+    public static void BasicBlackAndWhiteMain(int threshold) {
+        blackAndWhiteMethod(threshold);
         printImage();
     }
 
     //This method removes the colour from blueLessInput and returns colourLessOutput
-    private static void blackAndWhiteMethod(){
+    private static void blackAndWhiteMethod(int threshold){
         Object dataElements = null;
         ColorModel colourModel = colourLessInput.getColorModel();
         Raster raster = colourLessInput.getRaster();
         blackAndWhiteOutput = colourLessInput;
 
         //needs to be reworked to take input from algorithms in order to determine threshold
-        Scanner reader = new Scanner(System.in);
-        System.out.print("What threshold would you like to use? (Values 0-255): \n");
-        int threshold = reader.nextInt();
 
         for(int y = 0; y < colourLessInput.getHeight(); y++) {
             for (int x = 0; x < colourLessInput.getWidth(); x++) {

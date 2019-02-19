@@ -12,11 +12,9 @@ public class ImagePrepper extends Container {
 
         setLayout(new BorderLayout());
 
-        JPanel imagepanel = new JPanel();
         JButton next = new JButton("Next");
         JPanel controls = new JPanel();
 
-        add(imagepanel, BorderLayout.WEST);
         add(next, BorderLayout.PAGE_END);
         add(controls, BorderLayout.EAST);
 

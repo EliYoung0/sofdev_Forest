@@ -7,6 +7,12 @@ import java.io.File;
 public class OpenAction implements ActionListener {
     private static FileSelector outer;
     private JFrame ui;
+
+    /**
+     * Constructor for Open Action
+     * @param ui
+     * @param c
+     */
     public OpenAction(JFrame ui, FileSelector c){
         outer=c;
         this.ui=ui;
@@ -24,6 +30,11 @@ public class OpenAction implements ActionListener {
             System.out.print("Invalid File Path");
         }
     }*/
+
+    /**
+     * Closes file selector container and replaces it with new container
+     * @param e Open button click
+     */
     public void actionPerformed(ActionEvent e) {
         String path = outer.getAddress().getText();
         if(new File(path).exists()) {

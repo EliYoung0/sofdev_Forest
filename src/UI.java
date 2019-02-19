@@ -8,6 +8,7 @@ public class UI extends JFrame {
     public UI(){
         //Replace with better name
         setTitle("Forest Program");
+        //File Selector is initial container in frame
         setContentPane(new FileSelector(this));
         pack();
     }
