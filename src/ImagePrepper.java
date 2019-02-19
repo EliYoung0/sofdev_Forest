@@ -11,7 +11,6 @@ public class ImagePrepper extends Container {
         //File image = new File(path);
 
         setLayout(new BorderLayout());
-        setSize(600,500);
 
         JPanel imagepanel = new JPanel();
         JButton next = new JButton("Next");

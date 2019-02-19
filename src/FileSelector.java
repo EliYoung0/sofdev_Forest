@@ -1,5 +1,7 @@
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 
@@ -27,8 +29,10 @@ public class FileSelector extends Container {
      */
     private JPanel createBrowser() {
         JPanel fb = new JPanel();
+        fb.setBorder(new EmptyBorder(225,100,225,100));
         fb.setLayout(new BoxLayout(fb,BoxLayout.X_AXIS));
-        address = new JTextArea(1,20);
+        address = new JTextArea("/Users/kepler/Desktop/DCSN1068.JPG",1,1);
+        address.setBorder(new EtchedBorder(1,null,Color.black));
         JButton browse = new JButton("Browse");
         //Opens a new window when browse button is clicked
         browse.addActionListener(e -> {
