@@ -33,7 +33,7 @@ public class BasicBlackAndWhite {
                 //Get colours in 0-255 values
                 dataElements = raster.getDataElements(x, y, dataElements);
                 int red = colourModel.getRed(dataElements);
-                int green = colourModel.getRed(dataElements);
+                int green = colourModel.getGreen(dataElements);
                 int blue = colourModel.getBlue(dataElements);
                 //A precaution if statement
                 if((blue != red)|(blue != green)|(red != green)) {
@@ -54,7 +54,7 @@ public class BasicBlackAndWhite {
             }
         }
 
-        gapFraction=(whitePixels/blackPixels);
+        gapFraction=(whitePixels/(whitePixels+blackPixels));
         System.out.println("Gap fraction = " + gapFraction);
 
     }
