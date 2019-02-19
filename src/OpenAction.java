@@ -6,14 +6,14 @@ import java.io.File;
 
 public class OpenAction implements ActionListener {
     private static FileSelector outer;
-    private JFrame ui;
+    private UI ui;
 
     /**
      * Constructor for Open Action
      * @param ui
      * @param c
      */
-    public OpenAction(JFrame ui, FileSelector c){
+    public OpenAction(UI ui, FileSelector c){
         outer=c;
         this.ui=ui;
     }
@@ -40,6 +40,7 @@ public class OpenAction implements ActionListener {
         if(new File(path).exists()) {
             Thresholder thresholder = new Thresholder(path);
             outer.setVisible(false);
+            ui.setProc(path);
             ui.setContentPane(thresholder);
             ui.pack();
         }

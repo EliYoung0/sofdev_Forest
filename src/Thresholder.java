@@ -14,6 +14,9 @@ public class Thresholder extends Container {
         JButton update = new JButton("Update");
 
         JButton proceed = new JButton("Proceed");
+        proceed.addActionListener(e -> {
+
+        });
 
         algPanel.add(threshold);
         algPanel.add(update);

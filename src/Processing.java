@@ -11,12 +11,16 @@ public class Processing {
     protected BufferedImage blackAndWhiteOutput;
     private static double whitePixels;
     private static double blackPixels;
-    public Processing(String filepath,int threshold){
+
+    public Processing(String filepath){
         blackPixels=0.0;
         whitePixels=0.0;
         try {
             original = ImageIO.read(new File(filepath)); //This needs to be changed to connect with the GUI, and multiple file-paths
         } catch (IOException e) { System.out.println("There was an error in removeBlue.initiateImage()"); }
+
+    }
+    public void imageProc(int threshold){
         BufferedImage temp = makeBlue();
         temp = makeGrey(temp);
         makeBlack(temp,threshold);
