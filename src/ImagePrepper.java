@@ -12,13 +12,14 @@ public class ImagePrepper extends Container {
 
         setLayout(new BorderLayout());
 
+        //Creates and adds components
         JButton next = new JButton("Next");
         JPanel controls = new JPanel();
 
         add(next, BorderLayout.PAGE_END);
         add(controls, BorderLayout.EAST);
 
-
+        //Creates and displays the image selected
         try {
             BufferedImage image = ImageIO.read(new File(path));
             int height =image.getHeight();
