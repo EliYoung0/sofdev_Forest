@@ -9,7 +9,9 @@ import java.io.IOException;
 
 
 class Thresholder extends Container {
+
     private BufferedImage blackOutput;
+
     Thresholder(String path, UI ui) {
         setLayout(new BorderLayout());
         JLabel imageLabel;
