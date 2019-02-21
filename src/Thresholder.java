@@ -8,8 +8,8 @@ import java.io.File;
 import java.io.IOException;
 
 
-public class Thresholder extends Container {
-    public Thresholder (String path, UI ui) {
+class Thresholder extends Container {
+    Thresholder(String path, UI ui) {
         setLayout(new BorderLayout());
         JLabel imageLabel;
         try {
@@ -25,7 +25,7 @@ public class Thresholder extends Container {
         JPanel algPanel = new JPanel();
         JTextField threshold = new JTextField(10);
         JButton update = new JButton("Update");
-        update.addActionListener(new UpdateAction(ui,imageLabel,threshold));
+        update.addActionListener(new UpdateAction(path,imageLabel,threshold));
         JButton proceed = new JButton("Proceed");
 
         algPanel.add(threshold);
@@ -36,29 +36,32 @@ public class Thresholder extends Container {
     }
 
 }
+
 class UpdateAction implements ActionListener {
     private JTextField text;
     private JLabel t;
-    private UI ui;
-    UpdateAction(UI ui, JLabel t, JTextField thresh){
+    private String path;
+    UpdateAction(String path, JLabel t, JTextField thresh){
         text=thresh;
-        this.ui=ui;
         this.t=t;
+        this.path=path;
     }
 
     public void actionPerformed(ActionEvent e) {
-        Processing p = ui.getProc();
         try {
             int threshold = Integer.parseInt(text.getText());
             if(threshold>=0&&threshold<=255){
-                p.imageProc(threshold);
-                BufferedImage image = p.blackAndWhiteOutput;
-                int height = image.getHeight();
-                int width = image.getWidth();
-                Image i = image.getScaledInstance((500 * width) / height, 500, Image.SCALE_SMOOTH);
-                t.setIcon(new ImageIcon(i));
-                t.repaint();
-                t.update(t.getGraphics());
+                try {
+                    BufferedImage bl = Black.makeBlack(path, threshold);
+                    Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
+                    t.setIcon(new ImageIcon(i));
+                    t.repaint();
+                    t.update(t.getGraphics());
+                    System.out.println("Gap Fraction is: "+Black.getGapFraction(bl));
+                }catch (IOException f){
+                    System.out.println("Invalid input image");
+                }
+
             }
             else{
                 System.out.println("Threshold must be between an integer between 0 and 255");

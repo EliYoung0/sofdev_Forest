@@ -38,7 +38,6 @@ public class OpenAction implements ActionListener {
         if(new File(path).exists()) {
             Thresholder thresholder = new Thresholder(path,ui);
             outer.setVisible(false);
-            ui.setProc(path);
             ui.setContentPane(thresholder);
             ui.pack();
         }
