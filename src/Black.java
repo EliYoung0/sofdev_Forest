@@ -6,7 +6,7 @@ import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 
-public interface Black {
+public abstract class Black {
     static BufferedImage makeBlack(String path,int threshold) throws IOException {
         try {
             BufferedImage original = ImageIO.read(new File(path));

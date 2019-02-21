@@ -9,6 +9,7 @@ import java.io.IOException;
 
 
 class Thresholder extends Container {
+    private BufferedImage blackOutput;
     Thresholder(String path, UI ui) {
         setLayout(new BorderLayout());
         JLabel imageLabel;
@@ -25,7 +26,7 @@ class Thresholder extends Container {
         JPanel algPanel = new JPanel();
         JTextField threshold = new JTextField(10);
         JButton update = new JButton("Update");
-        update.addActionListener(new UpdateAction(path,imageLabel,threshold));
+        update.addActionListener(new UpdateAction(path,imageLabel,threshold,this));
         JButton proceed = new JButton("Proceed");
 
         algPanel.add(threshold);
@@ -34,16 +35,20 @@ class Thresholder extends Container {
         add(proceed,BorderLayout.PAGE_END);
 
     }
-
+    void setBlack(BufferedImage b){
+        blackOutput=b;
+    }
 }
 
 class UpdateAction implements ActionListener {
     private JTextField text;
     private JLabel t;
     private String path;
-    UpdateAction(String path, JLabel t, JTextField thresh){
+    private Thresholder outer;
+    UpdateAction(String path, JLabel t, JTextField thresh,Thresholder outer){
         text=thresh;
         this.t=t;
+        this.outer=outer;
         this.path=path;
     }
 
@@ -57,6 +62,8 @@ class UpdateAction implements ActionListener {
                     t.setIcon(new ImageIcon(i));
                     t.repaint();
                     t.update(t.getGraphics());
+                    outer.setBlack(bl);
+                    //Remove in final product. Just to show functionality right now.
                     System.out.println("Gap Fraction is: "+Black.getGapFraction(bl));
                 }catch (IOException f){
                     System.out.println("Invalid input image");

@@ -3,31 +3,18 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 public class OpenAction implements ActionListener {
-    private static FileSelector outer;
-    private UI ui;
+    private final FileSelector outer;
+    private final UI UI;
 
     /**
      * Constructor for Open Action
      * @param ui JFrame
-     * @param c
+     * @param c Container holding button
      */
-    public OpenAction(UI ui, FileSelector c){
+    OpenAction(UI ui, FileSelector c){
         outer=c;
-        this.ui=ui;
+        this.UI=ui;
     }
-
-   /* public void actionPerformed(ActionEvent e) {
-        String path = outer.getAddress().getText();
-        if(new File(path).exists()) {
-            ImagePrepper imagePrepper = new ImagePrepper(path);
-            outer.setVisible(false);
-            ui.setContentPane(imagePrepper);
-            ui.pack();
-        }
-        else{
-            System.out.print("Invalid File Path");
-        }
-    }*/
 
     /**
      * Closes file selector container and replaces it with new container
@@ -36,10 +23,10 @@ public class OpenAction implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String path = outer.getAddress().getText();
         if(new File(path).exists()) {
-            Thresholder thresholder = new Thresholder(path,ui);
-            outer.setVisible(false);
-            ui.setContentPane(thresholder);
-            ui.pack();
+            Thresholder thresholder = new Thresholder(path,UI);
+            UI.remove(outer);
+            UI.setContentPane(thresholder);
+            UI.pack();
         }
         else{
             System.out.print("Invalid File Path");
