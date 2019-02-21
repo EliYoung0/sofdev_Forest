@@ -6,6 +6,12 @@ import java.io.File;
 import java.io.IOException;
 
 class ImagePrepper extends Container {
+
+    /**
+     * Constructor for Image Prepping Container
+     * @param path filepath for image selected
+     * @throws IOException exception thrown if file is not valid
+     */
     ImagePrepper(String path) throws IOException {
 
         setLayout(new BorderLayout());

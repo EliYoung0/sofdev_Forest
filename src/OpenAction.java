@@ -21,7 +21,7 @@ public class OpenAction implements ActionListener {
      * Closes file selector container and replaces it with new container
      * @param e Open button click
      */
-    /*public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
         String path = outer.getAddress().getText();
         if(new File(path).exists()) {
             Thresholder thresholder = new Thresholder(path,UI);
@@ -32,22 +32,6 @@ public class OpenAction implements ActionListener {
         else{
             System.out.print("Invalid File Path");
         }
-    }*/
-    public void actionPerformed(ActionEvent e) {
-        String path = outer.getAddress().getText();
-        if(new File(path).exists()) {
-            ImagePrepper thresholder = null;
-            try {
-                thresholder = new ImagePrepper(path);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            UI.remove(outer);
-            UI.setContentPane(thresholder);
-            UI.pack();
-        }
-        else{
-            System.out.print("Invalid File Path");
-        }
     }
+
 }
