@@ -34,11 +34,18 @@ class Thresholder extends Container {
         algPanel.add(threshold);
         algPanel.add(update);
         add(algPanel,BorderLayout.LINE_END);
+        proceed.addActionListener(e->{
+            System.exit(0);
+        });
         add(proceed,BorderLayout.PAGE_END);
 
     }
     void setBlack(BufferedImage b){
         blackOutput=b;
+    }
+
+    public BufferedImage getBlackOutput() {
+        return blackOutput;
     }
 }
 

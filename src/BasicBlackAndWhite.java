@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class BasicBlackAndWhite {
 
     //Initiation of universal variable
-    private static BufferedImage colourLessInput = removeColour.colourLessOutput;
+    private static BufferedImage colourLessInput = RemoveColour.colourLessOutput;
     static BufferedImage blackAndWhiteOutput;
     private static double whitePixels=0;
     private static double blackPixels=0;
