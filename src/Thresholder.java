@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+
 public class Thresholder extends Container {
     public Thresholder (String path, UI ui) {
         setLayout(new BorderLayout());
@@ -24,7 +25,7 @@ public class Thresholder extends Container {
         JPanel algPanel = new JPanel();
         JTextField threshold = new JTextField(10);
         JButton update = new JButton("Update");
-        update.addActionListener(new UpdateAction(ui,Integer.parseInt(threshold.getText()),imageLabel));
+        update.addActionListener(new UpdateAction(ui,imageLabel,threshold));
         JButton proceed = new JButton("Proceed");
 
         algPanel.add(threshold);
@@ -36,24 +37,31 @@ public class Thresholder extends Container {
 
 }
 class UpdateAction implements ActionListener {
-    private int threshold;
+    private JTextField text;
     private JLabel t;
     private UI ui;
-    public UpdateAction(UI ui, int c,JLabel t){
-        threshold=c;
+    UpdateAction(UI ui, JLabel t, JTextField thresh){
+        text=thresh;
         this.ui=ui;
         this.t=t;
     }
 
     public void actionPerformed(ActionEvent e) {
         Processing p = ui.getProc();
-        p.imageProc(threshold);
-        BufferedImage image = p.blackAndWhiteOutput;
-        int height = image.getHeight();
-        int width = image.getWidth();
-        Image i = image.getScaledInstance((500 * width) / height, 500, Image.SCALE_SMOOTH);
-        t.setIcon(new ImageIcon(i));
-        t.repaint();
-        t.update(t.getGraphics());
+        try {
+            int threshold = Integer.parseInt(text.getText());
+            p.imageProc(threshold);
+            BufferedImage image = p.blackAndWhiteOutput;
+            int height = image.getHeight();
+            int width = image.getWidth();
+            Image i = image.getScaledInstance((500 * width) / height, 500, Image.SCALE_SMOOTH);
+            t.setIcon(new ImageIcon(i));
+            t.repaint();
+            t.update(t.getGraphics());
+        }
+        catch (NumberFormatException f){
+            System.out.println("Enter a numerical value");
+        }
+
     }
 }

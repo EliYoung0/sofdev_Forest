@@ -7,8 +7,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class Processing {
-    protected BufferedImage original;
-    protected BufferedImage blackAndWhiteOutput;
+    public BufferedImage original;
+    public BufferedImage blackAndWhiteOutput;
     private static double whitePixels;
     private static double blackPixels;
 

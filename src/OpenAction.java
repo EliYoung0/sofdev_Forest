@@ -8,7 +8,7 @@ public class OpenAction implements ActionListener {
 
     /**
      * Constructor for Open Action
-     * @param ui
+     * @param ui JFrame
      * @param c
      */
     public OpenAction(UI ui, FileSelector c){
