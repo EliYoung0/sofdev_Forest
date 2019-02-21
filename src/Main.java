@@ -5,8 +5,8 @@ import java.awt.*;
 public class Main {
 
     public static void main(String[] args) {
-        removeBlue.removeBlueMain("./resources/meme.jpg");
-        removeColour.removeColourMain();
+        ExtractBlue.extractBlueMain("./resources/meme.jpg");
+        RemoveColour.removeColourMain();
         BasicBlackAndWhite.BasicBlackAndWhiteMain();
         EventQueue.invokeLater(() -> {
             UI frame = new UI();

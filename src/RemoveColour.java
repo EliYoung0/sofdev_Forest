@@ -3,9 +3,9 @@ import java.awt.image.*;
 import javax.imageio.ImageIO;
 import java.io.*;
 
-public class removeColour {
+public class RemoveColour {
     //Initiation of universal variable
-    private static BufferedImage blueLessInput = removeBlue.blueLessOutput;
+    private static BufferedImage blueExtractInput = ExtractBlue.blueExtractOutput;
     static BufferedImage colourLessOutput;
 
     public static void removeColourMain() {
@@ -13,15 +13,15 @@ public class removeColour {
         printImage();
     }
 
-    //This method removes the colour from blueLessInput and returns colourLessOutput
+    //This method removes the colour from blueExtractInput and returns colourLessOutput
     private static void removeColourMethod(){
         Object dataElements = null;
-        ColorModel colourModel = blueLessInput.getColorModel();
-        Raster raster = blueLessInput.getRaster();
-        colourLessOutput = blueLessInput;
+        ColorModel colourModel = blueExtractInput.getColorModel();
+        Raster raster = blueExtractInput.getRaster();
+        colourLessOutput = blueExtractInput;
 
-        for(int y = 0; y < blueLessInput.getHeight(); y++) {
-            for (int x = 0; x < blueLessInput.getWidth(); x++) {
+        for(int y = 0; y < blueExtractInput.getHeight(); y++) {
+            for (int x = 0; x < blueExtractInput.getWidth(); x++) {
                 //Get colours in 0-255 values
                 dataElements = raster.getDataElements(x, y, dataElements);
                 int red = colourModel.getRed(dataElements);
@@ -43,7 +43,7 @@ public class removeColour {
         }
     }
 
-    //This method
+    //This method prints out colourLessOutput to a file after removal of blue hues
     private static void printImage(){
         File outputFile = new File("colourlessOutputImage.jpg");
         try {
