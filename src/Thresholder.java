@@ -50,17 +50,22 @@ class UpdateAction implements ActionListener {
         Processing p = ui.getProc();
         try {
             int threshold = Integer.parseInt(text.getText());
-            p.imageProc(threshold);
-            BufferedImage image = p.blackAndWhiteOutput;
-            int height = image.getHeight();
-            int width = image.getWidth();
-            Image i = image.getScaledInstance((500 * width) / height, 500, Image.SCALE_SMOOTH);
-            t.setIcon(new ImageIcon(i));
-            t.repaint();
-            t.update(t.getGraphics());
+            if(threshold>=0&&threshold<=255){
+                p.imageProc(threshold);
+                BufferedImage image = p.blackAndWhiteOutput;
+                int height = image.getHeight();
+                int width = image.getWidth();
+                Image i = image.getScaledInstance((500 * width) / height, 500, Image.SCALE_SMOOTH);
+                t.setIcon(new ImageIcon(i));
+                t.repaint();
+                t.update(t.getGraphics());
+            }
+            else{
+                System.out.println("Threshold must be between an integer between 0 and 255");
+            }
         }
         catch (NumberFormatException f){
-            System.out.println("Enter a numerical value");
+            System.out.println("Enter a valid integer value");
         }
 
     }

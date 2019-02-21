@@ -8,6 +8,7 @@ import java.io.IOException;
 
 public class Processing {
     public BufferedImage original;
+    public BufferedImage greyImage;
     public BufferedImage blackAndWhiteOutput;
     private static double whitePixels;
     private static double blackPixels;
@@ -16,25 +17,26 @@ public class Processing {
         blackPixels=0.0;
         whitePixels=0.0;
         try {
-            original = ImageIO.read(new File(filepath)); //This needs to be changed to connect with the GUI, and multiple file-paths
+            //This needs to be changed to connect with the GUI, and multiple file-paths
+            original = ImageIO.read(new File(filepath));
+            BufferedImage temp = makeBlue();
+            greyImage = makeGrey(temp);
         } catch (IOException e) { System.out.println("There was an error in removeBlue.initiateImage()"); }
 
     }
     public void imageProc(int threshold){
-        BufferedImage temp = makeBlue();
-        temp = makeGrey(temp);
-        makeBlack(temp,threshold);
+        blackAndWhiteOutput=makeBlack(greyImage,threshold);
     }
 
     public static double getGapFraction() {
         return (whitePixels/blackPixels);
     }
 
-    private void makeBlack(BufferedImage colourLessInput, int threshold) {
+    private BufferedImage makeBlack(BufferedImage colourLessInput, int threshold) {
         Object dataElements = null;
         ColorModel colourModel = colourLessInput.getColorModel();
         Raster raster = colourLessInput.getRaster();
-        blackAndWhiteOutput = colourLessInput;
+        BufferedImage returnImage = colourLessInput;
 
         //needs to be reworked to take input from algorithms in order to determine threshold
         for(int y = 0; y < colourLessInput.getHeight(); y++) {
@@ -48,27 +50,29 @@ public class Processing {
                 //A precaution if statement
                 if((blue != red)|(blue != green)|(red != green)) {
                     System.out.print("RGB values are not even");
-                    return;
+                    return null;
                 }
 
                 Color black = new Color(0,0,0);
                 Color white = new Color(255,255,255);
-                if(red>=threshold) {
-                    blackAndWhiteOutput.setRGB(x, y, white.getRGB());
+                if(blue>=threshold) {
+                    returnImage.setRGB(x, y, white.getRGB());
                     whitePixels++;
                 }
                 else {
-                    blackAndWhiteOutput.setRGB(x, y, black.getRGB());
+                    returnImage.setRGB(x, y, black.getRGB());
                     blackPixels++;
                 }
             }
         }
+        return returnImage;
     }
 
     private BufferedImage makeGrey(BufferedImage blueLessInput) {
         Object dataElements = null;
         ColorModel colourModel = blueLessInput.getColorModel();
         Raster raster = blueLessInput.getRaster();
+        BufferedImage returnImage=blueLessInput;
 
         for(int y = 0; y < blueLessInput.getHeight(); y++) {
             for (int x = 0; x < blueLessInput.getWidth(); x++) {
@@ -83,10 +87,10 @@ public class Processing {
 
                 Color colour = new Color(greyscale,greyscale,greyscale);
                 int rgb = colour.getRGB();
-                blueLessInput.setRGB(x, y, rgb);
+                returnImage.setRGB(x, y, rgb);
             }
         }
-        return blueLessInput;
+        return returnImage;
     }
 
     private BufferedImage makeBlue(){
