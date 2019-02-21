@@ -1,14 +1,17 @@
 import javax.swing.*;
 
-public class UI extends JFrame {
+class UI extends JFrame {
+
     /**
      * Constructor for overall UI of the program
      * Outermost Layer of the GUI
      */
-    public UI(){
+    UI(){
         //Replace with better name
         setTitle("Forest Program");
+        //File Selector is initial container in frame
         setContentPane(new FileSelector(this));
+
         pack();
     }
 }
