@@ -48,6 +48,7 @@ class Thresholder extends Container {
         JTextArea consoleOutput = new JTextArea("");
         consoleOutput.setEditable(false);
         JScrollPane consoleScroll = new JScrollPane(consoleOutput);
+        consoleScroll.setPreferredSize(new Dimension(350,440));
 
         update.addActionListener(new UpdateAction(path, imageLabel, threshold, this, consoleOutput));
 
