@@ -1,5 +1,6 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,8 +12,11 @@ import java.io.IOException;
 class Thresholder extends Container {
 
     private BufferedImage blackOutput;
+    private int currentThreshold;
+    private String filepath;
 
     Thresholder(String path, UI ui) {
+        filepath=path;
         setLayout(new BorderLayout());
         JLabel imageLabel;
         try {
@@ -26,15 +30,26 @@ class Thresholder extends Container {
             imageLabel=new JLabel();
         }
         JPanel algPanel = new JPanel();
-        JTextField threshold = new JTextField(10);
-        JButton update = new JButton("Update");
-        update.addActionListener(new UpdateAction(path,imageLabel,threshold,this));
-        JButton proceed = new JButton("Proceed");
+        algPanel.setLayout(new BoxLayout(algPanel, BoxLayout.Y_AXIS));
 
+        JTextField threshold = new JTextField();
+        JButton update = new JButton("Update");
+        JTextArea consoleOutput = new JTextArea("");
+        consoleOutput.setEditable(false);
+
+        update.addActionListener(new UpdateAction(path,imageLabel,threshold,this, consoleOutput));
+        JButton proceed = new JButton("Save & Exit");
+
+        JLabel updateText = new JLabel("<html>Simple converter to black and white.<br>Enter the average RGB value which is the lower bound for white:   </html>");
+
+
+        algPanel.add(updateText);
         algPanel.add(threshold);
         algPanel.add(update);
+        algPanel.add(consoleOutput);
         add(algPanel,BorderLayout.LINE_END);
         proceed.addActionListener(e->{
+            saveBlack();
             System.exit(0);
         });
         add(proceed,BorderLayout.PAGE_END);
@@ -43,9 +58,22 @@ class Thresholder extends Container {
     void setBlack(BufferedImage b){
         blackOutput=b;
     }
+    void saveBlack(){
+        String newFilepath;
+        newFilepath = filepath.replaceAll("(.[a-zA-Z]{3,4}$)","_basic_"+currentThreshold+"_"+java.time.LocalDate.now()+"$1");
+        File outputFile = new File(newFilepath);
+        try {
+            ImageIO.write(blackOutput,"jpg",outputFile);
+        }
+        catch (IOException ignored){}
+    }
 
     public BufferedImage getBlackOutput() {
         return blackOutput;
+    }
+
+    public void setCurrentThreshold(int currentThreshold) {
+        this.currentThreshold = currentThreshold;
     }
 }
 
@@ -54,11 +82,13 @@ class UpdateAction implements ActionListener {
     private JLabel t;
     private String path;
     private Thresholder outer;
-    UpdateAction(String path, JLabel t, JTextField thresh,Thresholder outer){
+    private JTextArea console;
+    UpdateAction(String path, JLabel t, JTextField thresh,Thresholder outer, JTextArea output){
         text=thresh;
         this.t=t;
         this.outer=outer;
         this.path=path;
+        console=output;
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -72,19 +102,20 @@ class UpdateAction implements ActionListener {
                     t.repaint();
                     t.update(t.getGraphics());
                     outer.setBlack(bl);
+                    outer.setCurrentThreshold(threshold);
                     //Remove in final product. Just to show functionality right now.
-                    System.out.println("Gap Fraction is: "+Black.getGapFraction(bl));
+                    console.append("\nGap Fraction is: "+Black.getGapFraction(bl));
                 }catch (IOException f){
-                    System.out.println("Invalid input image");
+                    console.append("\nInvalid input image.");
                 }
 
             }
             else{
-                System.out.println("Threshold must be between an integer between 0 and 255");
+                console.append("\nThreshold must be between an integer between 0 and 255.");
             }
         }
         catch (NumberFormatException f){
-            System.out.println("Enter a valid integer value");
+            console.append("\nEnter a valid integer value.");
         }
 
     }
