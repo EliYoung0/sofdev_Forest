@@ -6,9 +6,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 
 public class FileSelector extends Container {
-
-
-    private JTextArea address;
+    private static JTextArea address;
 
     public FileSelector(UI ui){
         setLayout(new BorderLayout());
@@ -57,7 +55,7 @@ public class FileSelector extends Container {
      * Returns the file path text field object
      * @return the address text field
      */
-    public JTextArea getAddress() {
+    public static JTextArea getAddress() {
         return address;
     }
 

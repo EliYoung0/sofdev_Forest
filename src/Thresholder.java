@@ -10,7 +10,7 @@ import java.io.IOException;
 
 class Thresholder extends Container {
 
-    private BufferedImage blackOutput;
+    public static BufferedImage blackOutput;
     private int currentThreshold;
     private String filepath;
 
@@ -34,9 +34,11 @@ class Thresholder extends Container {
             imageLabel = new JLabel();
         }
 
+        //For future algorithms
         JPanel algPanel = new JPanel();
         algPanel.setLayout(new BoxLayout(algPanel, BoxLayout.Y_AXIS));
 
+        //for the basic threshold panel
         JPanel threshPanel = new JPanel();
         threshPanel.setLayout(new GridLayout());
         threshPanel.setLayout(new GridBagLayout());
@@ -48,12 +50,14 @@ class Thresholder extends Container {
         JTextArea consoleOutput = new JTextArea("");
         consoleOutput.setEditable(false);
         JScrollPane consoleScroll = new JScrollPane(consoleOutput);
-        consoleScroll.setPreferredSize(new Dimension(350,440));
+        consoleScroll.setPreferredSize(new Dimension(350,400));
 
         update.addActionListener(new UpdateAction(path, imageLabel, threshold, this, consoleOutput));
 
 
-        JLabel updateText = new JLabel("<html>Simple converter to black and white.<br>Enter the average RGB value which is the lower bound for white:  <br> (RGB values are from 0-255.) </html>");
+        JLabel updateText = new JLabel("<html>Simple converter to black and white." +
+                "<br>Enter the average RGB value which is the lower bound for white:  " +
+                "<br> (RGB values are from 0-255.) </html>");
 
         c.gridheight=1;
         c.gridx=1;
@@ -67,7 +71,7 @@ class Thresholder extends Container {
         add(consoleScroll,c);
 
         //Give proceed button functionality
-        JButton proceed = new JButton("Save & Exit");
+        JButton proceed = new JButton("Save & Continue");
         proceed.addActionListener(e -> {
             if(blackOutput!=null) {
                 saveBlack();
@@ -89,7 +93,8 @@ class Thresholder extends Container {
 
     private void saveBlack() {
         String newFilepath;
-        newFilepath = filepath.replaceAll("(.[a-zA-Z]{3,4}$)", "_basic_" + currentThreshold + "_" + java.time.LocalDate.now() + "$1");
+        newFilepath = filepath.replaceAll("(.[a-zA-Z]{3,4}$)",
+                "_basic_" + currentThreshold + "_" + java.time.LocalDate.now() + "$1");
         File outputFile = new File(newFilepath);
         try {
             ImageIO.write(blackOutput, "jpg", outputFile);
