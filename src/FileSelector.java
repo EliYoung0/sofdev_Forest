@@ -13,8 +13,9 @@ public class FileSelector extends Container {
         setPreferredSize(new Dimension(600,500));
         //Create Components
         JButton open = new JButton("Open");
-        OpenAction o = new OpenAction(ui,this);
-        open.addActionListener(o);
+        //OpenAction o = new OpenAction(ui,this);
+        //open.addActionListener(o);
+        //IMPLEMENT INNER CLASSES HERE
         JPanel fileBrowser = createBrowser();
         //Add components to FileSelector
         add(fileBrowser,BorderLayout.CENTER);
