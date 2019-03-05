@@ -32,7 +32,7 @@ public class FileSelector extends Container {
         JPanel fb = new JPanel();
         fb.setBorder(new EmptyBorder(225,100,225,100));
         fb.setLayout(new BoxLayout(fb,BoxLayout.X_AXIS));
-        address = new JTextArea("/Users/kepler/Desktop/DCSN1068.JPG",1,1);
+        address = new JTextArea("",1,1);
         address.setBorder(new EtchedBorder(1,null,Color.black));
         JButton browse = new JButton("Browse");
         //Opens a new window when browse button is clicked
@@ -42,7 +42,7 @@ public class FileSelector extends Container {
             FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & GIF Images", "jpg");
             chooser.setFileFilter(filter);
             //Sets whether files or folders or both are allowed
-            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
             int returnVal = chooser.showOpenDialog(chooser);
             if(returnVal == JFileChooser.APPROVE_OPTION) {
                 address.setText(chooser.getSelectedFile().getAbsolutePath());
