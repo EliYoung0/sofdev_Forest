@@ -53,7 +53,7 @@ class Thresholder extends Container {
         update.addActionListener(new UpdateAction(path, imageLabel, threshold, this, consoleOutput));
 
 
-        JLabel updateText = new JLabel("<html>Simple converter to black and white.<br>Enter the average RGB value which is the lower bound for white:   </html>");
+        JLabel updateText = new JLabel("<html>Simple converter to black and white.<br>Enter the average RGB value which is the lower bound for white:  <br> (RGB values are from 0-255.) </html>");
 
         c.gridheight=1;
         c.gridx=1;
