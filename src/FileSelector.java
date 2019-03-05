@@ -42,7 +42,7 @@ public class FileSelector extends Container {
             FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & GIF Images", "jpg");
             chooser.setFileFilter(filter);
             //Sets whether files or folders or both are allowed
-            chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             int returnVal = chooser.showOpenDialog(chooser);
             if(returnVal == JFileChooser.APPROVE_OPTION) {
                 address.setText(chooser.getSelectedFile().getAbsolutePath());
