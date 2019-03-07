@@ -11,7 +11,7 @@ import java.io.IOException;
 class Circle extends Container {
 
     private BufferedImage circledOutput;
-    private BufferedImage blackInput = Thresholder.blackOutput;
+    private BufferedImage blackInput = Thresholder.getBlackOutput();
 
     Circle(UI ui){
         setLayout(new GridBagLayout());
@@ -40,8 +40,8 @@ class Circle extends Container {
         //Diameter input
         JLabel diameterInputText = new JLabel("Diameter pixel value: ");
         JTextField diameterInputField = new JTextField(20);
-        //"Update" button
-        JButton update = new JButton("Draw Circle");
+        //"Draw Circle" button
+        JButton drawCircle = new JButton("Draw Circle");
         //Creating panel and adding components to panel
         c.gridx = 1;
         c.gridy = 0;
@@ -55,15 +55,44 @@ class Circle extends Container {
         circlePanel.add(yInputField);
         circlePanel.add(diameterInputText);
         circlePanel.add(diameterInputField);
+        circlePanel.add(drawCircle);
 
+        drawCircle.addActionListener(new CircleAction(blackInput, xInputField, yInputField, diameterInputField, imageLabel));
 
+    }
 
+    void setCircle(BufferedImage c){
+        circledOutput = c;
     }
 
 }
 
 class CircleAction implements ActionListener {
-    public void actionPerformed(ActionEvent e){
+    private JTextField x;
+    private JTextField y;
+    private JTextField diameter;
+    private BufferedImage blackInput;
+    private JLabel returnImage;
 
+    CircleAction(BufferedImage input, JTextField x, JTextField y, JTextField diameter, JLabel image){
+        blackInput = input;
+        this.x = x;
+        this.y = y;
+        this.diameter = diameter;
+        returnImage = image;
+    }
+
+    public void actionPerformed(ActionEvent e){
+        int x = Integer.parseInt(this.x.getText());
+        int y = Integer.parseInt(this.y.getText());
+        int diameter = Integer.parseInt(this.diameter.getText());
+
+        Graphics circle = blackInput.getGraphics();
+        circle.drawOval(x, y, diameter, diameter);
+        circle.setColor(Color.red);
+        //Maybe dispose of graphics content to save resources?
+        Image i = returnImage.getScaledInstance((500*width)/height, 500, Image.SCALE_SMOOTH);
+        imageLabel = new JLabel(new ImageIcon(i));
+        outer.
     }
 }

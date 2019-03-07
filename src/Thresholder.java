@@ -81,6 +81,7 @@ class Thresholder extends Container {
             }
         };
         proceed.addActionListener(listener);
+        //This part used to close the program
         /*proceed.addActionListener(e -> {
             if(blackOutput!=null) {
                 saveBlack();
@@ -111,7 +112,7 @@ class Thresholder extends Container {
         }
     }
 
-    public BufferedImage getBlackOutput() {
+    public static BufferedImage getBlackOutput() {
         return blackOutput;
     }
 
