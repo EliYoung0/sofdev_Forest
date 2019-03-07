@@ -72,12 +72,21 @@ class Thresholder extends Container {
 
         //Give proceed button functionality
         JButton proceed = new JButton("Save & Continue");
-        proceed.addActionListener(e -> {
+        ActionListener listener = new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event){
+                Circle circle = new Circle(ui);
+                ui.setContentPane(circle);
+                ui.pack();
+            }
+        };
+        proceed.addActionListener(listener);
+        /*proceed.addActionListener(e -> {
             if(blackOutput!=null) {
                 saveBlack();
             }
             System.exit(0);
-        });
+        });*/
 
         //Add components to Container
         c.gridx=0;

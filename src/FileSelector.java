@@ -1,9 +1,11 @@
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
 public class FileSelector extends Container {
     private static JTextArea address;
@@ -13,13 +15,27 @@ public class FileSelector extends Container {
         setPreferredSize(new Dimension(600,500));
         //Create Components
         JButton open = new JButton("Open");
-        //OpenAction o = new OpenAction(ui,this);
-        //open.addActionListener(o);
-        //IMPLEMENT INNER CLASSES HERE
+        ActionListener listener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String path = FileSelector.getAddress().getText();
+                if(new File(path).exists()) {
+                    Thresholder thresholder = new Thresholder(path,ui);
+                    ui.setContentPane(thresholder);
+                    ui.pack();
+                }
+                else{
+                    System.out.print("Invalid File Path");
+                }
+            }
+        };
+        open.addActionListener(listener);
         JPanel fileBrowser = createBrowser();
         //Add components to FileSelector
         add(fileBrowser,BorderLayout.CENTER);
         add(open,BorderLayout.PAGE_END);
+
+
     }
 
     /**
