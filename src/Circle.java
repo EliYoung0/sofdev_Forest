@@ -99,7 +99,7 @@ class CircleAction implements ActionListener {
         circleRing.dispose();
         circle.dispose();
 
-
+//NEED TO FIX THE REDRAWING ISSUES
         Image i = blackInput.getScaledInstance((500*width)/height, 500, Image.SCALE_SMOOTH);
         //JLabel imagelabel = new JLabel(new ImageIcon(i));
         //returnImage = imagelabel;
