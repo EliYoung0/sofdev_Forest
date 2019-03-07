@@ -54,8 +54,8 @@ public abstract class Algorithms {
             zeroes[tr+1]=average(db,use);
         }
         int tr=limit[1];
-        int max = max(zeroes,256);
-        double thresh=zeroes[max]-1;
+        double max = max(zeroes,256);
+        double thresh=max-1;
         while(thresh==limit[1]&&tr<255){
             tr++;
             limit[1]++;
@@ -78,14 +78,15 @@ public abstract class Algorithms {
             }
             zeroes[tr+1]=average(db,use);
             max= max(zeroes,256);
-            thresh=zeroes[max]-1;
+            thresh=max-1;
         }
+        System.out.println(tr);
         for (int x = 0; x < m; x++) {
             for (int y = 0; y < n; y++) {
                 Color black = new Color(0,0,0);
                 Color white = new Color(255,255,255);
                 //Compares pixel to threshold
-                if(blue[x][y]>thresh) {
+                if(blue[x][y]>tr) {
                     image.setRGB(x, y, white.getRGB());
                 }
                 else {
@@ -96,14 +97,14 @@ public abstract class Algorithms {
         return image;
     }
 
-    private static int max(double[] a, int l) {
+    private static double max(double[] a, int l) {
         int max=0;
         for (int i = 1; i < l; i++) {
             if(a[i]>a[max]){
                 max=i;
             }
         }
-        return max;
+        return a[max];
     }
 
     private static double average(double[][][] db, ArrayList<int[]>[] use) {
@@ -117,6 +118,7 @@ public abstract class Algorithms {
         }
         return (sum/count);
     }
+
     private static double[] abSubOneD(double[] a,double[] b, int l){
         double[] c = new double[l];
         for (int i = 0; i < l; i++) {
@@ -150,9 +152,7 @@ public abstract class Algorithms {
     private static double[][] getSubArray(double[][] a, int x0, int x1, int y0, int y1){
         double[][] b = new double[x1-x0+1][y1-y0+1];
         for (int i = x0; i <= x1; i++) {
-            for (int j = y0; j <= y1; j++) {
-                b[i-x0][j-y0]=a[i][j];
-            }
+            for (int j = y0; j <= y1; j++) { b[i-x0][j-y0]=a[i][j]; }
         }
         return b;
     }
