@@ -147,7 +147,7 @@ class UpdateAction implements ActionListener {
                     t.repaint();
                     outer.setBlack(bl);
                     outer.setCurrentThreshold(threshold);
-                    //Remove in final product. Just to show functionality right now.
+                    //Remove following line in final product. Just to show functionality right now.
                     console.append("\nGap Fraction is: " + Black.getGapFraction(bl));
 
             } else {

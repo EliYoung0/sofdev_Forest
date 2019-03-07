@@ -1,36 +1,29 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
 
 class Circle extends Container {
-
     private BufferedImage circledOutput;
-    private BufferedImage blackInput = Thresholder.getBlackOutput();
+    private BufferedImage blackInput = Thresholder.blackOutput;
 
     Circle(UI ui){
         setLayout(new GridBagLayout());
-        JLabel imageLabel;
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
 
         //Adding image to grid
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridheight=3;
-        BufferedImage image = blackInput;
-        int height = image.getHeight();
-        int width = image.getWidth();
-        Image i = image.getScaledInstance((500*width)/height, 500, Image.SCALE_SMOOTH);
-        imageLabel = new JLabel(new ImageIcon(i));
-        add(imageLabel, c);
+        JLabel imageLabel = addImageToGrid(c);
 
-        //DRAW CIRCLE
+        //Creating input panel for circle parameters
+        c.gridy = 0;
+        c.gridheight = 2;
+        JPanel circlePanel = new JPanel();
+        circlePanel.setLayout(new BoxLayout(circlePanel, BoxLayout.Y_AXIS));
+        add(circlePanel, c);
         //X-input
         JLabel xInputText = new JLabel("Centre x pixel value: ");
         JTextField xInputField = new JTextField(20);
@@ -41,14 +34,8 @@ class Circle extends Container {
         JLabel diameterInputText = new JLabel("Diameter pixel value: ");
         JTextField diameterInputField = new JTextField(20);
         //"Draw Circle" button
-        JButton drawCircle = new JButton("Draw Circle");
-        //Creating panel and adding components to panel
-        c.gridx = 1;
-        c.gridy = 0;
-        c.gridheight = 2;
-        JPanel circlePanel = new JPanel();
-        circlePanel.setLayout(new BoxLayout(circlePanel, BoxLayout.Y_AXIS));
-        add(circlePanel, c);
+        JButton drawCircle = new JButton("Draw Circle");c.gridx = 1;
+        //Adding components to panel
         circlePanel.add(xInputText);
         circlePanel.add(xInputField);
         circlePanel.add(yInputText);
@@ -57,12 +44,23 @@ class Circle extends Container {
         circlePanel.add(diameterInputField);
         circlePanel.add(drawCircle);
 
-        drawCircle.addActionListener(new CircleAction(blackInput, xInputField, yInputField, diameterInputField, imageLabel));
+
+        drawCircle.addActionListener(new CircleAction(xInputField, yInputField, diameterInputField, imageLabel));
 
     }
 
-    void setCircle(BufferedImage c){
-        circledOutput = c;
+    private JLabel addImageToGrid(GridBagConstraints c){
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridheight=3;
+        JLabel imageLabel;
+        BufferedImage image = blackInput;
+        int height = image.getHeight();
+        int width = image.getWidth();
+        Image i = image.getScaledInstance((500*width)/height, 500, Image.SCALE_SMOOTH);
+        imageLabel = new JLabel(new ImageIcon(i));
+        add(imageLabel, c);
+        return imageLabel;
     }
 
 }
@@ -74,8 +72,8 @@ class CircleAction implements ActionListener {
     private BufferedImage blackInput;
     private JLabel returnImage;
 
-    CircleAction(BufferedImage input, JTextField x, JTextField y, JTextField diameter, JLabel image){
-        blackInput = input;
+    CircleAction(JTextField x, JTextField y, JTextField diameter, JLabel image){
+        blackInput =Thresholder.getBlackOutput();
         this.x = x;
         this.y = y;
         this.diameter = diameter;
@@ -87,12 +85,41 @@ class CircleAction implements ActionListener {
         int y = Integer.parseInt(this.y.getText());
         int diameter = Integer.parseInt(this.diameter.getText());
 
+        int width = blackInput.getWidth();
+        int height = blackInput.getHeight();
+
         Graphics circle = blackInput.getGraphics();
-        circle.drawOval(x, y, diameter, diameter);
-        circle.setColor(Color.red);
-        //Maybe dispose of graphics content to save resources?
-        Image i = returnImage.getScaledInstance((500*width)/height, 500, Image.SCALE_SMOOTH);
-        imageLabel = new JLabel(new ImageIcon(i));
-        outer.
+        Graphics2D circleRing = (Graphics2D)circle;
+        Shape ring = createRingShape(x, y, (diameter+10), 10);
+        circleRing.setColor(Color.RED);
+        circleRing.fill(ring);
+        circleRing.setColor(Color.BLACK);
+        circleRing.draw(ring);
+
+        circleRing.dispose();
+        circle.dispose();
+
+
+        Image i = blackInput.getScaledInstance((500*width)/height, 500, Image.SCALE_SMOOTH);
+        //JLabel imagelabel = new JLabel(new ImageIcon(i));
+        //returnImage = imagelabel;
+        returnImage.setIcon(new ImageIcon(i));
+        returnImage.repaint();
+    }
+
+    private static Shape createRingShape(double centerX, double centerY, double outerRadius, double thickness){
+        Ellipse2D outer = new Ellipse2D.Double(
+                centerX - outerRadius,
+                centerY - outerRadius,
+                outerRadius + outerRadius,
+                outerRadius + outerRadius);
+        Ellipse2D inner = new Ellipse2D.Double(
+                centerX - outerRadius + thickness,
+                centerY - outerRadius + thickness,
+                outerRadius + outerRadius - thickness - thickness,
+                outerRadius + outerRadius - thickness - thickness);
+        Area area = new Area(outer);
+        area.subtract(new Area(inner));
+        return area;
     }
 }
