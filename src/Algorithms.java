@@ -80,7 +80,6 @@ public abstract class Algorithms {
             max= max(zeroes,256);
             thresh=max-1;
         }
-        System.out.println(tr);
         for (int x = 0; x < m; x++) {
             for (int y = 0; y < n; y++) {
                 Color black = new Color(0,0,0);
@@ -159,7 +158,7 @@ public abstract class Algorithms {
 
     public static void main(String[] args) {
         try {
-            String path="/Users/kepler/Desktop/in.jpg";
+            String path="/Users/kepler/Desktop/1_1_2 copy.jpg";
             BufferedImage in = ImageIO.read(new File(path));
             BufferedImage out = nobis(in);
             File outputFile = new File("/Users/kepler/Desktop/out.jpg");
