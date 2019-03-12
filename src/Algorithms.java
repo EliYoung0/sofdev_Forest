@@ -8,9 +8,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public abstract class Algorithms {
+    static BufferedImage nobis(String path) throws IOException {
+            return nobis(ImageIO.read(new File(path)),140,170);
+    }
 
-    static BufferedImage nobis(BufferedImage image) {
-        int[] limit = {140, 170};
+    static BufferedImage nobis(BufferedImage image,int liml,int limh) {
+        int[] limit = {liml, limh};
         int m = image.getWidth();
         int n = image.getHeight();
 
@@ -160,7 +163,7 @@ public abstract class Algorithms {
         try {
             String path="/Users/kepler/Desktop/1_1_2 copy.jpg";
             BufferedImage in = ImageIO.read(new File(path));
-            BufferedImage out = nobis(in);
+            BufferedImage out = nobis(in,140,170);
             File outputFile = new File("/Users/kepler/Desktop/out.jpg");
 
                 ImageIO.write(out, "jpg", outputFile);

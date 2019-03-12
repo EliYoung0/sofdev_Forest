@@ -40,11 +40,11 @@ class Thresholder extends Container {
 
         //for the basic threshold panel
         JPanel threshPanel = new JPanel();
-        threshPanel.setLayout(new GridLayout());
         threshPanel.setLayout(new GridBagLayout());
 
-        JTextField threshold = new JTextField(20);
 
+
+        JTextField threshold = new JTextField(20);
         JButton update = new JButton("Update");
 
         JTextArea consoleOutput = new JTextArea("");
@@ -58,13 +58,35 @@ class Thresholder extends Container {
         JLabel updateText = new JLabel("<html>Simple converter to black and white." +
                 "<br>Enter the average RGB value which is the lower bound for white:  " +
                 "<br> (RGB values are from 0-255.) </html>");
+        //Threshold Algorithm radio button
+        JButton nobis = new JButton("Nobis Algorithm");
+        JLabel finalImageLabel = imageLabel;
+        nobis.addActionListener(e -> {
+            try {
+
+                BufferedImage bl = Algorithms.nobis(path);
+                Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
+                finalImageLabel.setIcon(new ImageIcon(i));
+                finalImageLabel.repaint();
+                setBlack(bl);
+                //Remove following line in final product. Just to show functionality right now.
+                consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl));
+            }
+            catch (IOException ex){System.out.println( ex);}
+        });
 
         c.gridheight=1;
         c.gridx=1;
         c.gridy=0;
+        GridBagConstraints tr = new GridBagConstraints();
+        tr.fill = GridBagConstraints.VERTICAL;
+        tr.gridy=0;
         add(updateText,c);
-        threshPanel.add(threshold);
-        threshPanel.add(update);
+        threshPanel.add(threshold,tr);
+        tr.gridy=1;
+        threshPanel.add(update,tr);
+        tr.gridy=2;
+        threshPanel.add(nobis,tr);
         c.gridy=1;
         add(threshPanel,c);
         c.gridy=2;
@@ -72,20 +94,19 @@ class Thresholder extends Container {
 
         //Give proceed button functionality
         JButton proceed = new JButton("Save & Continue");
-        ActionListener listener = new ActionListener()
+        /*ActionListener listener = new ActionListener()
         {
             public void actionPerformed(ActionEvent event){
-
             }
         };
-        proceed.addActionListener(listener);
+        proceed.addActionListener(listener);*/
         //This part used to close the program
-        /*proceed.addActionListener(e -> {
+        proceed.addActionListener(e -> {
             if(blackOutput!=null) {
                 saveBlack();
             }
             System.exit(0);
-        });*/
+        });
 
         //Add components to Container
         c.gridx=0;

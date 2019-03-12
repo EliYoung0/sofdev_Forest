@@ -66,9 +66,6 @@ class Circle extends Container {
         circlePanel.add(drawCircle);
 
         drawCircle.addActionListener(new CircleAction(path, xInputField, yInputField, diameterInputField, imageLabel));
-        circleX = Integer.parseInt(xInputField.getText());
-        circleY = Integer.parseInt(yInputField.getText());
-        circleD = Integer.parseInt(diameterInputField.getText());
 
 
         //TODO add in NORTH functionality
