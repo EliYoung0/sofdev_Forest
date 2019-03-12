@@ -1,26 +1,41 @@
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
 public class FileSelector extends Container {
-
-
-    private JTextArea address;
+    private static JTextArea address;
 
     public FileSelector(UI ui){
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(600,500));
         //Create Components
         JButton open = new JButton("Open");
-        OpenAction o = new OpenAction(ui,this);
-        open.addActionListener(o);
+        ActionListener listener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String path = FileSelector.getAddress().getText();
+                if(new File(path).exists()) {
+                    Circle circle = new Circle(path, ui);
+                    ui.setContentPane(circle);
+                    ui.pack();
+                }
+                else{
+                    System.out.print("Invalid File Path");
+                }
+            }
+        };
+        open.addActionListener(listener);
         JPanel fileBrowser = createBrowser();
         //Add components to FileSelector
         add(fileBrowser,BorderLayout.CENTER);
         add(open,BorderLayout.PAGE_END);
+
+
     }
 
     /**
@@ -32,7 +47,7 @@ public class FileSelector extends Container {
         JPanel fb = new JPanel();
         fb.setBorder(new EmptyBorder(225,100,225,100));
         fb.setLayout(new BoxLayout(fb,BoxLayout.X_AXIS));
-        address = new JTextArea("/Users/kepler/Desktop/DCSN1068.JPG",1,1);
+        address = new JTextArea("",1,1);
         address.setBorder(new EtchedBorder(1,null,Color.black));
         JButton browse = new JButton("Browse");
         //Opens a new window when browse button is clicked
@@ -57,7 +72,7 @@ public class FileSelector extends Container {
      * Returns the file path text field object
      * @return the address text field
      */
-    public JTextArea getAddress() {
+    public static JTextArea getAddress() {
         return address;
     }
 
