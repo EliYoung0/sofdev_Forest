@@ -20,8 +20,8 @@ public class FileSelector extends Container {
             public void actionPerformed(ActionEvent e) {
                 String path = FileSelector.getAddress().getText();
                 if(new File(path).exists()) {
-                    Thresholder thresholder = new Thresholder(path,ui);
-                    ui.setContentPane(thresholder);
+                    Circle circle = new Circle(path, ui);
+                    ui.setContentPane(circle);
                     ui.pack();
                 }
                 else{

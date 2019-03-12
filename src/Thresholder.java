@@ -75,9 +75,7 @@ class Thresholder extends Container {
         ActionListener listener = new ActionListener()
         {
             public void actionPerformed(ActionEvent event){
-                Circle circle = new Circle(ui);
-                ui.setContentPane(circle);
-                ui.pack();
+
             }
         };
         proceed.addActionListener(listener);
