@@ -45,10 +45,12 @@ public class FileSelector extends Container {
      */
     private JPanel createBrowser() {
         JPanel fb = new JPanel();
-        fb.setBorder(new EmptyBorder(225,100,225,100));
+        fb.setBorder(new EmptyBorder(215,100,215,100));
         fb.setLayout(new BoxLayout(fb,BoxLayout.X_AXIS));
         address = new JTextArea("",1,1);
         address.setBorder(new EtchedBorder(1,null,Color.black));
+        JScrollPane addressScroll = new JScrollPane(address, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        addressScroll.setSize(new Dimension(313, 40));
         JButton browse = new JButton("Browse");
         //Opens a new window when browse button is clicked
         browse.addActionListener(e -> {
@@ -63,7 +65,7 @@ public class FileSelector extends Container {
                 address.setText(chooser.getSelectedFile().getAbsolutePath());
             }
         });
-        fb.add(address);
+        fb.add(addressScroll);
         fb.add(browse);
         return fb;
     }
