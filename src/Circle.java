@@ -10,11 +10,10 @@ import java.io.File;
 import java.io.IOException;
 
 class Circle extends Container {
-    private BufferedImage circledOutput;
     private String filepath;
-    private int circleX;
-    private int circleY;
-    private int circleD;
+    static int circleX;
+    static int circleY;
+    static int circleD;
 
     Circle(String path, UI ui){
         filepath = path;
@@ -28,7 +27,7 @@ class Circle extends Container {
         c.gridheight=3;
         JLabel imageLabel;
         try {
-            BufferedImage image = ImageIO.read(new File(path));
+            BufferedImage image = ImageIO.read(new File(filepath));
             int height = image.getHeight();
             int width = image.getWidth();
             Image i = image.getScaledInstance((500*width)/height, 500, Image.SCALE_SMOOTH);
@@ -65,10 +64,10 @@ class Circle extends Container {
         circlePanel.add(diameterInputField);
         circlePanel.add(drawCircle);
 
-        drawCircle.addActionListener(new CircleAction(path, xInputField, yInputField, diameterInputField, imageLabel));
-
+        drawCircle.addActionListener(new CircleAction(filepath, xInputField, yInputField, diameterInputField, imageLabel));
 
         //TODO add in NORTH functionality
+        //TODO save north values
         //Adds north functionality
         c.gridy = 2;
         c.gridx = 1;
@@ -80,7 +79,7 @@ class Circle extends Container {
         ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Thresholder thresholder = new Thresholder(path,ui);
+                Thresholder thresholder = new Thresholder(filepath,ui);
                 ui.setContentPane(thresholder);
                 ui.pack();
             }
@@ -94,7 +93,15 @@ class Circle extends Container {
 
     }
 
-    //TODO save circle and north values
+    static void setCircleX (JTextField xInputField) {
+        circleX = Integer.parseInt(xInputField.getText());
+    }
+    static void setCircleY (JTextField yInputField) {
+        circleY = Integer.parseInt(yInputField.getText());
+    }
+    static void setCircleD (JTextField diameterInputField) {
+        circleD = Integer.parseInt(diameterInputField.getText());
+    }
 
     static BufferedImage readImage (String path) throws IOException {
         return ImageIO.read(new File(path));
@@ -118,41 +125,45 @@ class CircleAction implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
+        //sets Circle universal variables
+        Circle.setCircleX(x);
+        Circle.setCircleY(y);
+        Circle.setCircleD(diameter);
+
+        //Calls colour image from file-path to be able to reset it every time
         try {
             blackInput = Circle.readImage(path);
         } catch (IOException g) {
             System.out.println("Why");
         }
-        int width = blackInput.getWidth();
-        int height = blackInput.getHeight();
-        /*Image reset = blackInput.getScaledInstance((500*width)/height,500, Image.SCALE_SMOOTH);
-        returnImage.setIcon(new ImageIcon(reset));
-        returnImage.repaint();
-        */
 
+        //Creates graphic and circle and draws ring onto image
+        Graphics circle = blackInput.getGraphics();
+        Graphics2D circleRing = (Graphics2D)circle;
         int x = Integer.parseInt(this.x.getText());
         int y = Integer.parseInt(this.y.getText());
         int diameter = Integer.parseInt(this.diameter.getText());
-
-        Graphics circle = blackInput.getGraphics();
-        Graphics2D circleRing = (Graphics2D)circle;
-        Shape ring = createRingShape(x, y, (diameter+10), 10);
+        Shape ring = createRingShape(x, y, (diameter+10));
         circleRing.setColor(Color.RED);
         circleRing.fill(ring);
         circleRing.setColor(Color.BLACK);
         circleRing.draw(ring);
 
+        //clears memory of useless info
         circleRing.dispose();
         circle.dispose();
 
+        //Repaints image
+        int width = blackInput.getWidth();
+        int height = blackInput.getHeight();
         Image i = blackInput.getScaledInstance((500*width)/height, 500, Image.SCALE_SMOOTH);
-        //JLabel imagelabel = new JLabel(new ImageIcon(i));
-        //returnImage = imagelabel;
         returnImage.setIcon(new ImageIcon(i));
         returnImage.repaint();
     }
 
-    private static Shape createRingShape(double centerX, double centerY, double outerRadius, double thickness){
+    //Draws a ring using two circles
+    private static Shape createRingShape(double centerX, double centerY, double outerRadius){
+        double thickness = 10.0;
         Ellipse2D outer = new Ellipse2D.Double(
                 centerX - outerRadius,
                 centerY - outerRadius,
