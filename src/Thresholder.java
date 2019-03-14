@@ -135,7 +135,7 @@ class Thresholder extends Container {
         return blackOutput;
     }
 
-    public void setCurrentThreshold(int currentThreshold) {
+    protected void setCurrentThreshold(int currentThreshold) {
         this.currentThreshold = currentThreshold;
     }
 }
