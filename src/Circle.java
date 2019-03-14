@@ -15,6 +15,7 @@ class Circle extends Container {
     static int circleY;
     static int circleD;
     static double circleN;
+    private static BufferedImage circledCanopy = null;
 
     Circle(String path, UI ui){
         filepath = path;
@@ -45,6 +46,8 @@ class Circle extends Container {
         JPanel circlePanel = new JPanel();
         circlePanel.setLayout(new BoxLayout(circlePanel, BoxLayout.Y_AXIS));
         add(circlePanel, c);
+        //Directions
+        JLabel directionText = new JLabel("<html> Input values for the circle below. <br> (Circle must be drawn before placing north) </html>");
         //X-input
         JLabel xText = new JLabel("Centre x pixel value: ");
         JTextField xInputField = new JTextField(20);
@@ -55,6 +58,7 @@ class Circle extends Container {
         JLabel diameterText = new JLabel("Diameter pixel value: ");
         JTextField diameterInputField = new JTextField(20);
         //Adding components to panel
+        circlePanel.add(directionText);
         circlePanel.add(xText);
         circlePanel.add(xInputField);
         circlePanel.add(yText);
@@ -84,7 +88,7 @@ class Circle extends Container {
         //Adds North Button for the action
         JButton addNorth = new JButton("Add North");
         northPanel.add(addNorth);
-        addNorth.addActionListener(new NorthAction(filepath, northInputField, canopyLabel));
+        addNorth.addActionListener(new NorthAction(northInputField, canopyLabel));
 
         //Provide proceed button functionality
         JButton proceed = new JButton("Save & Continue");
@@ -120,13 +124,19 @@ class Circle extends Container {
     static BufferedImage readImage (String path) throws IOException {
         return ImageIO.read(new File(path));
     }
+    static void setCircledCanopy (BufferedImage circleInput) {
+        circledCanopy = circleInput;
+    }
+    static BufferedImage getCircledCanopy () {
+        return circledCanopy;
+    }
 }
 
 class CircleAction implements ActionListener {
     private JTextField x;
     private JTextField y;
     private JTextField diameter;
-    private BufferedImage blackInput;
+    private BufferedImage canopyInput;
     private JLabel returnImage;
     private String path;
 
@@ -135,7 +145,6 @@ class CircleAction implements ActionListener {
         this.x = x;
         this.y = y;
         this.diameter = diameter;
-        //this.north = north;
         returnImage = image;
     }
 
@@ -145,15 +154,14 @@ class CircleAction implements ActionListener {
         Circle.setCircleY(y);
         Circle.setCircleD(diameter);
 
-
         //Calls colour image from file-path to be able to reset it every time
         try {
-            blackInput = Circle.readImage(path);
+            canopyInput = Circle.readImage(path);
         } catch (IOException g) {
             System.out.println("Why");
         }
         //Creates graphic and circle and draws ring onto image
-        Graphics image = blackInput.getGraphics();
+        Graphics image = canopyInput.getGraphics();
 
         Graphics2D circleRing = (Graphics2D) image;
         int x = Integer.parseInt(this.x.getText());
@@ -164,15 +172,15 @@ class CircleAction implements ActionListener {
         circleRing.setColor(Color.BLACK);
         circleRing.draw(ring);
 
-
         //clears memory of useless info
         circleRing.dispose();
-        //imageII.dispose();
+        image.dispose();
 
         //Repaints image
-        int width = blackInput.getWidth();
-        int height = blackInput.getHeight();
-        Image i = blackInput.getScaledInstance((500 * width) / height, 500, Image.SCALE_SMOOTH);
+        int width = canopyInput.getWidth();
+        int height = canopyInput.getHeight();
+        Image i = canopyInput.getScaledInstance((500 * width) / height, 500, Image.SCALE_SMOOTH);
+        Circle.setCircledCanopy(canopyInput);
         returnImage.setIcon(new ImageIcon(i));
         returnImage.repaint();
     }
@@ -199,30 +207,17 @@ class CircleAction implements ActionListener {
 }
 
 class NorthAction implements ActionListener {
-
     private JTextField north;
-    private BufferedImage blackInput;
     private JLabel returnImage;
-    private String path;
 
-    NorthAction(String path, JTextField northInputField, JLabel image){
-        this.path = path;
+    NorthAction(JTextField northInputField, JLabel image){
         this.north = northInputField;
         returnImage = image;
     }
 
     public void actionPerformed(ActionEvent e) {
+        //Set variables and then calculate
         Circle.setCircleN(north);
-        //Calls colour image from file-path to be able to reset it every time
-        try {
-            blackInput = Circle.readImage(path);
-        } catch (IOException g) {
-            System.out.println("Why");
-        }
-        Graphics image = blackInput.getGraphics();
-        //Creates north dot and draws it into the image
-        Graphics2D northArrow = (Graphics2D)image;
-
         double radians = Math.toRadians(Circle.circleN);
         double diameter = (double)Circle.circleD;
         double sin = Math.sin(radians - (0.5 * Math.PI));
@@ -232,6 +227,11 @@ class NorthAction implements ActionListener {
         double xNorth = Circle.circleX + b;
         double yNorth = Circle.circleY + a;
 
+        BufferedImage canopyInput = Circle.getCircledCanopy();
+        Graphics image = canopyInput.getGraphics();
+
+        //Creates north dot and draws it into the image
+        Graphics2D northArrow = (Graphics2D)image;
         Shape dot = new Ellipse2D.Double(xNorth, yNorth, 30, 30);
         northArrow.setColor(Color.BLUE);
         northArrow.fill(dot);
@@ -242,9 +242,9 @@ class NorthAction implements ActionListener {
         image.dispose();
 
         //Repaints image
-        int width = blackInput.getWidth();
-        int height = blackInput.getHeight();
-        Image i = blackInput.getScaledInstance((500 * width) / height, 500, Image.SCALE_SMOOTH);
+        int width = canopyInput.getWidth();
+        int height = canopyInput.getHeight();
+        Image i = canopyInput.getScaledInstance((500 * width) / height, 500, Image.SCALE_SMOOTH);
         returnImage.setIcon(new ImageIcon(i));
         returnImage.repaint();
     }
