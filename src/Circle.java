@@ -14,7 +14,7 @@ class Circle extends Container {
     static int circleX;
     static int circleY;
     static int circleD;
-    static int circleN;
+    static double circleN;
 
     Circle(String path, UI ui){
         filepath = path;
@@ -26,16 +26,20 @@ class Circle extends Container {
         c.gridy = 0;
         c.gridx = 0;
         c.gridheight=3;
-        JLabel imageLabel;
+        JLabel canopyLabel;
+        JLabel overlayLabel;
         try {
             BufferedImage image = ImageIO.read(new File(filepath));
             int height = image.getHeight();
             int width = image.getWidth();
             Image i = image.getScaledInstance((500*width)/height, 500, Image.SCALE_SMOOTH);
-            imageLabel = new JLabel(new ImageIcon(i));
-            add(imageLabel, c);
+            canopyLabel = new JLabel(new ImageIcon(i));
+            add(canopyLabel, c);
+            overlayLabel = new JLabel();
+            add(overlayLabel, c);
         } catch (IOException j) {
-            imageLabel = new JLabel();
+            canopyLabel = new JLabel();
+            overlayLabel = new JLabel();
         }
 
         //Creating input panel for circle parameters
@@ -61,6 +65,10 @@ class Circle extends Container {
         circlePanel.add(yInputField);
         circlePanel.add(diameterText);
         circlePanel.add(diameterInputField);
+        //Adds Draw Circle functionality
+        JButton drawCircle = new JButton("Draw Circle");
+        circlePanel.add(drawCircle);
+        drawCircle.addActionListener(new CircleAction(filepath, xInputField, yInputField, diameterInputField, overlayLabel));
 
         //Adds north functionality
         c.gridy = 1;
@@ -77,13 +85,10 @@ class Circle extends Container {
         northPanel.add(northText1);
         northPanel.add(northText2);
         northPanel.add(northInputField);
-
-
-        //"Draw Circle" button
-        JButton drawCircle = new JButton("Draw Circle");
-        northPanel.add(drawCircle);
-//TODO fix this
-        drawCircle.addActionListener(new CircleAction(filepath, xInputField, yInputField, diameterInputField, imageLabel, northInputField));
+        //Adds North Button for the action
+        JButton addNorth = new JButton("Add North");
+        northPanel.add(addNorth);
+        addNorth.addActionListener(new NorthAction(filepath, northInputField, overlayLabel));
 
         //Provide proceed button functionality
         JButton proceed = new JButton("Save & Continue");
@@ -114,7 +119,7 @@ class Circle extends Container {
         circleD = Integer.parseInt(diameterInputField.getText());
     }
     static void setCircleN (JTextField northInputField) {
-        circleN = Integer.parseInt(northInputField.getText());
+        circleN = Double.parseDouble(northInputField.getText());
     }
     static BufferedImage readImage (String path) throws IOException {
         return ImageIO.read(new File(path));
@@ -125,17 +130,16 @@ class CircleAction implements ActionListener {
     private JTextField x;
     private JTextField y;
     private JTextField diameter;
-    private JTextField north;
     private BufferedImage blackInput;
     private JLabel returnImage;
     private String path;
 
-    CircleAction(String path, JTextField x, JTextField y, JTextField diameter, JLabel image, JTextField north){
+    CircleAction(String path, JTextField x, JTextField y, JTextField diameter, JLabel image) {
         this.path = path;
         this.x = x;
         this.y = y;
         this.diameter = diameter;
-        this.north = north;
+        //this.north = north;
         returnImage = image;
     }
 
@@ -144,7 +148,7 @@ class CircleAction implements ActionListener {
         Circle.setCircleX(x);
         Circle.setCircleY(y);
         Circle.setCircleD(diameter);
-        Circle.setCircleN(north);
+
 
         //Calls colour image from file-path to be able to reset it every time
         try {
@@ -155,22 +159,15 @@ class CircleAction implements ActionListener {
 
         //Creates graphic and circle and draws ring onto image
         Graphics image = blackInput.getGraphics();
-        Graphics2D circleRing = (Graphics2D)image;
+        Graphics2D circleRing = (Graphics2D) image;
         int x = Integer.parseInt(this.x.getText());
         int y = Integer.parseInt(this.y.getText());
-        int diameter = Integer.parseInt(this.diameter.getText());
-        Shape ring = createRingShape(x, y, (diameter+10));
+        Shape ring = createRingShape(x, y, (Circle.circleD + 10));
         circleRing.setColor(Color.RED);
         circleRing.fill(ring);
         circleRing.setColor(Color.BLACK);
         circleRing.draw(ring);
 
-        //Creates north arrow and draws it into the image
-        Graphics2D northArrow = (Graphics2D)image;
-        int north = Integer.parseInt(this.north.getText());
-        if(north >= 0 && north < 90){
-//TODO FIX THIS
-        } else if (north >=)
 
         //clears memory of useless info
         circleRing.dispose();
@@ -179,13 +176,13 @@ class CircleAction implements ActionListener {
         //Repaints image
         int width = blackInput.getWidth();
         int height = blackInput.getHeight();
-        Image i = blackInput.getScaledInstance((500*width)/height, 500, Image.SCALE_SMOOTH);
+        Image i = blackInput.getScaledInstance((500 * width) / height, 500, Image.SCALE_SMOOTH);
         returnImage.setIcon(new ImageIcon(i));
         returnImage.repaint();
     }
 
     //Draws a ring using two circles
-    private static Shape createRingShape(double centerX, double centerY, double outerRadius){
+    private static Shape createRingShape(double centerX, double centerY, double outerRadius) {
         double thickness = 10.0;
         Ellipse2D outer = new Ellipse2D.Double(
                 centerX - outerRadius,
@@ -201,9 +198,60 @@ class CircleAction implements ActionListener {
         area.subtract(new Area(inner));
         return area;
     }
-    //Draws an arrow pointing to where on the circle north is
-    //TODO aaaaaaaaaaaaaaaaaaaaa
-    private static Shape createNorthArrow(int north){
 
+
+}
+
+class NorthAction implements ActionListener {
+
+    private JTextField north;
+    private BufferedImage blackInput;
+    private JLabel returnImage;
+    private String path;
+
+    NorthAction(String path, JTextField northInputField, JLabel image){
+        this.path = path;
+        this.north = northInputField;
+        returnImage = image;
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        Circle.setCircleN(north);
+
+        //Calls colour image from file-path to be able to reset it every time
+        try {
+            blackInput = Circle.readImage(path);
+        } catch (IOException g) {
+            System.out.println("Why");
+        }
+
+        Graphics image = blackInput.getGraphics();
+        //Creates north arrow and draws it into the image
+        Graphics2D northArrow = (Graphics2D)image;
+
+        double radians = Math.toRadians(Circle.circleN);
+        double diameter = (double)Circle.circleD;
+        double sin = Math.sin(radians - (0.5 * Math.PI));
+        double cos = Math.cos(radians - (0.5 * Math.PI));
+        double a = diameter * sin;
+        double b = diameter * cos;
+        double xNorth = Circle.circleX + b;
+        double yNorth = Circle.circleY + a;
+
+        Shape dot = new Ellipse2D.Double(xNorth, yNorth, 20, 20);
+        northArrow.setColor(Color.RED);
+        northArrow.fill(dot);
+        northArrow.draw(dot);
+
+        //clears memory of useless info
+        northArrow.dispose();
+        image.dispose();
+
+        //Repaints image
+        int width = blackInput.getWidth();
+        int height = blackInput.getHeight();
+        Image i = blackInput.getScaledInstance((500 * width) / height, 500, Image.SCALE_SMOOTH);
+        returnImage.setIcon(new ImageIcon(i));
+        returnImage.repaint();
     }
 }
