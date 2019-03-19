@@ -13,7 +13,7 @@ class Circle extends Container {
     private String filepath;
     static int circleX;
     static int circleY;
-    static int circleD;
+    static int circleR;
     static double circleN;
     private static BufferedImage circledCanopy = null;
 
@@ -54,21 +54,21 @@ class Circle extends Container {
         //Y-input
         JLabel yText = new JLabel("Centre y pixel value: ");
         JTextField yInputField = new JTextField(20);
-        //Diameter input
-        JLabel diameterText = new JLabel("Diameter pixel value: ");
-        JTextField diameterInputField = new JTextField(20);
+        //Radius input
+        JLabel radiusText = new JLabel("Radius pixel value: ");
+        JTextField radiusInputField = new JTextField(20);
         //Adding components to panel
         circlePanel.add(directionText);
         circlePanel.add(xText);
         circlePanel.add(xInputField);
         circlePanel.add(yText);
         circlePanel.add(yInputField);
-        circlePanel.add(diameterText);
-        circlePanel.add(diameterInputField);
+        circlePanel.add(radiusText);
+        circlePanel.add(radiusInputField);
         //Adds Draw Circle functionality
         JButton drawCircle = new JButton("Draw Circle");
         circlePanel.add(drawCircle);
-        drawCircle.addActionListener(new CircleAction(filepath, xInputField, yInputField, diameterInputField, canopyLabel));
+        drawCircle.addActionListener(new CircleAction(filepath, xInputField, yInputField, radiusInputField, canopyLabel));
 
         //Adds north functionality
         c.gridy = 1;
@@ -115,8 +115,8 @@ class Circle extends Container {
     static void setCircleY (JTextField yInputField) {
         circleY = Integer.parseInt(yInputField.getText());
     }
-    static void setCircleD (JTextField diameterInputField) {
-        circleD = Integer.parseInt(diameterInputField.getText());
+    static void setCircleR (JTextField radiusInputField) {
+        circleR = Integer.parseInt(radiusInputField.getText());
     }
     static void setCircleN (JTextField northInputField) {
         circleN = Double.parseDouble(northInputField.getText());
@@ -135,16 +135,16 @@ class Circle extends Container {
 class CircleAction implements ActionListener {
     private JTextField x;
     private JTextField y;
-    private JTextField diameter;
+    private JTextField radius;
     private BufferedImage canopyInput;
     private JLabel returnImage;
     private String path;
 
-    CircleAction(String path, JTextField x, JTextField y, JTextField diameter, JLabel image) {
+    CircleAction(String path, JTextField x, JTextField y, JTextField radius, JLabel image) {
         this.path = path;
         this.x = x;
         this.y = y;
-        this.diameter = diameter;
+        this.radius = radius;
         returnImage = image;
     }
 
@@ -152,7 +152,7 @@ class CircleAction implements ActionListener {
         //sets Circle universal variables
         Circle.setCircleX(x);
         Circle.setCircleY(y);
-        Circle.setCircleD(diameter);
+        Circle.setCircleR(radius);
 
         //Calls colour image from file-path to be able to reset it every time
         try {
@@ -162,11 +162,10 @@ class CircleAction implements ActionListener {
         }
         //Creates graphic and circle and draws ring onto image
         Graphics image = canopyInput.getGraphics();
-
         Graphics2D circleRing = (Graphics2D) image;
         int x = Integer.parseInt(this.x.getText());
         int y = Integer.parseInt(this.y.getText());
-        Shape ring = createRingShape(x, y, (Circle.circleD + 10));
+        Shape ring = createRingShape(x, y, (Circle.circleR + 10));
         circleRing.setColor(Color.RED);
         circleRing.fill(ring);
         circleRing.setColor(Color.BLACK);
@@ -202,8 +201,6 @@ class CircleAction implements ActionListener {
         area.subtract(new Area(inner));
         return area;
     }
-
-
 }
 
 class NorthAction implements ActionListener {
@@ -219,21 +216,21 @@ class NorthAction implements ActionListener {
         //Set variables and then calculate
         Circle.setCircleN(north);
         double radians = Math.toRadians(Circle.circleN);
-        double diameter = (double)Circle.circleD;
+        double radius = (double)Circle.circleR;
         double sin = Math.sin(radians - (0.5 * Math.PI));
         double cos = Math.cos(radians - (0.5 * Math.PI));
-        double a = diameter * sin;
-        double b = diameter * cos;
-        double xNorth = Circle.circleX + b;
+        double a = radius * sin;
+        double b = radius * cos;
         double yNorth = Circle.circleY + a;
+        double xNorth = Circle.circleX + b;
 
         BufferedImage canopyInput = Circle.getCircledCanopy();
         Graphics image = canopyInput.getGraphics();
 
         //Creates north dot and draws it into the image
         Graphics2D northArrow = (Graphics2D)image;
-        Shape dot = new Ellipse2D.Double(xNorth, yNorth, 30, 30);
-        northArrow.setColor(Color.BLUE);
+        Shape dot = new Ellipse2D.Double(xNorth-15, yNorth-15, 30, 30);
+        northArrow.setColor(Color.YELLOW);
         northArrow.fill(dot);
         northArrow.draw(dot);
 
