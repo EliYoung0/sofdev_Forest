@@ -3,7 +3,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.Properties;
@@ -17,19 +16,16 @@ public class FileSelector extends Container {
         setPreferredSize(new Dimension(600,500));
         //Create Components
         JButton open = new JButton("Open");
-        ActionListener listener = new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createProperties(full);
-                String path = FileSelector.getPath();
-                if(new File(path).exists()) {
-                    Circle circle = new Circle(path, ui);
-                    ui.setContentPane(circle);
-                    ui.pack();
-                }
-                else{
-                    System.out.print("Invalid File Path");
-                }
+        ActionListener listener = e -> {
+            createProperties(full);
+            String path = FileSelector.getPath();
+            if(new File(path).exists()) {
+                Circle circle = new Circle(path, ui);
+                ui.setContentPane(circle);
+                ui.pack();
+            }
+            else{
+                System.out.print("Invalid File Path");
             }
         };
         open.addActionListener(listener);
@@ -71,12 +67,8 @@ public class FileSelector extends Container {
                 address.setText("");
                 if(chooser.getSelectedFiles()[0].isDirectory()){
                     File p = chooser.getSelectedFiles()[0];
-                    File[] fs = p.listFiles(new FilenameFilter() {
-                        @Override
-                        public boolean accept(File dir, String filename) {
-                            { return filename.endsWith(".jpg"); }
-                        }
-                    });
+                    File[] fs = p.listFiles((dir, filename) -> filename.endsWith(".jpg"));
+                    assert fs!=null;
                     setPath(fs[0].getAbsolutePath());
                 }
                 else{ setPath(chooser.getSelectedFiles()[0].getAbsolutePath());}
@@ -112,14 +104,14 @@ public class FileSelector extends Container {
         OutputStream output = null;
         try{
             output = new FileOutputStream("./config.properties");
-            String path= "";
+            StringBuilder path= new StringBuilder();
             for(int i=0; i<full.length;i++){
-                path+=(full[i]);
+                path.append(full[i]);
                 if(i<full.length-1){
-                    path+=(",");
+                    path.append(",");
                 }
             }
-            prop.setProperty("path",path);
+            prop.setProperty("path", path.toString());
             prop.store(output,null);
         }catch (IOException e){ e.printStackTrace(); }
         finally {
