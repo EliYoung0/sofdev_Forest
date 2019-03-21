@@ -159,6 +159,14 @@ public abstract class Algorithms {
         return b;
     }
 
+    static BufferedImage single(String path) throws IOException {
+        return single(ImageIO.read(new File(path)),140,170);
+    }
+
+    static BufferedImage single(BufferedImage image,int liml,int limh) {
+        return image;
+    }
+
     public static void main(String[] args) {
         try {
             String path="/Users/kepler/Desktop/1_1_2 copy.jpg";
