@@ -160,11 +160,58 @@ public abstract class Algorithms {
     }
 
     static BufferedImage single(String path) throws IOException {
-        return single(ImageIO.read(new File(path)),140,170);
+        return single(ImageIO.read(new File(path)));
     }
 
-    static BufferedImage single(BufferedImage image,int liml,int limh) {
+    static BufferedImage single(BufferedImage image) {
+        int m = image.getWidth();
+        int n = image.getHeight();
+        int max = 0;
+        int maxright = 0;
+        int maxleft = 0;
+        int L1 = 5;
+        int L2 = 55;
+        int R1 = 200;
+        int R2 = 250;
+        //Turn Image into array of blue pixel values
+        double[][] blue = toArray(image,m,n);
+
+        double[] DN = new double[255];
+        //fill DN array to make "histogram"
+        for (int i = 0; i < m ; i++) {
+            for (int j = 0; j < n; j++) {
+                DN[(int)blue[i][j]]++;
+                if(DN[(int)blue[i][j]]>max){
+                    max = (int)blue[i][j];
+                }
+            }
+        }
+
+        //find maxright and maxleft
+        maxleft = findMax(L1, L2, DN);
+        maxright = findMax(R1, R2, DN);
+
+        while((L2-maxleft)<10){
+            L2 = L2+25;
+            maxleft = findMax(L1, L2, DN);
+        }
+
+        while ((maxright-R1)<10){
+            R1 = R1-25;
+            maxright = findMax(R1, R2, DN);
+        }
+
         return image;
+    }
+
+    private static int findMax(int lo, int hi, double[] DN){
+        int max = 0;
+        for(int i = lo; i<=hi; i++){
+            if(DN[i] > max){
+                max = i;
+            }
+        }
+        return max;
     }
 
     public static void main(String[] args) {
