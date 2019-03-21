@@ -63,13 +63,23 @@ public class FileSelector extends Container {
             FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & GIF Images", "jpg");
             chooser.setFileFilter(filter);
             //Sets whether files or folders or both are allowed
-            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
             chooser.setMultiSelectionEnabled(true);
             int returnVal = chooser.showOpenDialog(chooser);
             if(returnVal == JFileChooser.APPROVE_OPTION) {
                 full = new String[chooser.getSelectedFiles().length];
                 address.setText("");
-                setPath(chooser.getSelectedFiles()[0].getAbsolutePath());
+                if(chooser.getSelectedFiles()[0].isDirectory()){
+                    File p = chooser.getSelectedFiles()[0];
+                    File[] fs = p.listFiles(new FilenameFilter() {
+                        @Override
+                        public boolean accept(File dir, String filename) {
+                            { return filename.endsWith(".jpg"); }
+                        }
+                    });
+                    setPath(fs[0].getAbsolutePath());
+                }
+                else{ setPath(chooser.getSelectedFiles()[0].getAbsolutePath());}
                 for (int i = 0; i < chooser.getSelectedFiles().length; i++) {
                     full[i]=chooser.getSelectedFiles()[i].getAbsolutePath();
                     address.append(full[i]);
