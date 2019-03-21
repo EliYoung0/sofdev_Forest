@@ -1,4 +1,7 @@
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
 
 class UI extends JFrame {
 
@@ -13,5 +16,12 @@ class UI extends JFrame {
         setContentPane(new FileSelector(this));
         setResizable(true);
         pack();
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                File file = new File("config.properties");
+                file.delete();
+            }
+        });
     }
 }

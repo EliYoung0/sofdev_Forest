@@ -5,20 +5,23 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.io.*;
+import java.util.Properties;
 
 public class FileSelector extends Container {
-    private static JTextArea address;
+    private static String path;
+    public static String[] full;
 
     public FileSelector(UI ui){
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(600,500));
         //Create Components
         JButton open = new JButton("Open");
-        ActionListener listener = new ActionListener() {
+        ActionListener listener = new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                String path = FileSelector.getAddress().getText();
+                createProperties(full);
+                String path = FileSelector.getPath();
                 if(new File(path).exists()) {
                     Circle circle = new Circle(path, ui);
                     ui.setContentPane(circle);
@@ -38,6 +41,7 @@ public class FileSelector extends Container {
 
     }
 
+
     /**
      * Creates the Browser frame
      * Contains a text field and browse button
@@ -47,7 +51,7 @@ public class FileSelector extends Container {
         JPanel fb = new JPanel();
         fb.setBorder(new EmptyBorder(215,100,215,100));
         fb.setLayout(new BoxLayout(fb,BoxLayout.X_AXIS));
-        address = new JTextArea("",1,1);
+        JTextArea address = new JTextArea("",1,1);
         address.setBorder(new EtchedBorder(1,null,Color.black));
         JScrollPane addressScroll = new JScrollPane(address, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         addressScroll.setSize(new Dimension(313, 40));
@@ -60,9 +64,20 @@ public class FileSelector extends Container {
             chooser.setFileFilter(filter);
             //Sets whether files or folders or both are allowed
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            chooser.setMultiSelectionEnabled(true);
             int returnVal = chooser.showOpenDialog(chooser);
             if(returnVal == JFileChooser.APPROVE_OPTION) {
-                address.setText(chooser.getSelectedFile().getAbsolutePath());
+                full = new String[chooser.getSelectedFiles().length];
+                address.setText("");
+                setPath(chooser.getSelectedFiles()[0].getAbsolutePath());
+                for (int i = 0; i < chooser.getSelectedFiles().length; i++) {
+                    full[i]=chooser.getSelectedFiles()[i].getAbsolutePath();
+                    address.append(full[i]);
+                    if(i<chooser.getSelectedFiles().length-1){
+                        address.append(", ");
+                    }
+                }
+
             }
         });
         fb.add(addressScroll);
@@ -74,8 +89,35 @@ public class FileSelector extends Container {
      * Returns the file path text field object
      * @return the address text field
      */
-    public static JTextArea getAddress() {
-        return address;
+    public static String getPath() {
+        return path;
     }
 
+    public static void setPath(String val) {
+        path = val;
+    }
+
+    private void createProperties(String[] full) {
+        Properties prop = new Properties();
+        OutputStream output = null;
+        try{
+            output = new FileOutputStream("config.properties");
+            String path= "";
+            for(int i=0; i<full.length;i++){
+                path+=(full[i]);
+                if(i<full.length-1){
+                    path+=(",");
+                }
+            }
+            prop.setProperty("path",path);
+            prop.store(output,null);
+        }catch (IOException e){ e.printStackTrace(); }
+        finally {
+            if(output!=null){
+                try{
+                    output.close();
+                }catch (IOException e){e.printStackTrace();}
+            }
+        }
+    }
 }

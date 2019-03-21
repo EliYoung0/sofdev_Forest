@@ -233,13 +233,13 @@ class NorthAction implements ActionListener {
         //Creates north dot and draws it into the image
         Graphics2D northArrow = (Graphics2D)image;
         Shape dot = new Ellipse2D.Double(xNorth, yNorth, 30, 30);
-        northArrow.setColor(Color.BLUE);
+        northArrow.setColor(Color.WHITE);
         northArrow.fill(dot);
         northArrow.draw(dot);
 
         //clears memory of useless info
-        northArrow.dispose();
-        image.dispose();
+        //northArrow.dispose();
+        //image.dispose();
 
         //Repaints image
         int width = canopyInput.getWidth();
