@@ -47,11 +47,16 @@ public class SquareTheCircle {
     }
 
     static void circleTheSquare(BufferedImage square) {
-        int xSquare = square.getWidth();
-        int ySquare = square.getHeight();
+        int xSquare = square.getWidth(); //1960 (Usually)
+        int ySquare = square.getHeight(); //1960 (Usually)
         boolean[][] colourMask = new boolean[xSquare][ySquare];
-        double test = Math.PI * Circle.circleR * 2;
-        Arrays.fill(colourMask, Boolean.FALSE);
+        //Quadrant 2
+
+        //Quadrant 1
+
+        //Quadrant 3
+
+        //Quadrant 4
 
     }
 
