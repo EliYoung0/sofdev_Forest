@@ -95,7 +95,8 @@ class Circle extends Container {
         ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Thresholder thresholder = new Thresholder(filepath,ui);
+                SquareTheCircle.createTheRectangle(filepath);
+                Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(),ui);
                 ui.setContentPane(thresholder);
                 ui.pack();
             }
