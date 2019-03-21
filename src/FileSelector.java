@@ -101,7 +101,7 @@ public class FileSelector extends Container {
         Properties prop = new Properties();
         OutputStream output = null;
         try{
-            output = new FileOutputStream("config.properties");
+            output = new FileOutputStream("./config.properties");
             String path= "";
             for(int i=0; i<full.length;i++){
                 path+=(full[i]);
