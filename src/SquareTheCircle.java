@@ -2,7 +2,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 public class SquareTheCircle {
     private static String squareFilepath;
@@ -49,15 +48,85 @@ public class SquareTheCircle {
     static void circleTheSquare(BufferedImage square) {
         int xSquare = square.getWidth(); //1960 (Usually)
         int ySquare = square.getHeight(); //1960 (Usually)
-        boolean[][] colourMask = new boolean[xSquare][ySquare];
-        //Quadrant 2
+        colourMask = new boolean[xSquare][ySquare];
+        int radius = Circle.circleR;
+        int centre = xSquare/2;
+        quadrantOne(xSquare, ySquare, radius, centre);
+        quadrantTwo(xSquare, ySquare, radius, centre);
+        quadrantThree(xSquare, ySquare, radius, centre);
+        quadrantFour(xSquare, ySquare, radius, centre);
+        for(int x=0;x<xSquare;x++){
+            System.out.println(" ");
+            for(int y=0;y<ySquare;y++){
+                if(colourMask[x][y]) {
+                    System.out.print("X");
+                } else {
+                    System.out.print("_");
+                }
+            }
+        }
 
-        //Quadrant 1
-
-        //Quadrant 3
-
-        //Quadrant 4
-
+    }
+    public static void quadrantOne(int xSquare, int ySquare, int radius, int centre){
+        for(int x=centre;x<xSquare;x++){
+            for(int y=0;y<centre;y++) {
+                double xDist = x - centre;
+                double yDist = centre - y;
+                //TOA, O is yDist, A is xDist
+                double angle = Math.atan(yDist/xDist);
+                double cosine = Math.cos(angle)*radius;
+                double sine = radius*Math.sin(angle);
+                //System.out.println("y="+y+" x="+x+" xD="+xDist+" yD="+yDist+" a="+angle+" cos="+cosine+" sin"+sine);
+                if(sine >= yDist && cosine >= xDist){
+                    colourMask[x][y] = true;
+                }
+            }
+        }
+    }
+    public static void quadrantTwo(int xSquare, int ySquare, int radius, int centre){
+        for(int x=0;x<centre;x++){
+            for(int y=0;y<centre;y++) {
+                double xDist = centre - x;
+                double yDist = centre - y;
+                //TOA, O is yDist, A is xDist
+                double angle = Math.atan(yDist/xDist);
+                double cosine = Math.cos(angle)*radius;
+                double sine = radius*Math.sin(angle);
+                if(sine >= yDist & cosine >= xDist){
+                    colourMask[x][y] = true;
+                }
+            }
+        }
+    }
+    public static void quadrantThree(int xSquare, int ySquare, int radius, int centre){
+        for(int x=0;x<centre;x++){
+            for(int y=centre;y<ySquare;y++) {
+                double xDist = centre - x;
+                double yDist = y - centre;
+                //TOA, O is yDist, A is xDist
+                double angle = Math.atan(yDist/xDist);
+                double cosine = Math.cos(angle)*radius;
+                double sine = radius*Math.sin(angle);
+                if(sine >= yDist & cosine >= xDist){
+                    colourMask[x][y] = true;
+                }
+            }
+        }
+    }
+    public static void quadrantFour(int xSquare, int ySquare, int radius, int centre){
+        for(int x=centre;x<xSquare;x++){
+            for(int y=centre;y<ySquare;y++) {
+                double xDist = x - centre;
+                double yDist = y - centre;
+                //TOA, O is yDist, A is xDist
+                double angle = Math.atan(yDist/xDist);
+                double cosine = Math.cos(angle)*radius;
+                double sine = radius*Math.sin(angle);
+                if(sine >= yDist & cosine >= xDist){
+                    colourMask[x][y] = true;
+                }
+            }
+        }
     }
 
     public static void setColourMask(boolean[][] colourMask) {
