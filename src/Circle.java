@@ -95,6 +95,10 @@ class Circle extends Container {
         ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Batch.addProperties("xCenter",String.valueOf(circleX));
+                Batch.addProperties("yCenter",String.valueOf(circleY));
+                Batch.addProperties("radius", String.valueOf(circleR));
+                Batch.addProperties("north", String.valueOf(circleN));
                 SquareTheCircle.createTheRectangle(filepath);
                 Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(),ui);
                 ui.setContentPane(thresholder);
@@ -209,7 +213,7 @@ class NorthAction implements ActionListener {
     private JLabel returnImage;
 
     NorthAction(JTextField northInputField, JLabel image){
-        this.north = northInputField;
+        north = northInputField;
         returnImage = image;
     }
 

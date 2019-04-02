@@ -13,5 +13,6 @@ class UI extends JFrame {
         setContentPane(new FileSelector(this));
         setResizable(true);
         pack();
+
     }
 }
