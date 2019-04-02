@@ -98,14 +98,10 @@ class Thresholder extends Container {
         JButton proceed = new JButton("Save & Continue");
         //This part used to close the program
         proceed.addActionListener(e -> {
-            Batch.addProperties("method",String.valueOf(method));
+            Prop.addProperties("method",String.valueOf(method));
             if(method==0){
-                Batch.addProperties("threshold",String.valueOf(currentThreshold));
+                Prop.addProperties("threshold",String.valueOf(currentThreshold));
             }
-            if(blackOutput!=null) {
-                saveBlack();
-            }
-            Batch.selfDestruct();
             System.exit(0);
         });
 

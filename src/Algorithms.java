@@ -36,7 +36,7 @@ public abstract class Algorithms {
         double[] zeroes = new double[256];
         double[][][] d1 = new double[4][m-1][n-1];
         ArrayList<int[]>[] use = new ArrayList[4];
-        for (int tr:limit) {
+        for (int tr=limit[0];tr<=limit[1];tr++) {
             for (int a = 0; a < m; a++) {
                 for (int b = 0; b < n; b++) {
                     if(blue[a][b]<=tr){ ones[a][b]=0; }

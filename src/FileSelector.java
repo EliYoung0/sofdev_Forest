@@ -6,18 +6,23 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.*;
 
-public class FileSelector extends Container {
+class FileSelector extends Container {
     private static String path;
-    public static String[] full;
+    private static String[] full;
 
-    public FileSelector(UI ui){
+    /**
+     * File Selector Container Constructor
+     * Window used to select the files to be processed
+     * @param ui the outer window that holds File Selector
+     */
+    FileSelector(UI ui){
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(600,500));
         //Create Components
         JButton open = new JButton("Open");
         ActionListener listener = e -> {
-            Batch.createProperties();
-            Batch.addFiles(full);
+            Prop.createProperties();
+            Prop.addFiles(full);
             String path = FileSelector.getPath();
             if(new File(path).exists()) {
                 Circle circle = new Circle(path, ui);
@@ -65,21 +70,25 @@ public class FileSelector extends Container {
             if(returnVal == JFileChooser.APPROVE_OPTION) {
                 full = new String[chooser.getSelectedFiles().length];
                 address.setText("");
+                //Checks if selected path is directory
                 if(chooser.getSelectedFiles()[0].isDirectory()){
+                    //If so sets used path to first jpg in directory
                     File p = chooser.getSelectedFiles()[0];
                     File[] fs = p.listFiles((dir, filename) -> filename.endsWith(".jpg"));
                     assert fs!=null;
                     setPath(fs[0].getAbsolutePath());
                 }
+                //Otherwise sets used path to first image selected
                 else{ setPath(chooser.getSelectedFiles()[0].getAbsolutePath());}
+
+                //Goes through each file or directory selected and stores it for later
                 for (int i = 0; i < chooser.getSelectedFiles().length; i++) {
                     full[i]=chooser.getSelectedFiles()[i].getAbsolutePath();
-                    address.append(full[i]);
-                    if(i<chooser.getSelectedFiles().length-1){
-                        address.append(", ");
-                    }
-                }
 
+                    //Displays each path in address box
+                    address.append(full[i]);
+                    if(i<chooser.getSelectedFiles().length-1){ address.append(", ");}
+                }
             }
         });
         fb.add(addressScroll);
@@ -95,6 +104,10 @@ public class FileSelector extends Container {
         return path;
     }
 
+    /**
+     * Sets the path of the first image to process
+     * @param val String file path of the first image
+     */
     static void setPath(String val) {
         path = val;
     }

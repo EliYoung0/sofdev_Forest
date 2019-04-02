@@ -1,5 +1,4 @@
 import javax.imageio.*;
-import javax.print.DocFlavor;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -96,10 +95,10 @@ class Circle extends Container {
         ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Batch.addProperties("xCenter",String.valueOf(circleX));
-                Batch.addProperties("yCenter",String.valueOf(circleY));
-                Batch.addProperties("radius", String.valueOf(circleR));
-                Batch.addProperties("north", String.valueOf(circleN));
+                Prop.addProperties("xCenter",String.valueOf(circleX));
+                Prop.addProperties("yCenter",String.valueOf(circleY));
+                Prop.addProperties("radius", String.valueOf(circleR));
+                Prop.addProperties("north", String.valueOf(circleN));
                 Thresholder thresholder = new Thresholder(filepath,ui);
                 ui.setContentPane(thresholder);
                 ui.pack();
