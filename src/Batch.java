@@ -1,11 +1,16 @@
+
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Properties;
 
 public class Batch {
+
+    private static Properties prop;
+
     static void createProperties(){
-        Properties prop = new Properties();
+        prop = new Properties();
         OutputStream output = null;
         try{
             output = new FileOutputStream("./config.properties");
@@ -21,7 +26,6 @@ public class Batch {
     }
 
     static void addFiles(String[] value){
-        Properties prop = new Properties();
         OutputStream output = null;
         try{
             output = new FileOutputStream("./config.properties");
@@ -45,7 +49,6 @@ public class Batch {
     }
 
     static void addProperties(String key,String value){
-        Properties prop = new Properties();
         OutputStream output = null;
         try{
             output = new FileOutputStream("./config.properties");
@@ -59,8 +62,18 @@ public class Batch {
                 }catch (IOException e){e.printStackTrace();}
             }
         }
-        StringBuilder path= new StringBuilder();
+    }
 
-        prop.setProperty(key, path.toString());
+    static void selfDestruct(){
+        try {
+            File f1 = new File("./config.properties");
+            boolean success = f1.delete();
+            if (!success) {
+                System.out.println("Failed to delete");
+            }
+        }
+        catch(SecurityException ex){
+                throw ex;
+        }
     }
 }

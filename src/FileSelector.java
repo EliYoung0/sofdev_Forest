@@ -5,7 +5,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.Properties;
 
 public class FileSelector extends Container {
     private static String path;
@@ -92,11 +91,11 @@ public class FileSelector extends Container {
      * Returns the file path text field object
      * @return the address text field
      */
-    public static String getPath() {
+    static String getPath() {
         return path;
     }
 
-    public static void setPath(String val) {
+    static void setPath(String val) {
         path = val;
     }
 
