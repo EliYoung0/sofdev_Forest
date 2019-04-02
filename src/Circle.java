@@ -1,5 +1,4 @@
 import javax.imageio.*;
-import javax.print.DocFlavor;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -100,7 +99,8 @@ class Circle extends Container {
                 Batch.addProperties("yCenter",String.valueOf(circleY));
                 Batch.addProperties("radius", String.valueOf(circleR));
                 Batch.addProperties("north", String.valueOf(circleN));
-                Thresholder thresholder = new Thresholder(filepath,ui);
+                SquareTheCircle.createTheRectangle(filepath);
+                Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(),ui);
                 ui.setContentPane(thresholder);
                 ui.pack();
             }
@@ -235,7 +235,7 @@ class NorthAction implements ActionListener {
         //Creates north dot and draws it into the image
         Graphics2D northArrow = (Graphics2D)image;
         Shape dot = new Ellipse2D.Double(xNorth-15, yNorth-15, 30, 30);
-        northArrow.setColor(Color.GREEN);
+        northArrow.setColor(Color.YELLOW);
         northArrow.fill(dot);
         northArrow.draw(dot);
 
