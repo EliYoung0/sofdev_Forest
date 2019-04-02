@@ -52,12 +52,12 @@ public class SquareTheCircle {
         int radius = Circle.circleR;
         int centre = xSquare/2;
         quadrantOne(xSquare, ySquare, radius, centre);
-        quadrantTwo(xSquare, ySquare, radius, centre);
-        quadrantThree(xSquare, ySquare, radius, centre);
-        quadrantFour(xSquare, ySquare, radius, centre);
-        for(int x=0;x<xSquare;x++){
-            System.out.println(" ");
-            for(int y=0;y<ySquare;y++){
+        //quadrantTwo(xSquare, ySquare, radius, centre);
+        //quadrantThree(xSquare, ySquare, radius, centre);
+        //quadrantFour(xSquare, ySquare, radius, centre);
+        for(int x=0;x<centre;x++){ //change this to <xSquare
+            System.out.println(" "); //change this to <ySquare
+            for(int y=0;y<centre;y++){
                 if(colourMask[x][y]) {
                     System.out.print("X");
                 } else {
