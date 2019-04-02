@@ -166,26 +166,33 @@ public abstract class Algorithms {
     static BufferedImage single(BufferedImage image) {
         int m = image.getWidth();
         int n = image.getHeight();
-        int max = 0;
+        double max = 0;
         int maxright = 0;
         int maxleft = 0;
         int L1 = 5;
         int L2 = 55;
         int R1 = 200;
         int R2 = 250;
+        double average = 0;
+        int maxfrequency = 0;
+        int index = 0;
+
         //Turn Image into array of blue pixel values
         double[][] blue = toArray(image,m,n);
 
-        double[] DN = new double[255];
+        double[] DN = new double[256];
         //fill DN array to make "histogram"
         for (int i = 0; i < m ; i++) {
             for (int j = 0; j < n; j++) {
+                //index = (int)blue[i][j];
+                //DN[index]++;
                 DN[(int)blue[i][j]]++;
-                if(DN[(int)blue[i][j]]>max){
-                    max = (int)blue[i][j];
+                if(DN[(int)blue[i][j]] > max){
+                    max = DN[(int)blue[i][j]];
                 }
             }
         }
+
 
         //find maxright and maxleft
         maxleft = findMax(L1, L2, DN);
@@ -200,18 +207,38 @@ public abstract class Algorithms {
             R1 = R1-25;
             maxright = findMax(R1, R2, DN);
         }
+        //System.out.println("maxleft: " + maxleft + " maxright: " + maxright);
+
+        average = averagePixels(DN);
+
+        if(max > average){
+            maxfrequency = (int)average;
+        }
+        else{
+            maxfrequency = (int)max;
+        }
+
+        //System.out.println("maxleft: " + maxleft + " maxright: " + maxright + " maxfrequency: " + maxfrequency + " max: " + max);
 
         return image;
     }
 
     private static int findMax(int lo, int hi, double[] DN){
-        int max = 0;
+        int max = lo;
         for(int i = lo; i<=hi; i++){
-            if(DN[i] > max){
+            if(DN[i] > DN[max]){
                 max = i;
             }
         }
         return max;
+    }
+
+    private static double averagePixels(double[] DN){
+        double total = 0;
+        for(int i=0; i<255; i++){
+            total+=DN[i];
+        }
+        return total/255;
     }
 
     public static void main(String[] args) {
