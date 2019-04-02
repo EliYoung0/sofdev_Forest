@@ -52,19 +52,21 @@ public class SquareTheCircle {
         int radius = Circle.circleR;
         int centre = xSquare/2;
         quadrantOne(xSquare, ySquare, radius, centre);
-        //quadrantTwo(xSquare, ySquare, radius, centre);
-        //quadrantThree(xSquare, ySquare, radius, centre);
-        //quadrantFour(xSquare, ySquare, radius, centre);
-        for(int x=0;x<centre;x++){ //change this to <xSquare
-            System.out.println(" "); //change this to <ySquare
-            for(int y=0;y<centre;y++){
+        quadrantTwo(xSquare, ySquare, radius, centre);
+        quadrantThree(xSquare, ySquare, radius, centre);
+        quadrantFour(xSquare, ySquare, radius, centre);
+
+        //THIS TESTS IT BY PRINTING IT TO CONSOLE, IS REDUNDANT BUT I AM LEAVING IT IN
+        /*for(int x=0;x<xSquare;x++){
+            System.out.println(" ");
+            for(int y=0;y<ySquare;y++){
                 if(colourMask[x][y]) {
                     System.out.print("X");
                 } else {
                     System.out.print("_");
                 }
             }
-        }
+        }*/
 
     }
     public static void quadrantOne(int xSquare, int ySquare, int radius, int centre){
@@ -129,9 +131,6 @@ public class SquareTheCircle {
         }
     }
 
-    public static void setColourMask(boolean[][] colourMask) {
-        SquareTheCircle.colourMask = colourMask;
-    }
     public static boolean[][] getColourMask() {
         return colourMask;
     }
