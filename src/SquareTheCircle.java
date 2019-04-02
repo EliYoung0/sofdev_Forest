@@ -3,7 +3,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class SquareTheCircle {
+class SquareTheCircle {
     private static String squareFilepath;
     private static boolean[][] colourMask = null;
 
@@ -21,7 +21,7 @@ public class SquareTheCircle {
         circleTheSquare(square);
     }
 
-    static BufferedImage buildASquare(BufferedImage rectangle) {
+    private static BufferedImage buildASquare(BufferedImage rectangle) {
         int x = Circle.circleX;
         int y = Circle.circleY;
         int radius = Circle.circleR;
@@ -32,7 +32,7 @@ public class SquareTheCircle {
         return square;
     }
 
-    static void saveTheSquare(String filepath, BufferedImage square) {
+    private static void saveTheSquare(String filepath, BufferedImage square) {
         String newFilepath;
         newFilepath = filepath.replaceAll("(.[a-zA-Z]{3,4}$)",
                 "_square_" + java.time.LocalDate.now());
@@ -45,15 +45,15 @@ public class SquareTheCircle {
         }
     }
 
-    static void circleTheSquare(BufferedImage square) {
+    private static void circleTheSquare(BufferedImage square) {
         int xSquare = square.getWidth(); //1960 (Usually)
         int ySquare = square.getHeight(); //1960 (Usually)
         colourMask = new boolean[xSquare][ySquare];
         int radius = Circle.circleR;
         int centre = xSquare/2;
-        quadrantOne(xSquare, ySquare, radius, centre);
-        quadrantTwo(xSquare, ySquare, radius, centre);
-        quadrantThree(xSquare, ySquare, radius, centre);
+        quadrantTwo(radius, centre);
+        quadrantOne(xSquare, radius, centre);
+        quadrantThree(ySquare, radius, centre);
         quadrantFour(xSquare, ySquare, radius, centre);
 
         //THIS TESTS IT BY PRINTING IT TO CONSOLE, IS REDUNDANT BUT I AM LEAVING IT IN
@@ -69,7 +69,7 @@ public class SquareTheCircle {
         }*/
 
     }
-    public static void quadrantOne(int xSquare, int ySquare, int radius, int centre){
+    private static void quadrantOne(int xSquare, int radius, int centre){
         for(int x=centre;x<xSquare;x++){
             for(int y=0;y<centre;y++) {
                 double xDist = x - centre;
@@ -85,7 +85,7 @@ public class SquareTheCircle {
             }
         }
     }
-    public static void quadrantTwo(int xSquare, int ySquare, int radius, int centre){
+    private static void quadrantTwo(int radius, int centre){
         for(int x=0;x<centre;x++){
             for(int y=0;y<centre;y++) {
                 double xDist = centre - x;
@@ -100,7 +100,7 @@ public class SquareTheCircle {
             }
         }
     }
-    public static void quadrantThree(int xSquare, int ySquare, int radius, int centre){
+    private static void quadrantThree(int ySquare, int radius, int centre){
         for(int x=0;x<centre;x++){
             for(int y=centre;y<ySquare;y++) {
                 double xDist = centre - x;
@@ -115,7 +115,7 @@ public class SquareTheCircle {
             }
         }
     }
-    public static void quadrantFour(int xSquare, int ySquare, int radius, int centre){
+    private static void quadrantFour(int xSquare, int ySquare, int radius, int centre){
         for(int x=centre;x<xSquare;x++){
             for(int y=centre;y<ySquare;y++) {
                 double xDist = x - centre;
@@ -131,10 +131,10 @@ public class SquareTheCircle {
         }
     }
 
-    public static boolean[][] getColourMask() {
+    static boolean[][] getColourMask() {
         return colourMask;
     }
-    public static String getSquareFilepath() {
+    static String getSquareFilepath() {
         return squareFilepath;
     }
 }
