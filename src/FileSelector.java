@@ -17,7 +17,8 @@ public class FileSelector extends Container {
         //Create Components
         JButton open = new JButton("Open");
         ActionListener listener = e -> {
-            createProperties(full);
+            Batch.createProperties();
+            Batch.addFiles(full);
             String path = FileSelector.getPath();
             if(new File(path).exists()) {
                 Circle circle = new Circle(path, ui);
@@ -99,27 +100,4 @@ public class FileSelector extends Container {
         path = val;
     }
 
-    private void createProperties(String[] full) {
-        Properties prop = new Properties();
-        OutputStream output = null;
-        try{
-            output = new FileOutputStream("./config.properties");
-            StringBuilder path= new StringBuilder();
-            for(int i=0; i<full.length;i++){
-                path.append(full[i]);
-                if(i<full.length-1){
-                    path.append(",");
-                }
-            }
-            prop.setProperty("path", path.toString());
-            prop.store(output,null);
-        }catch (IOException e){ e.printStackTrace(); }
-        finally {
-            if(output!=null){
-                try{
-                    output.close();
-                }catch (IOException e){e.printStackTrace();}
-            }
-        }
-    }
 }

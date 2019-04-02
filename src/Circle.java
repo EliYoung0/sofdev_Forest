@@ -208,7 +208,7 @@ class NorthAction implements ActionListener {
     private JLabel returnImage;
 
     NorthAction(JTextField northInputField, JLabel image){
-        this.north = northInputField;
+        north = northInputField;
         returnImage = image;
     }
 
@@ -230,7 +230,7 @@ class NorthAction implements ActionListener {
         //Creates north dot and draws it into the image
         Graphics2D northArrow = (Graphics2D)image;
         Shape dot = new Ellipse2D.Double(xNorth-15, yNorth-15, 30, 30);
-        northArrow.setColor(Color.YELLOW);
+        northArrow.setColor(Color.GREEN);
         northArrow.fill(dot);
         northArrow.draw(dot);
 
