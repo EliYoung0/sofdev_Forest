@@ -1,11 +1,10 @@
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Properties;
 
-public class Batch {
+public class Prop {
 
     private static Properties prop;
 
@@ -64,16 +63,12 @@ public class Batch {
         }
     }
 
-    static void selfDestruct(){
-        try {
-            File f1 = new File("./config.properties");
-            boolean success = f1.delete();
-            if (!success) {
-                System.out.println("Failed to delete");
-            }
-        }
-        catch(SecurityException ex){
-                throw ex;
+    static void deleteProperties(){
+        File f1 = new File("./config.properties");
+        boolean success = f1.delete();
+        if (!success) {
+            System.out.println("Failed to delete");
         }
     }
+
 }

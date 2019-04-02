@@ -15,9 +15,16 @@ class Circle extends Container {
     static int circleY;
     static int circleR;
     static double circleN;
-    private static BufferedImage circledCanopy = null;
+    private static BufferedImage circledCanopy;
 
+    /**
+     * Constructor of Circle Container
+     * Used to define image center location, radius, and north direction
+     * @param path filepath to image used
+     * @param ui outer window
+     */
     Circle(String path, UI ui){
+        circledCanopy=null;
         filepath = path;
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -95,12 +102,12 @@ class Circle extends Container {
         ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Batch.addProperties("xCenter",String.valueOf(circleX));
-                Batch.addProperties("yCenter",String.valueOf(circleY));
-                Batch.addProperties("radius", String.valueOf(circleR));
-                Batch.addProperties("north", String.valueOf(circleN));
+                Prop.addProperties("xCenter",String.valueOf(circleX));
+                Prop.addProperties("yCenter",String.valueOf(circleY));
+                Prop.addProperties("radius", String.valueOf(circleR));
+                Prop.addProperties("north", String.valueOf(circleN));
                 SquareTheCircle.createTheRectangle(filepath);
-                Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(),ui);
+                Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(), SquareTheCircle.getColourMask());
                 ui.setContentPane(thresholder);
                 ui.pack();
             }
@@ -114,27 +121,49 @@ class Circle extends Container {
 
     }
 
-    static void setCircleX (JTextField xInputField) {
-        circleX = Integer.parseInt(xInputField.getText());
-    }
-    static void setCircleY (JTextField yInputField) {
-        circleY = Integer.parseInt(yInputField.getText());
-    }
-    static void setCircleR (JTextField radiusInputField) {
-        circleR = Integer.parseInt(radiusInputField.getText());
-    }
-    static void setCircleN (JTextField northInputField) {
-        circleN = Double.parseDouble(northInputField.getText());
-    }
-    static BufferedImage readImage (String path) throws IOException {
-        return ImageIO.read(new File(path));
-    }
-    static void setCircledCanopy (BufferedImage circleInput) {
-        circledCanopy = circleInput;
-    }
-    static BufferedImage getCircledCanopy () {
-        return circledCanopy;
-    }
+    /**
+     * Sets the center x value
+     * @param xInputField label where x center is stored
+     */
+    static void setCircleX (JTextField xInputField) { circleX = Integer.parseInt(xInputField.getText()); }
+
+    /**
+     * Sets the center y value
+     * @param yInputField label where y center is stored
+     */
+    static void setCircleY (JTextField yInputField) { circleY = Integer.parseInt(yInputField.getText()); }
+
+    /**
+     * Sets the radius of the image section of the file
+     * @param radiusInputField label where radius is input
+     */
+    static void setCircleR (JTextField radiusInputField) { circleR = Integer.parseInt(radiusInputField.getText()); }
+
+    /**
+     * Sets the north location of the image (degrees)
+     * @param northInputField component where north value is stored
+     */
+    static void setCircleN (JTextField northInputField) { circleN = Double.parseDouble(northInputField.getText()); }
+
+    /**
+     * Creates image from path of image file
+     * @param path file path of image
+     * @return image stored in file path
+     * @throws IOException in the case the file path is not valid
+     */
+    static BufferedImage readImage (String path) throws IOException { return ImageIO.read(new File(path)); }
+
+    /**
+     * Stores the image with border created by center and radius to circledCanopy
+     * @param circleInput image to be stored
+     */
+    static void setCircledCanopy (BufferedImage circleInput) { circledCanopy = circleInput; }
+
+    /**
+     * Returns the image stored in circledCanopy
+     * @return circledCanopy image. image with border circle
+     */
+    static BufferedImage getCircledCanopy () { return circledCanopy; }
 }
 
 class CircleAction implements ActionListener {
@@ -189,7 +218,13 @@ class CircleAction implements ActionListener {
         returnImage.repaint();
     }
 
-    //Draws a ring using two circles
+    /**
+     * Creates border circle to overlay on top of the image
+     * @param centerX center x value of image canopy area
+     * @param centerY center y value of canopy area
+     * @param outerRadius radius of canopy area
+     * @return border circle to be shown with the image
+     */
     private static Shape createRingShape(double centerX, double centerY, double outerRadius) {
         double thickness = 10.0;
         Ellipse2D outer = new Ellipse2D.Double(

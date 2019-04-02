@@ -24,7 +24,4 @@ public abstract class CSV {
         fw.close();
     }
 
-    public static void main(String[] args) throws IOException {
-        write(new String[]{"name.txt"});
-    }
 }
