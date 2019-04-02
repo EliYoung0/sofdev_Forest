@@ -10,7 +10,8 @@ import java.io.IOException;
 
 class Thresholder extends Container {
 
-    public static BufferedImage blackOutput;
+    static BufferedImage blackOutput;
+    static int method;
     private int currentThreshold;
     private String filepath;
 
@@ -65,6 +66,7 @@ class Thresholder extends Container {
             try {
 
                 BufferedImage bl = Algorithms.nobis(path);
+                method=1;
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
                 finalImageLabel.setIcon(new ImageIcon(i));
                 finalImageLabel.repaint();
@@ -94,17 +96,16 @@ class Thresholder extends Container {
 
         //Give proceed button functionality
         JButton proceed = new JButton("Save & Continue");
-        /*ActionListener listener = new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event){
-            }
-        };
-        proceed.addActionListener(listener);*/
         //This part used to close the program
         proceed.addActionListener(e -> {
+            Batch.addProperties("method",String.valueOf(method));
+            if(method==0){
+                Batch.addProperties("threshold",String.valueOf(currentThreshold));
+            }
             if(blackOutput!=null) {
                 saveBlack();
             }
+            Batch.selfDestruct();
             System.exit(0);
         });
 
@@ -159,7 +160,7 @@ class UpdateAction implements ActionListener {
         try {
             int threshold = Integer.parseInt(text.getText());
             if (threshold >= 0 && threshold <= 255) {
-
+                    outer.method=0;
                     BufferedImage bl = Black.makeBlack(path, threshold);
                     Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
                     t.setIcon(new ImageIcon(i));
