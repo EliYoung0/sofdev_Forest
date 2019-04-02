@@ -107,7 +107,7 @@ class Circle extends Container {
                 Prop.addProperties("radius", String.valueOf(circleR));
                 Prop.addProperties("north", String.valueOf(circleN));
                 SquareTheCircle.createTheRectangle(filepath);
-                Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(),ui);
+                Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(), SquareTheCircle.getColourMask());
                 ui.setContentPane(thresholder);
                 ui.pack();
             }

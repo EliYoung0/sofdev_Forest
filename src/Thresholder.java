@@ -10,12 +10,14 @@ import java.io.IOException;
 
 class Thresholder extends Container {
 
-    static BufferedImage blackOutput;
+    private static BufferedImage blackOutput;
     static int method;
     private int currentThreshold;
     private String filepath;
+    boolean[][] mask;
 
-    Thresholder(String path, UI ui) {
+    Thresholder(String path, boolean[][] mask) {
+        this.mask = mask;
         filepath = path;
         setLayout(new GridBagLayout());
         JLabel imageLabel;
@@ -65,16 +67,16 @@ class Thresholder extends Container {
         nobis.addActionListener(e -> {
             try {
 
-                BufferedImage bl = Algorithms.nobis(path);
+                BufferedImage bl = Algorithms.nobis(path,mask);
                 method=1;
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
                 finalImageLabel.setIcon(new ImageIcon(i));
                 finalImageLabel.repaint();
                 setBlack(bl);
                 //Remove following line in final product. Just to show functionality right now.
-                consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl));
+                consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl,mask));
             }
-            catch (IOException ex){System.out.println( ex);}
+            catch (IOException ex){ex.printStackTrace();}
         });
 
         c.gridheight=1;
@@ -102,6 +104,8 @@ class Thresholder extends Container {
             if(method==0){
                 Prop.addProperties("threshold",String.valueOf(currentThreshold));
             }
+            Prop.deleteProperties();
+            //CSV.write()
             System.exit(0);
         });
 
@@ -113,9 +117,7 @@ class Thresholder extends Container {
 
     }
 
-    void setBlack(BufferedImage b) {
-        blackOutput = b;
-    }
+    void setBlack(BufferedImage b) { blackOutput = b; }
 
     private void saveBlack() {
         String newFilepath;
@@ -128,13 +130,17 @@ class Thresholder extends Container {
         }
     }
 
-    public static BufferedImage getBlackOutput() {
-        return blackOutput;
-    }
+    /**
+     * Returns the black & white image
+     * @return black white version of image
+     */
+    public static BufferedImage getBlackOutput() { return blackOutput; }
 
-    protected void setCurrentThreshold(int currentThreshold) {
-        this.currentThreshold = currentThreshold;
-    }
+    /**
+     * Sets the current threshold being used
+     * @param currentThreshold threshold input or calculated by algorithm
+     */
+    void setCurrentThreshold(int currentThreshold) { this.currentThreshold = currentThreshold; }
 }
 
 class UpdateAction implements ActionListener {
@@ -156,15 +162,15 @@ class UpdateAction implements ActionListener {
         try {
             int threshold = Integer.parseInt(text.getText());
             if (threshold >= 0 && threshold <= 255) {
-                    outer.method=0;
-                    BufferedImage bl = Black.makeBlack(path, threshold);
+                    Thresholder.method =0;
+                    BufferedImage bl = Black.makeBlack(path, threshold,outer.mask);
                     Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
                     t.setIcon(new ImageIcon(i));
                     t.repaint();
                     outer.setBlack(bl);
                     outer.setCurrentThreshold(threshold);
                     //Remove following line in final product. Just to show functionality right now.
-                    console.append("\nGap Fraction is: " + Black.getGapFraction(bl));
+                    console.append("\nGap Fraction is: " + Black.getGapFraction(bl,outer.mask));
 
             } else {
                 console.append("\nThreshold must be an integer between 0 and 255.");
