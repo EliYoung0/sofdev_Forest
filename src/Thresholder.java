@@ -16,7 +16,7 @@ class Thresholder extends Container {
     private String filepath;
     boolean[][] mask;
 
-    Thresholder(String path, boolean[][] mask) {
+    Thresholder(String path, boolean[][] mask, String[] output, UI ui) {
         this.mask = mask;
         filepath = path;
         setLayout(new GridBagLayout());
@@ -100,12 +100,18 @@ class Thresholder extends Container {
         JButton proceed = new JButton("Save & Continue");
         //This part used to close the program
         proceed.addActionListener(e -> {
-            Prop.addProperties("method",String.valueOf(method));
+            String[] methods = new String[]{"Manual","Nobis"};
+            output[1]=methods[method];
+            Prop.addProperty("method",String.valueOf(method));
             if(method==0){
-                Prop.addProperties("threshold",String.valueOf(currentThreshold));
+                Prop.addProperty("threshold",String.valueOf(currentThreshold));
+                output[2]=String.valueOf(currentThreshold);
             }
-            Prop.deleteProperties();
-            //CSV.write()
+            else{output[2]="N/A";}
+            output[3]="";
+            output[4]=String.valueOf(Black.getGapFraction(blackOutput,mask));
+            try{CSV.write(output);}
+            catch (IOException it){ it.printStackTrace(); }
             System.exit(0);
         });
 
@@ -163,7 +169,8 @@ class UpdateAction implements ActionListener {
             int threshold = Integer.parseInt(text.getText());
             if (threshold >= 0 && threshold <= 255) {
                     Thresholder.method =0;
-                    BufferedImage bl = Black.makeBlack(path, threshold,outer.mask);
+                    BufferedImage og = ImageIO.read(new File(path));
+                    BufferedImage bl = Black.makeBlack(og, threshold,outer.mask);
                     Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
                     t.setIcon(new ImageIcon(i));
                     t.repaint();

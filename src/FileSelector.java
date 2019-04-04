@@ -20,12 +20,14 @@ class FileSelector extends Container {
         setPreferredSize(new Dimension(600,500));
         //Create Components
         JButton open = new JButton("Open");
-        ActionListener listener = e -> {
+        ActionListener listener = e ->{
             Prop.createProperties();
             Prop.addFiles(full);
             String path = FileSelector.getPath();
             if(new File(path).exists()) {
-                Circle circle = new Circle(path, ui);
+                String[] output = new String[5];
+                output[0]=path;
+                Circle circle = new Circle(output, ui);
                 ui.setContentPane(circle);
                 ui.pack();
             }
@@ -100,16 +102,12 @@ class FileSelector extends Container {
      * Returns the file path text field object
      * @return the address text field
      */
-    static String getPath() {
-        return path;
-    }
+    private static String getPath() { return path; }
 
     /**
      * Sets the path of the first image to process
      * @param val String file path of the first image
      */
-    static void setPath(String val) {
-        path = val;
-    }
+    private static void setPath(String val) { path = val; }
 
 }
