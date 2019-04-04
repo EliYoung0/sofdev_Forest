@@ -20,7 +20,7 @@ class Circle extends Container {
     /**
      * Constructor of Circle Container
      * Used to define image center location, radius, and north direction
-     * @param path filepath to image used
+     * @param output String array containing output data including image path
      * @param ui outer window
      */
     Circle(String[] output, UI ui){
@@ -99,18 +99,15 @@ class Circle extends Container {
 
         //Provide proceed button functionality
         JButton proceed = new JButton("Save & Continue");
-        ActionListener listener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Prop.addProperties("xCenter",String.valueOf(circleX));
-                Prop.addProperties("yCenter",String.valueOf(circleY));
-                Prop.addProperties("radius", String.valueOf(circleR));
-                Prop.addProperties("north", String.valueOf(circleN));
-                SquareTheCircle.createTheRectangle(filepath);
-                Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(), SquareTheCircle.getColourMask(),output);
-                ui.setContentPane(thresholder);
-                ui.pack();
-            }
+        ActionListener listener = e -> {
+            Prop.addProperties("xCenter",String.valueOf(circleX));
+            Prop.addProperties("yCenter",String.valueOf(circleY));
+            Prop.addProperties("radius", String.valueOf(circleR));
+            Prop.addProperties("north", String.valueOf(circleN));
+            SquareTheCircle.createTheRectangle(filepath);
+            Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(), SquareTheCircle.getColourMask(),output);
+            ui.setContentPane(thresholder);
+            ui.pack();
         };
         proceed.addActionListener(listener);
         //Add proceed button to container
