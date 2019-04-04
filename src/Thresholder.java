@@ -85,13 +85,14 @@ class Thresholder extends Container {
         JLabel finalImageLabel1 = imageLabel;
         single.addActionListener(e -> {
             try {
+                method=2;
                 BufferedImage bl = Algorithms.single(path);
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
                 finalImageLabel1.setIcon(new ImageIcon(i));
                 finalImageLabel1.repaint();
                 setBlack(bl);
                 //Remove following line in final product. Just to show functionality right now.
-                consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl));
+                consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl,mask));
             }
             catch (IOException ex){System.out.println( ex);}
         });
@@ -119,7 +120,7 @@ class Thresholder extends Container {
         JButton proceed = new JButton("Save & Continue");
         //This part used to close the program
         proceed.addActionListener(e -> {
-            String[] methods = new String[]{"Manual","Nobis"};
+            String[] methods = new String[]{"Manual","Nobis","Single Binary"};
             output[1]=methods[method];
             Prop.addProperty("method",String.valueOf(method));
             if(method==0){

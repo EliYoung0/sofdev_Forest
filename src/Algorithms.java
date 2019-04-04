@@ -1,7 +1,9 @@
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -302,17 +304,5 @@ abstract class Algorithms {
         return maxindex;
 
     }
-
-    public static void main(String[] args) {
-        try {
-            String path="/Users/kepler/Desktop/1_1_2 copy.jpg";
-            BufferedImage in = ImageIO.read(new File(path));
-            BufferedImage out = nobis(in,140,170);
-            File outputFile = new File("/Users/kepler/Desktop/out.jpg");
-
-                ImageIO.write(out, "jpg", outputFile);
-        } catch (IOException e) {System.out.println("There was an error");}
-    }
-
 
 }

@@ -15,7 +15,7 @@ public class Batch {
         InputStream input = new FileInputStream("config.properties");
         config.load(input);
 
-        int threshold = Integer.parseInt(config.getProperty("threshold"));
+        String threshold = config.getProperty("threshold");
         String path = config.getProperty("path");
         String[] paths = path.split(","); //This needs to be done to turn the string into an array to be able to run through all of the paths
         double north = Double.parseDouble(config.getProperty("north"));
@@ -38,21 +38,25 @@ public class Batch {
         }
         double gapFraction = -1.0;
         for(int i=0; i<paths.length; i++){
-            String[] methods= {"Manual","Nobis"};
+            String[] methods= {"Manual","Nobis","Single Binary"};
             BufferedImage original = ImageIO.read(new File(paths[i]));
             BufferedImage square = SquareTheCircle.buildASquare(original);
             if(method == 0) {
-                BufferedImage black = Black.makeBlack(square, threshold, colourmask);
+                BufferedImage black = Black.makeBlack(square, Integer.parseInt(threshold), colourmask);
                 gapFraction = Black.getGapFraction(black, colourmask);
             }
             else if(method == 1) {
                 BufferedImage black = Algorithms.nobis(square, colourmask);
                 gapFraction = Black.getGapFraction(black, colourmask);
             }
+            else if(method == 2){
+                BufferedImage black = Algorithms.single(square);
+                gapFraction = Black.getGapFraction(black, colourmask);
+            }
             /*
             ADD IN HERE ANY OTHER THRESHOLDING METHODS
              */
-            String[] data = new String[]{paths[i],methods[0],"N/A","",String.valueOf(gapFraction)};
+            String[] data = new String[]{paths[i],methods[i],"N/A","",String.valueOf(gapFraction)};
             if(method==0){
                 data[2]=String.valueOf(threshold);
             }
