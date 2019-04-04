@@ -1,4 +1,5 @@
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Properties;
@@ -9,7 +10,7 @@ public class Batch {
     //path will be folder (for this)
     //create loop through each image and give each variable and do not ask for user
     //method 0 is Manuel, 1 is Nobis
-    void run (boolean[][] colourmask, String csvPath) throws IOException {
+    static void run (boolean[][] colourmask, String csvPath, JProgressBar progressBar) throws IOException {
         Properties config = new Properties();
         InputStream input = new FileInputStream("config.properties");
         config.load(input);
@@ -19,7 +20,7 @@ public class Batch {
         int xCenter = Integer.parseInt(config.getProperty("xCenter"));
         String path = config.getProperty("path");
         String[] paths = path.split(","); //This needs to be done to turn the string into an array to be able to run through all of the paths
-        int north = Integer.parseInt(config.getProperty("north"));
+        double north = Double.parseDouble(config.getProperty("north"));
         int yCenter = Integer.parseInt(config.getProperty("yCenter"));
         int method = Integer.parseInt(config.getProperty("method"));
 
@@ -29,10 +30,16 @@ public class Batch {
         //For loop to run through everything
         File temp = new File(paths[0]);
         if(temp.isDirectory()) {
-            paths = temp.list((dir, name) -> name.toLowerCase().endsWith(".jpg"));
+            File[] files = temp.listFiles((dir, name) -> name.toLowerCase().endsWith(".jpg"));
+            paths = new String[files.length];
+            for (int a = 0; a < files.length; a++) {
+                paths[a]=files[a].getAbsolutePath();
+            }
         }
         double gapFraction = -1.0;
         for(int i=0; i<paths.length; i++){
+            int pct = (i*100/paths.length);
+            progressBar.setValue(pct);
             String[] methods= {"Manual","Nobis"};
             BufferedImage original = ImageIO.read(new File(paths[i]));
             BufferedImage square = SquareTheCircle.buildASquare(original);

@@ -76,7 +76,7 @@ class FileSelector extends Container {
                 if(chooser.getSelectedFiles()[0].isDirectory()){
                     //If so sets used path to first jpg in directory
                     File p = chooser.getSelectedFiles()[0];
-                    File[] fs = p.listFiles((dir, filename) -> filename.endsWith(".jpg"));
+                    File[] fs = p.listFiles((dir, filename) -> filename.toLowerCase().endsWith(".jpg"));
                     assert fs!=null;
                     setPath(fs[0].getAbsolutePath());
                 }

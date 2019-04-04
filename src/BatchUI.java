@@ -1,26 +1,16 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class BatchUI extends Container {
-    BatchUI(){
-
-        //Create the demo's UI.
-        JButton startButton = new JButton("Start");
-        startButton.setActionCommand("start");
-
+    BatchUI(boolean[][] mask,String csvPAth) throws IOException {
+        setLayout(new BorderLayout());
         JProgressBar progressBar = new JProgressBar(0, 100);
         progressBar.setValue(0);
+        Batch.run(mask,csvPAth,progressBar);
         progressBar.setStringPainted(true);
-
-        JTextArea taskOutput = new JTextArea(5, 20);
-        taskOutput.setMargin(new Insets(5,5,5,5));
-        taskOutput.setEditable(false);
-
         JPanel panel = new JPanel();
-        panel.add(startButton);
         panel.add(progressBar);
-
         add(panel, BorderLayout.PAGE_START);
-        add(new JScrollPane(taskOutput), BorderLayout.CENTER);
     }
 }

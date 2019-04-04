@@ -110,11 +110,14 @@ class Thresholder extends Container {
             else{output[2]="N/A";}
             output[3]="";
             output[4]=String.valueOf(Black.getGapFraction(blackOutput,mask));
-            try{CSV.write(output);}
+            String cpath;
+            try{
+                cpath=CSV.write(output);
+                BatchUI bui = new BatchUI(mask,cpath);
+                ui.setContentPane(bui);
+                ui.pack();
+            }
             catch (IOException it){ it.printStackTrace(); }
-            BatchUI bui = new BatchUI();
-            ui.setContentPane(bui);
-            ui.pack();
         });
 
         //Add components to Container
