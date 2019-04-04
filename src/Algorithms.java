@@ -194,10 +194,6 @@ public abstract class Algorithms {
         }
 
 
-        /*for(int i = 0; i<=255; i++){
-            System.out.println(DN[i] + '\n');
-        }*/
-
         //find maxright and maxleft
         maxleft = findMax(L1, L2, DN);
         maxright = findMax(R1, R2, DN);
@@ -222,8 +218,6 @@ public abstract class Algorithms {
             maxfrequency = (int)max;
         }
 
-        //System.out.println("maxleft: " + maxleft + " maxright: " + maxright + " maxfrequency: " + maxfrequency + " max: " + max);
-
         //Find first and last nonempty bin
         int rbin = 255;
         while(DN[rbin]==0){
@@ -235,15 +229,12 @@ public abstract class Algorithms {
             lbin++;
         }
 
-        int slope = (maxfrequency)/(maxleft - rbin);
-        int uc = upperCorner(DN, slope, maxfrequency, maxleft);
+        int slope = (maxfrequency)/(maxright - lbin);
+        int uc = upperCorner(DN, slope, maxfrequency, maxleft, maxright);
 
-        //System.out.println("slope: " + slope + " uc: " + uc);
+        slope = (maxfrequency)/(maxleft - rbin);
+        int lc = lowerCorner(DN, slope, maxfrequency, maxleft, maxright);
 
-        slope = (maxfrequency)/(maxright - lbin);
-        int lc = lowerCorner(DN, slope, maxfrequency, maxright);
-
-        System.out.println("slope: " + slope + " uc: " + uc + " lc: " + lc);
 
         return image;
     }
@@ -260,36 +251,39 @@ public abstract class Algorithms {
 
     private static double averagePixels(double[] DN){
         double total = 0;
-        for(int i=0; i<255; i++){
+        for(int i=0; i<=255; i++){
             total+=DN[i];
         }
         return total/255;
     }
 
-    private static int upperCorner(double[] DN, int slope, int maxfrequency, int maxleft){
+    private static int upperCorner(double[] DN, int slope, int maxfrequency, int maxleft, int maxright){
         double maxd=0;
         int maxindex=0;
         double d;
-        for(int i=0; i<=255; i++){
-            d = (Math.abs((slope*i) - DN[i] + (maxfrequency - (slope * maxleft))))/(Math.sqrt((slope*slope)+1));
-            System.out.println(d + '\n');
-            if(d > maxd){
-                maxd = d;
-                maxindex=i;
+        for(int i=maxleft; i<=maxright; i++){
+            if(DN[i] < (slope*i)) {
+                d = (Math.abs((slope * i) - DN[i])) / (Math.sqrt((slope * slope) + 1));
+                if (d > maxd) {
+                    maxd = d;
+                    maxindex = i;
+                }
             }
         }
         return maxindex;
     }
 
-    private static int lowerCorner(double[] DN, int slope, int maxfrequency, int maxright){
+    private static int lowerCorner(double[] DN, int slope, int maxfrequency, int maxleft, int maxright){
         double maxd = 0;
         int maxindex=0;
         double d;
-        for(int i=0; i<=255; i++){
-            d = (Math.abs((slope*i) - DN[i] + (maxfrequency - (slope * maxright))))/(Math.sqrt((slope*slope)+1));
-            if(d > maxd){
-                maxd = d;
-                maxindex=i;
+        for(int i=maxleft; i<=maxright; i++){
+            if(DN[i] < ((slope * i) + (maxfrequency - (slope * maxright)))) {
+                d = (Math.abs((slope * i) - DN[i] + (maxfrequency - (slope * maxright)))) / (Math.sqrt((slope * slope) + 1));
+                if (d > maxd) {
+                    maxd = d;
+                    maxindex = i;
+                }
             }
         }
         return maxindex;
