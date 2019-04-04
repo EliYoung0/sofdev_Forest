@@ -157,4 +157,162 @@ abstract class Algorithms {
         return b;
     }
 
+    static BufferedImage single(String path) throws IOException {
+        return single(ImageIO.read(new File(path)));
+    }
+
+    static BufferedImage single(BufferedImage image) {
+        int m = image.getWidth();
+        int n = image.getHeight();
+        double max = 0;
+        int maxright = 0;
+        int maxleft = 0;
+        int L1 = 5;
+        int L2 = 55;
+        int R1 = 200;
+        int R2 = 250;
+        double average = 0;
+        int maxfrequency = 0;
+        int index = 0;
+
+        //Turn Image into array of blue pixel values
+        double[][] blue = toArray(image,m,n);
+
+        double[] DN = new double[256];
+        //fill DN array to make "histogram"
+        for (int i = 0; i < m ; i++) {
+            for (int j = 0; j < n; j++) {
+                if((((i - Circle.circleX) * (i - Circle.circleX)) + ((j - Circle.circleY) * (j - Circle.circleY))) <= (Circle.circleR * Circle.circleR)) {
+                    DN[(int) blue[i][j]]++;
+                    if (DN[(int) blue[i][j]] > max) {
+                        max = DN[(int) blue[i][j]];
+                    }
+                }
+            }
+        }
+
+
+        //find maxright and maxleft
+        maxleft = findMax(L1, L2, DN);
+        maxright = findMax(R1, R2, DN);
+
+        while((L2-maxleft)<10){
+            L2 = L2+25;
+            maxleft = findMax(L1, L2, DN);
+        }
+
+        while ((maxright-R1)<10){
+            R1 = R1-25;
+            maxright = findMax(R1, R2, DN);
+        }
+        //System.out.println("maxleft: " + maxleft + " maxright: " + maxright);
+
+        average = averagePixels(DN);
+
+        if(max > average){
+            maxfrequency = (int)average;
+        }
+        else{
+            maxfrequency = (int)max;
+        }
+
+        //Find first and last nonempty bin
+        int rbin = 255;
+        while(DN[rbin]==0){
+            rbin--;
+        }
+
+        int lbin = 0;
+        while(DN[lbin]==0){
+            lbin++;
+        }
+
+        int slope = (maxfrequency)/(maxright - lbin);
+        int uc = upperCorner(DN, slope, maxfrequency, maxleft, maxright);
+
+        slope = (maxfrequency)/(maxleft - rbin);
+        int lc = lowerCorner(DN, slope, maxfrequency, maxleft, maxright);
+
+
+        for (int x = 0; x < m; x++) {
+            for (int y = 0; y < n; y++) {
+                Color black = new Color(0,0,0);
+                Color white = new Color(255,255,255);
+                //Compares pixel to threshold
+                if(blue[x][y] > (lc + (0.5*(uc-lc)))) {
+                    image.setRGB(x, y, white.getRGB());
+                }
+                else {
+                    image.setRGB(x, y, black.getRGB());
+                }
+            }
+        }
+
+
+        return image;
+    }
+
+    private static int findMax(int lo, int hi, double[] DN){
+        int max = lo;
+        for(int i = lo; i<=hi; i++){
+            if(DN[i] > DN[max]){
+                max = i;
+            }
+        }
+        return max;
+    }
+
+    private static double averagePixels(double[] DN){
+        double total = 0;
+        for(int i=0; i<=255; i++){
+            total+=DN[i];
+        }
+        return total/255;
+    }
+
+    private static int upperCorner(double[] DN, int slope, int maxfrequency, int maxleft, int maxright){
+        double maxd=0;
+        int maxindex=0;
+        double d;
+        for(int i=maxleft; i<=maxright; i++){
+            if(DN[i] < (slope*i)) {
+                d = (Math.abs((slope * i) - DN[i])) / (Math.sqrt((slope * slope) + 1));
+                if (d > maxd) {
+                    maxd = d;
+                    maxindex = i;
+                }
+            }
+        }
+        return maxindex;
+    }
+
+    private static int lowerCorner(double[] DN, int slope, int maxfrequency, int maxleft, int maxright){
+        double maxd = 0;
+        int maxindex=0;
+        double d;
+        for(int i=maxleft; i<=maxright; i++){
+            if(DN[i] < ((slope * i) + (maxfrequency - (slope * maxright)))) {
+                d = (Math.abs((slope * i) - DN[i] + (maxfrequency - (slope * maxright)))) / (Math.sqrt((slope * slope) + 1));
+                if (d > maxd) {
+                    maxd = d;
+                    maxindex = i;
+                }
+            }
+        }
+        return maxindex;
+
+    }
+
+    public static void main(String[] args) {
+        try {
+            String path="/Users/kepler/Desktop/1_1_2 copy.jpg";
+            BufferedImage in = ImageIO.read(new File(path));
+            BufferedImage out = nobis(in,140,170);
+            File outputFile = new File("/Users/kepler/Desktop/out.jpg");
+
+                ImageIO.write(out, "jpg", outputFile);
+        } catch (IOException e) {System.out.println("There was an error");}
+    }
+
+
 }

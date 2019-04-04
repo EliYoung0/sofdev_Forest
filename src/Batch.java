@@ -16,13 +16,13 @@ public class Batch {
         config.load(input);
 
         int threshold = Integer.parseInt(config.getProperty("threshold"));
-        int radius = Integer.parseInt(config.getProperty("radius"));
-        int xCenter = Integer.parseInt(config.getProperty("xCenter"));
         String path = config.getProperty("path");
         String[] paths = path.split(","); //This needs to be done to turn the string into an array to be able to run through all of the paths
         double north = Double.parseDouble(config.getProperty("north"));
         int yCenter = Integer.parseInt(config.getProperty("yCenter"));
         int method = Integer.parseInt(config.getProperty("method"));
+        int radius = Integer.parseInt(config.getProperty("radius"));
+        int xCenter = Integer.parseInt(config.getProperty("xCenter"));
 
         Prop.deleteProperties();
         input.close();
@@ -49,6 +49,9 @@ public class Batch {
                 BufferedImage black = Algorithms.nobis(square, colourmask);
                 gapFraction = Black.getGapFraction(black, colourmask);
             }
+            /*
+            ADD IN HERE ANY OTHER THRESHOLDING METHODS
+             */
             String[] data = new String[]{paths[i],methods[0],"N/A","",String.valueOf(gapFraction)};
             if(method==0){
                 data[2]=String.valueOf(threshold);

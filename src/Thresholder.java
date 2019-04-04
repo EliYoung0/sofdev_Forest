@@ -61,7 +61,7 @@ class Thresholder extends Container {
         JLabel updateText = new JLabel("<html>Simple converter to black and white." +
                 "<br>Enter the average RGB value which is the lower bound for white:  " +
                 "<br> (RGB values are from 0-255.) </html>");
-        //Threshold Algorithm radio button
+        //Nobis Algorithm radio button
         JButton nobis = new JButton("Nobis Algorithm");
         JLabel finalImageLabel = imageLabel;
         nobis.addActionListener(e -> {
@@ -79,6 +79,23 @@ class Thresholder extends Container {
             catch (IOException ex){ex.printStackTrace();}
         });
 
+
+        //Single Binary Threshold radio button
+        JButton single = new JButton("Single Binary Threshold Algorithm");
+        JLabel finalImageLabel1 = imageLabel;
+        single.addActionListener(e -> {
+            try {
+                BufferedImage bl = Algorithms.single(path);
+                Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
+                finalImageLabel1.setIcon(new ImageIcon(i));
+                finalImageLabel1.repaint();
+                setBlack(bl);
+                //Remove following line in final product. Just to show functionality right now.
+                consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl));
+            }
+            catch (IOException ex){System.out.println( ex);}
+        });
+
         c.gridheight=1;
         c.gridx=1;
         c.gridy=0;
@@ -91,6 +108,8 @@ class Thresholder extends Container {
         threshPanel.add(update,tr);
         tr.gridy=2;
         threshPanel.add(nobis,tr);
+        tr.gridy=3;
+        threshPanel.add(single,tr);
         c.gridy=1;
         add(threshPanel,c);
         c.gridy=2;
