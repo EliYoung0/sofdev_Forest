@@ -38,8 +38,6 @@ public class Batch {
         }
         double gapFraction = -1.0;
         for(int i=0; i<paths.length; i++){
-            int pct = (i*100/paths.length);
-            progressBar.setValue(pct);
             String[] methods= {"Manual","Nobis"};
             BufferedImage original = ImageIO.read(new File(paths[i]));
             BufferedImage square = SquareTheCircle.buildASquare(original);
@@ -57,6 +55,8 @@ public class Batch {
             }
             //Write to the CSV
             CSV.writeTo(csvPath,data);
+            int pct = (i*100/paths.length);
+            progressBar.setValue(pct);
         }
         progressBar.setValue(100);
     }

@@ -1,10 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 class BatchUI extends Container {
-    BatchUI(boolean[][] mask,String csvPAth) throws IOException {
+    BatchUI(boolean[][] mask,String csvPAth) {
         setLayout(new BorderLayout());
         JProgressBar progressBar = new JProgressBar(0, 100);
         progressBar.setValue(0);
