@@ -21,7 +21,7 @@ class SquareTheCircle {
         circleTheSquare(square);
     }
 
-    private static BufferedImage buildASquare(BufferedImage rectangle) {
+    static BufferedImage buildASquare(BufferedImage rectangle) {
         int x = Circle.circleX;
         int y = Circle.circleY;
         int radius = Circle.circleR;
