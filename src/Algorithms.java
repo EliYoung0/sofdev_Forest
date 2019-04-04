@@ -1,18 +1,16 @@
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public abstract class Algorithms {
-    static BufferedImage nobis(String path) throws IOException {
-            return nobis(ImageIO.read(new File(path)),140,170);
+abstract class Algorithms {
+    static BufferedImage nobis(BufferedImage image,boolean[][] mask) throws IOException {
+            return nobis(image,140,170,mask);
     }
 
-    static BufferedImage nobis(BufferedImage image,int liml,int limh) {
+    private static BufferedImage nobis(BufferedImage image, int liml, int limh, boolean[][] mask) {
         int[] limit = {liml, limh};
         int m = image.getWidth();
         int n = image.getHeight();
@@ -35,8 +33,8 @@ public abstract class Algorithms {
         }
         double[] zeroes = new double[256];
         double[][][] d1 = new double[4][m-1][n-1];
-        ArrayList<int[]>[] use = new ArrayList[4];
-        for (int tr:limit) {
+        ArrayList[] use = new ArrayList[4];
+        for (int tr=limit[0];tr<=limit[1];tr++) {
             for (int a = 0; a < m; a++) {
                 for (int b = 0; b < n; b++) {
                     if(blue[a][b]<=tr){ ones[a][b]=0; }
@@ -57,7 +55,7 @@ public abstract class Algorithms {
             zeroes[tr+1]=average(db,use);
         }
         int tr=limit[1];
-        double max = max(zeroes,256);
+        double max = max(zeroes);
         double thresh=max-1;
         while(thresh==limit[1]&&tr<255){
             tr++;
@@ -80,7 +78,7 @@ public abstract class Algorithms {
                 }
             }
             zeroes[tr+1]=average(db,use);
-            max= max(zeroes,256);
+            max= max(zeroes);
             thresh=max-1;
         }
         for (int x = 0; x < m; x++) {
@@ -99,9 +97,9 @@ public abstract class Algorithms {
         return image;
     }
 
-    private static double max(double[] a, int l) {
+    private static double max(double[] a) {
         int max=0;
-        for (int i = 1; i < l; i++) {
+        for (int i = 1; i < 256; i++) {
             if(a[i]>a[max]){
                 max=i;
             }
@@ -315,5 +313,6 @@ public abstract class Algorithms {
                 ImageIO.write(out, "jpg", outputFile);
         } catch (IOException e) {System.out.println("There was an error");}
     }
+
 
 }
