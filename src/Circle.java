@@ -20,12 +20,12 @@ class Circle extends Container {
     /**
      * Constructor of Circle Container
      * Used to define image center location, radius, and north direction
-     * @param path filepath to image used
+     * @param output String array containing output data including image path
      * @param ui outer window
      */
-    Circle(String path, UI ui){
+    Circle(String[] output, UI ui){
         circledCanopy=null;
-        filepath = path;
+        filepath = output[0];
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -99,18 +99,15 @@ class Circle extends Container {
 
         //Provide proceed button functionality
         JButton proceed = new JButton("Save & Continue");
-        ActionListener listener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Prop.addProperties("xCenter",String.valueOf(circleX));
-                Prop.addProperties("yCenter",String.valueOf(circleY));
-                Prop.addProperties("radius", String.valueOf(circleR));
-                Prop.addProperties("north", String.valueOf(circleN));
-                SquareTheCircle.createTheRectangle(filepath);
-                Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(), SquareTheCircle.getColourMask());
-                ui.setContentPane(thresholder);
-                ui.pack();
-            }
+        ActionListener listener = e -> {
+            Prop.addProperty("xCenter",String.valueOf(circleX));
+            Prop.addProperty("yCenter",String.valueOf(circleY));
+            Prop.addProperty("radius", String.valueOf(circleR));
+            Prop.addProperty("north", String.valueOf(circleN));
+            SquareTheCircle.createTheRectangle(filepath);
+            Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(), SquareTheCircle.getColourMask(),output,ui);
+            ui.setContentPane(thresholder);
+            ui.pack();
         };
         proceed.addActionListener(listener);
         //Add proceed button to container
