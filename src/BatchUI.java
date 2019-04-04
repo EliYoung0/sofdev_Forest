@@ -3,12 +3,10 @@ import java.awt.*;
 
 public class BatchUI extends Container {
     BatchUI(){
-       //super(new BorderLayout());
 
         //Create the demo's UI.
         JButton startButton = new JButton("Start");
         startButton.setActionCommand("start");
-        //startButton.addActionListener(this);
 
         JProgressBar progressBar = new JProgressBar(0, 100);
         progressBar.setValue(0);
@@ -24,6 +22,5 @@ public class BatchUI extends Container {
 
         add(panel, BorderLayout.PAGE_START);
         add(new JScrollPane(taskOutput), BorderLayout.CENTER);
-        //setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
     }
 }

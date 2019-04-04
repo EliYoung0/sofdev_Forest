@@ -1,15 +1,13 @@
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 abstract class Algorithms {
-    static BufferedImage nobis(String path,boolean[][] mask) throws IOException {
-            return nobis(ImageIO.read(new File(path)),140,170,mask);
+    static BufferedImage nobis(BufferedImage image,boolean[][] mask) throws IOException {
+            return nobis(image,140,170,mask);
     }
 
     private static BufferedImage nobis(BufferedImage image, int liml, int limh, boolean[][] mask) {
