@@ -100,12 +100,12 @@ class Circle extends Container {
         //Provide proceed button functionality
         JButton proceed = new JButton("Save & Continue");
         ActionListener listener = e -> {
-            Prop.addProperties("xCenter",String.valueOf(circleX));
-            Prop.addProperties("yCenter",String.valueOf(circleY));
-            Prop.addProperties("radius", String.valueOf(circleR));
-            Prop.addProperties("north", String.valueOf(circleN));
+            Prop.addProperty("xCenter",String.valueOf(circleX));
+            Prop.addProperty("yCenter",String.valueOf(circleY));
+            Prop.addProperty("radius", String.valueOf(circleR));
+            Prop.addProperty("north", String.valueOf(circleN));
             SquareTheCircle.createTheRectangle(filepath);
-            Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(), SquareTheCircle.getColourMask(),output);
+            Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(), SquareTheCircle.getColourMask(),output,ui);
             ui.setContentPane(thresholder);
             ui.pack();
         };

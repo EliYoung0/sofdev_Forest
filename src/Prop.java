@@ -47,7 +47,7 @@ public class Prop {
         }
     }
 
-    static void addProperties(String key,String value){
+    static void addProperty(String key, String value){
         OutputStream output = null;
         try{
             output = new FileOutputStream("./config.properties");
