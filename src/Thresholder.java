@@ -104,7 +104,7 @@ class Thresholder extends Container {
             if(method==0){
                 Prop.addProperties("threshold",String.valueOf(currentThreshold));
             }
-            Prop.deleteProperties();
+            //Prop.deleteProperties();
             //CSV.write()
             System.exit(0);
         });
