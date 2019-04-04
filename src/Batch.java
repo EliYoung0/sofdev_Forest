@@ -58,5 +58,6 @@ public class Batch {
             //Write to the CSV
             CSV.writeTo(csvPath,data);
         }
+        progressBar.setValue(100);
     }
 }
