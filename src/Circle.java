@@ -23,9 +23,9 @@ class Circle extends Container {
      * @param path filepath to image used
      * @param ui outer window
      */
-    Circle(String path, UI ui){
+    Circle(String[] output, UI ui){
         circledCanopy=null;
-        filepath = path;
+        filepath = output[0];
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -107,7 +107,7 @@ class Circle extends Container {
                 Prop.addProperties("radius", String.valueOf(circleR));
                 Prop.addProperties("north", String.valueOf(circleN));
                 SquareTheCircle.createTheRectangle(filepath);
-                Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(), SquareTheCircle.getColourMask());
+                Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(), SquareTheCircle.getColourMask(),output);
                 ui.setContentPane(thresholder);
                 ui.pack();
             }

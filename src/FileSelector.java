@@ -25,7 +25,9 @@ class FileSelector extends Container {
             Prop.addFiles(full);
             String path = FileSelector.getPath();
             if(new File(path).exists()) {
-                Circle circle = new Circle(path, ui);
+                String[] output = new String[5];
+                output[0]=path;
+                Circle circle = new Circle(output, ui);
                 ui.setContentPane(circle);
                 ui.pack();
             }
