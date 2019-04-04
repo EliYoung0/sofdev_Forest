@@ -236,6 +236,21 @@ public abstract class Algorithms {
         int lc = lowerCorner(DN, slope, maxfrequency, maxleft, maxright);
 
 
+        for (int x = 0; x < m; x++) {
+            for (int y = 0; y < n; y++) {
+                Color black = new Color(0,0,0);
+                Color white = new Color(255,255,255);
+                //Compares pixel to threshold
+                if(blue[x][y] > (lc + (0.5*(uc-lc)))) {
+                    image.setRGB(x, y, white.getRGB());
+                }
+                else {
+                    image.setRGB(x, y, black.getRGB());
+                }
+            }
+        }
+
+
         return image;
     }
 
