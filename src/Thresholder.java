@@ -66,8 +66,8 @@ class Thresholder extends Container {
         JLabel finalImageLabel = imageLabel;
         nobis.addActionListener(e -> {
             try {
-
-                BufferedImage bl = Algorithms.nobis(path,mask);
+                BufferedImage og= ImageIO.read(new File(path));
+                BufferedImage bl = Algorithms.nobis(og,mask);
                 method=1;
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
                 finalImageLabel.setIcon(new ImageIcon(i));
@@ -112,7 +112,9 @@ class Thresholder extends Container {
             output[4]=String.valueOf(Black.getGapFraction(blackOutput,mask));
             try{CSV.write(output);}
             catch (IOException it){ it.printStackTrace(); }
-            System.exit(0);
+            BatchUI bui = new BatchUI();
+            ui.setContentPane(bui);
+            ui.pack();
         });
 
         //Add components to Container
