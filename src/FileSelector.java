@@ -9,6 +9,7 @@ import java.io.*;
 class FileSelector extends Container {
     private static String path;
     private static String[] full;
+    private static boolean flag;
 
     /**
      * File Selector Container Constructor
@@ -16,6 +17,7 @@ class FileSelector extends Container {
      * @param ui the outer window that holds File Selector
      */
     FileSelector(UI ui){
+        flag=true;
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(600,500));
         //Create Components
@@ -27,7 +29,7 @@ class FileSelector extends Container {
             if(new File(path).exists()) {
                 String[] output = new String[5];
                 output[0]=path;
-                Circle circle = new Circle(output, ui);
+                Circle circle = new Circle(output, ui,flag);
                 ui.setContentPane(circle);
                 ui.pack();
             }
@@ -37,11 +39,10 @@ class FileSelector extends Container {
         };
         open.addActionListener(listener);
         JPanel fileBrowser = createBrowser();
+
         //Add components to FileSelector
         add(fileBrowser,BorderLayout.CENTER);
         add(open,BorderLayout.PAGE_END);
-
-
     }
 
 
@@ -74,18 +75,28 @@ class FileSelector extends Container {
                 address.setText("");
                 //Checks if selected path is directory
                 if(chooser.getSelectedFiles()[0].isDirectory()){
+                    if(chooser.getSelectedFiles().length>1){return;}
                     //If so sets used path to first jpg in directory
                     File p = chooser.getSelectedFiles()[0];
                     File[] fs = p.listFiles((dir, filename) -> filename.toLowerCase().endsWith(".jpg"));
-                    assert fs!=null;
+                    assert fs != null;
+                    if(fs.length==0){
+                        return;
+                    }
+                    else if(fs.length==1){
+                        flag=false;}
                     setPath(fs[0].getAbsolutePath());
                 }
                 //Otherwise sets used path to first image selected
-                else{ setPath(chooser.getSelectedFiles()[0].getAbsolutePath());}
+                else{
+                    if(chooser.getSelectedFiles().length==1){flag=false;}
+                    setPath(chooser.getSelectedFiles()[0].getAbsolutePath());
+                }
+
 
                 //Goes through each file or directory selected and stores it for later
                 for (int i = 0; i < chooser.getSelectedFiles().length; i++) {
-                    full[i]=chooser.getSelectedFiles()[i].getAbsolutePath();
+                    full[i] = chooser.getSelectedFiles()[i].getAbsolutePath();
 
                     //Displays each path in address box
                     address.append(full[i]);

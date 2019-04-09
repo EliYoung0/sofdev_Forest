@@ -1,8 +1,6 @@
 import java.io.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public abstract class CSV {
+abstract class CSV {
     static String write(String[] data) throws IOException {
         File csv = new File(data[0].substring(0,data[0].indexOf('.'))+ "_" + java.time.LocalDate.now()+".csv");
         FileWriter fw = new FileWriter(csv);

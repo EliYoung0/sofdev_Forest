@@ -16,7 +16,7 @@ class Thresholder extends Container {
     private String filepath;
     boolean[][] mask;
 
-    Thresholder(String path, boolean[][] mask, String[] output, UI ui) {
+    Thresholder(String path, boolean[][] mask, String[] output, UI ui, boolean flag) {
         this.mask = mask;
         filepath = path;
         setLayout(new GridBagLayout());
@@ -94,7 +94,7 @@ class Thresholder extends Container {
                 //Remove following line in final product. Just to show functionality right now.
                 consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl,mask));
             }
-            catch (IOException ex){System.out.println( ex);}
+            catch (IOException ex){ex.printStackTrace();}
         });
 
         c.gridheight=1;
@@ -133,9 +133,14 @@ class Thresholder extends Container {
             String cpath;
             try{
                 cpath=CSV.write(output);
-                BatchUI bui = new BatchUI(mask,cpath);
-                ui.setContentPane(bui);
-                ui.pack();
+                if(flag) {
+                    BatchUI bui = new BatchUI(mask, cpath);
+                    ui.setContentPane(bui);
+                    ui.pack();
+                }
+                else {
+                    System.exit(0);
+                }
             }
             catch (IOException it){ it.printStackTrace(); }
         });
@@ -149,6 +154,12 @@ class Thresholder extends Container {
     }
 
     void setBlack(BufferedImage b) { blackOutput = b; }
+
+    /**
+     * Sets the current threshold being used
+     * @param currentThreshold threshold input or calculated by algorithm
+     */
+    void setCurrentThreshold(int currentThreshold) { this.currentThreshold = currentThreshold; }
 
     private void saveBlack() {
         String newFilepath;
@@ -166,12 +177,6 @@ class Thresholder extends Container {
      * @return black white version of image
      */
     public static BufferedImage getBlackOutput() { return blackOutput; }
-
-    /**
-     * Sets the current threshold being used
-     * @param currentThreshold threshold input or calculated by algorithm
-     */
-    void setCurrentThreshold(int currentThreshold) { this.currentThreshold = currentThreshold; }
 }
 
 class UpdateAction implements ActionListener {
@@ -215,4 +220,5 @@ class UpdateAction implements ActionListener {
         }
 
     }
+
 }
