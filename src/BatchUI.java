@@ -15,6 +15,7 @@ class BatchUI extends Container {
         start.addActionListener(e -> {
             try {
                 Batch.run(mask,csvPAth,progressBar);
+                start.setEnabled(false);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }

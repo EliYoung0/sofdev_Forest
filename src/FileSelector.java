@@ -23,18 +23,19 @@ class FileSelector extends Container {
         //Create Components
         JButton open = new JButton("Open");
         ActionListener listener = e ->{
-            Prop.createProperties();
-            Prop.addFiles(full);
-            String path = FileSelector.getPath();
-            if(new File(path).exists()) {
-                String[] output = new String[5];
-                output[0]=path;
-                Circle circle = new Circle(output, ui,flag);
-                ui.setContentPane(circle);
-                ui.pack();
-            }
-            else{
-                System.out.print("Invalid File Path");
+            if(path!=null){
+                Prop.createProperties();
+                Prop.addFiles(full);
+                String path = FileSelector.getPath();
+                if (new File(path).exists()) {
+                    String[] output = new String[5];
+                    output[0] = path;
+                    Circle circle = new Circle(output, ui, flag);
+                    ui.setContentPane(circle);
+                    ui.pack();
+                } else {
+                    System.out.print("Invalid File Path");
+                }
             }
         };
         open.addActionListener(listener);
