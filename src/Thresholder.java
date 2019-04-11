@@ -198,27 +198,21 @@ class UpdateAction implements ActionListener {
         try {
             int threshold = Integer.parseInt(text.getText());
             if (threshold >= 0 && threshold <= 255) {
-                    Thresholder.method =0;
-                    BufferedImage og = ImageIO.read(new File(path));
-                    BufferedImage bl = Black.makeBlack(og, threshold,outer.mask);
-                    Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
-                    t.setIcon(new ImageIcon(i));
-                    t.repaint();
-                    outer.setBlack(bl);
-                    outer.setCurrentThreshold(threshold);
-                    //Remove following line in final product. Just to show functionality right now.
-                    console.append("\nGap Fraction is: " + Black.getGapFraction(bl,outer.mask));
-
-            } else {
-                console.append("\nThreshold must be an integer between 0 and 255.");
+                Thresholder.method = 0;
+                BufferedImage og = ImageIO.read(new File(path));
+                BufferedImage bl = Black.makeBlack(og, threshold,outer.mask);
+                Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
+                t.setIcon(new ImageIcon(i));
+                t.repaint();
+                outer.setBlack(bl);
+                outer.setCurrentThreshold(threshold);
+                //Remove following line in final product. Just to show functionality right now.
+                console.append("\nGap Fraction is: " + Black.getGapFraction(bl,outer.mask));
             }
-        } catch (NumberFormatException f) {
-            console.append("\nEnter a valid integer value.");
+            else {console.append("\nThreshold must be an integer between 0 and 255."); }
         }
-        catch (IOException ex){
-            console.append("\nInvalid image file path");
-        }
-
+        catch (NumberFormatException f) { console.append("\nEnter a valid integer value."); }
+        catch (IOException ex){console.append("\nInvalid image file path"); }
     }
 
 }

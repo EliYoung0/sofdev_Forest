@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 abstract class Algorithms {
+
     static BufferedImage nobis(BufferedImage image,boolean[][] mask) throws IOException {
             return nobis(image,140,170,mask);
     }

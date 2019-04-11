@@ -131,10 +131,6 @@ class SquareTheCircle {
         }
     }
 
-    static boolean[][] getColourMask() {
-        return colourMask;
-    }
-    static String getSquareFilepath() {
-        return squareFilepath;
-    }
+    static boolean[][] getColourMask() { return colourMask; }
+    static String getSquareFilepath() { return squareFilepath;}
 }

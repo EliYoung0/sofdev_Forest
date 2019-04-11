@@ -85,7 +85,7 @@ abstract class Black {
         //Determines if each pixel is black or white
         for(int y = 0; y < black.getHeight(); y++) {
             for (int x = 0; x < black.getWidth(); x++) {
-                if(mask[y][x]) {
+                if(mask[x][y]) {
                     //Get colours in 0-255 values
                     dataElements = raster.getDataElements(x, y, dataElements);
                     int blue = colourModel.getBlue(dataElements);

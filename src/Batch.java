@@ -10,7 +10,7 @@ class Batch {
     //path will be folder (for this)
     //create loop through each image and give each variable and do not ask for user
     //method 0 is Manuel, 1 is Nobis
-    static void run (boolean[][] colormask, String csvPath, JProgressBar progressBar) throws IOException {
+    static void run (boolean[][] mask, String csvPath, JProgressBar progressBar) throws IOException {
         Properties config = new Properties();
         InputStream input = new FileInputStream("config.properties");
         config.load(input);
@@ -39,22 +39,22 @@ class Batch {
             }
         }
         double gapFraction = -1.0;
-        int pct=0;
+        int pct;
         for(int i=1; i<paths.length; i++){
             String[] methods= {"Manual","Nobis","Single Binary"};
             BufferedImage original = ImageIO.read(new File(paths[i]));
             BufferedImage square = SquareTheCircle.buildASquare(original);
             if(method == 0) {
-                BufferedImage black = Black.makeBlack(square, Integer.parseInt(threshold), colormask);
-                gapFraction = Black.getGapFraction(black, colormask);
+                BufferedImage black = Black.makeBlack(square, Integer.parseInt(threshold), mask);
+                gapFraction = Black.getGapFraction(black, mask);
             }
             else if(method == 1) {
-                BufferedImage black = Algorithms.nobis(square, colormask);
-                gapFraction = Black.getGapFraction(black, colormask);
+                BufferedImage black = Algorithms.nobis(square, mask);
+                gapFraction = Black.getGapFraction(black, mask);
             }
             else if(method == 2){
                 BufferedImage black = Algorithms.single(square);
-                gapFraction = Black.getGapFraction(black, colormask);
+                gapFraction = Black.getGapFraction(black, mask);
             }
             /*
             ADD IN HERE ANY OTHER THRESHOLDING METHODS

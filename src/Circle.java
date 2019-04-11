@@ -22,7 +22,7 @@ class Circle extends Container {
      * Used to define image center location, radius, and north direction
      * @param output String array containing output data including image path
      * @param ui outer window
-     * @param flag
+     * @param flag true if batch is to be called
      */
     Circle(String[] output, UI ui, boolean flag){
         circledCanopy=null;
