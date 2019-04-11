@@ -1,4 +1,4 @@
-public class IndependentSiteFactor {
+public class IndirectSiteFactor {
     void ISF(){
 
     }
@@ -13,6 +13,11 @@ public class IndependentSiteFactor {
     */
     //Found centre using the calculated distances
     //Average distances on the plane along the multiples of 30deg or pi/6
+    //Create ellipse on distances of 10degrees, or nine slices, from centre to the circumference
+    //Calculate and draw slices
+    //??Figure out weighting??? >Azimuth and zenith
+
+
     //Need to create a mask with the different weighted values
     //Paint onto image?
 }
