@@ -28,8 +28,7 @@ class SquareTheCircle {
         x = x - radius;
         y = y - radius;
         int diameter = radius * 2;
-        BufferedImage square = rectangle.getSubimage(x, y, diameter, diameter);
-        return square;
+        return rectangle.getSubimage(x, y, diameter, diameter);
     }
 
     private static void saveTheSquare(String filepath, BufferedImage square) {

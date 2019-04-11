@@ -35,6 +35,7 @@ class Thresholder extends Container {
             add(imageLabel, c);
         } catch (IOException ex) {
             imageLabel = new JLabel();
+            System.out.println("Sherlock fucked up.");
         }
 
         //For future algorithms
@@ -94,7 +95,7 @@ class Thresholder extends Container {
                 //Remove following line in final product. Just to show functionality right now.
                 consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl,mask));
             }
-            catch (IOException ex){System.out.println( ex);}
+            catch (IOException ex){System.out.println(ex + "Eli and Sara Jane fucked up.");}
         });
 
         c.gridheight=1;

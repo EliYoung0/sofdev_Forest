@@ -100,5 +100,4 @@ abstract class Black {
         //Calculates and returns gap fraction
         return ((whiteCount)/(whiteCount+blackCount));
     }
-
 }
