@@ -5,7 +5,6 @@ import java.io.*;
 import java.util.Properties;
 
 class Batch {
-    //What does this do?
     //read in info from properties, store it variables
     //path will be folder (for this)
     //create loop through each image and give each variable and do not ask for user
