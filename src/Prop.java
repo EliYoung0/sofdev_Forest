@@ -65,9 +65,11 @@ class Prop {
 
     static void deleteProperties(){
         File f = new File("./config.properties");
-        boolean success = f.delete();
-        if (!success) {
-            System.out.println("Failed to delete config.properties.");
+        if(f.exists()) {
+            boolean success = f.delete();
+            if (!success) {
+                System.out.println("Failed to delete config.properties.");
+            }
         }
     }
 

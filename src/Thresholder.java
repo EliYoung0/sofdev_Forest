@@ -132,7 +132,7 @@ class Thresholder extends Container {
             try{
                 cpath=CSV.write(output);
                 if(flag) {
-                    BatchUI bui = new BatchUI(mask, cpath);
+                    BatchUI bui = new BatchUI(mask, cpath,ui);
                     ui.setContentPane(bui);
                     ui.pack();
                 }

@@ -126,4 +126,12 @@ class SquareTheCircle {
 
     static boolean[][] getColourMask() { return colourMask; }
     static String getSquareFilepath() { return squareFilepath;}
+
+    static void deleteSquare() {
+        File f = new File(squareFilepath);
+        if(f.exists()) {
+            boolean success = f.delete();
+            if (!success) { System.out.println("Failed to delete square."); }
+        }
+    }
 }

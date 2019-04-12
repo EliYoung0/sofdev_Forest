@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 class UI extends JFrame {
 
@@ -13,6 +15,18 @@ class UI extends JFrame {
         setContentPane(new FileSelector(this));
         setResizable(true);
         pack();
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                cleanup();
+            }
+        });
+    }
 
+    private void cleanup(){
+        Prop.deleteProperties();
+        if(SquareTheCircle.getSquareFilepath()!=null) {
+            SquareTheCircle.deleteSquare();
+        }
     }
 }

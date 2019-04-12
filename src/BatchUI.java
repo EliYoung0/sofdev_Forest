@@ -1,6 +1,7 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Properties;
@@ -26,7 +27,7 @@ class BatchUI extends Container {
 
             String threshold = config.getProperty("threshold");
             String path = config.getProperty("path");
-            String[] paths = path.split(","); //This needs to be done to turn the string into an array to be able to run through all of the paths
+            String[] paths = path.split(",");
             int method = Integer.parseInt(config.getProperty("method"));
 
             //values in properties that are not currently used.
@@ -36,7 +37,6 @@ class BatchUI extends Container {
             int radius = Integer.parseInt(config.getProperty("radius"));
             int xCenter = Integer.parseInt(config.getProperty("xCenter"));
             */
-            Prop.deleteProperties();
             input.close();
 
             //For loop to run through everything
@@ -70,7 +70,6 @@ class BatchUI extends Container {
                 /*
                 ADD IN HERE ANY OTHER THRESHOLDING METHODS
                 */
-                System.out.println(gapFraction);
                 //Calculates gap fraction
                 String[] data = new String[]{paths[i],methods[method],"N/A","",String.valueOf(gapFraction)};
                 if(method==0){ data[2]= threshold; }
@@ -91,7 +90,7 @@ class BatchUI extends Container {
         }
     }
 
-    BatchUI(boolean[][] mask, String csv){
+    BatchUI(boolean[][] mask, String csv,UI ui){
         this.mask = mask;
         csvPath=csv;
         setLayout(new BorderLayout());
@@ -124,7 +123,7 @@ class BatchUI extends Container {
         output.setMargin(new Insets(5,5,5,5));
         add(new JScrollPane(output),BorderLayout.CENTER);
         finish = new JButton("Finish & Exit");
-        finish.addActionListener(e -> System.exit(0));
+        finish.addActionListener(e -> ui.dispatchEvent(new WindowEvent(ui, WindowEvent.WINDOW_CLOSING)));
         finish.setEnabled(false);
         add(finish,BorderLayout.PAGE_END);
 
