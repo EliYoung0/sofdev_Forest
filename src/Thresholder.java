@@ -13,12 +13,10 @@ class Thresholder extends Container {
     private static BufferedImage blackOutput;
     static int method;
     private int currentThreshold;
-    private String filepath;
     boolean[][] mask;
 
     Thresholder(String path, boolean[][] mask, String[] output, UI ui, boolean flag) {
         this.mask = mask;
-        filepath = path;
         setLayout(new GridBagLayout());
         JLabel imageLabel;
         GridBagConstraints c = new GridBagConstraints();
@@ -161,22 +159,6 @@ class Thresholder extends Container {
      */
     void setCurrentThreshold(int currentThreshold) { this.currentThreshold = currentThreshold; }
 
-    private void saveBlack() {
-        String newFilepath;
-        newFilepath = filepath.replaceAll("(.[a-zA-Z]{3,4}$)",
-                "_basic_" + currentThreshold + "_" + java.time.LocalDate.now() + "$1");
-        File outputFile = new File(newFilepath);
-        try {
-            ImageIO.write(blackOutput, "jpg", outputFile);
-        } catch (IOException ignored) {
-        }
-    }
-
-    /**
-     * Returns the black & white image
-     * @return black white version of image
-     */
-    public static BufferedImage getBlackOutput() { return blackOutput; }
 }
 
 class UpdateAction implements ActionListener {

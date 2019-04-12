@@ -66,14 +66,18 @@ class BatchUI extends Container {
                     BufferedImage black = Algorithms.single(square);
                     gapFraction = Black.getGapFraction(black, mask);
                 }
+
                 /*
                 ADD IN HERE ANY OTHER THRESHOLDING METHODS
                 */
+                System.out.println(gapFraction);
+                //Calculates gap fraction
                 String[] data = new String[]{paths[i],methods[method],"N/A","",String.valueOf(gapFraction)};
                 if(method==0){ data[2]= threshold; }
 
                 //Write to the CSV
                 CSV.writeTo(csvPath,data);
+                //Increment progress bar
                 setProgress(i*100/paths.length);
             }
             setProgress(100);

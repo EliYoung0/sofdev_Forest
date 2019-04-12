@@ -4,8 +4,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 
-import java.io.IOException;
-
 abstract class Black {
 
     /**
@@ -13,9 +11,8 @@ abstract class Black {
      * @param original original image (no colors removed)
      * @param threshold integer for the threshold limit used
      * @return a black and white image of the original
-     * @throws IOException exception thrown if not a valid image filepath
      */
-    static BufferedImage makeBlack(BufferedImage original,int threshold, boolean[][] mask) throws IOException {
+    static BufferedImage makeBlack(BufferedImage original,int threshold, boolean[][] mask) {
         //Creates image from path
 
         Object dataElements = null;

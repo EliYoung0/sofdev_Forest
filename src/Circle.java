@@ -157,12 +157,6 @@ class Circle extends Container {
      */
     static void setBorder(Shape circleInput) { border = circleInput; }
 
-    /**
-     * Returns the image stored in border
-     * @return border image. image with border circle
-     */
-    static Shape getBorder() { return border; }
-
     static void remake(Shape dot) {
         try {
             BufferedImage base = readImage(filepath);
