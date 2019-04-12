@@ -6,11 +6,20 @@ import java.io.*;
 import java.util.Properties;
 
 class BatchUI extends Container {
-    private static JProgressBar progressBar;
-    private JTextArea taskOutput;
 
-    static class Batch {
-        static void run(boolean[][] mask, String csvPath, JProgressBar progressBar) throws IOException {
+    private JProgressBar progressBar;
+    private JTextArea output;
+    private JButton finish;
+    private boolean[][] mask;
+    private String csvPath;
+
+    class Batch extends SwingWorker<Void,Void>{
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            //This is tracked by a property change listener
+            setProgress(0);
+
             Properties config = new Properties();
             InputStream input = new FileInputStream("config.properties");
             config.load(input);
@@ -20,11 +29,13 @@ class BatchUI extends Container {
             String[] paths = path.split(","); //This needs to be done to turn the string into an array to be able to run through all of the paths
             int method = Integer.parseInt(config.getProperty("method"));
 
+            //values in properties that are not currently used.
+            /*
             double north = Double.parseDouble(config.getProperty("north"));
             int yCenter = Integer.parseInt(config.getProperty("yCenter"));
             int radius = Integer.parseInt(config.getProperty("radius"));
             int xCenter = Integer.parseInt(config.getProperty("xCenter"));
-
+            */
             Prop.deleteProperties();
             input.close();
 
@@ -32,14 +43,13 @@ class BatchUI extends Container {
             File temp = new File(paths[0]);
             if(temp.isDirectory()) {
                 File[] files = temp.listFiles((dir, name) -> name.toLowerCase().endsWith(".jpg"));
-                if(files==null){return;}
+                if(files==null){return null;}
                 paths = new String[files.length];
                 for (int a = 1; a < files.length; a++) {
                     paths[a]=files[a].getAbsolutePath();
                 }
             }
             double gapFraction = -1.0;
-            int pct;
             for(int i=1; i<paths.length; i++){
                 String[] methods= {"Manual","Nobis","Single Binary"};
                 BufferedImage original = ImageIO.read(new File(paths[i]));
@@ -56,53 +66,63 @@ class BatchUI extends Container {
                     BufferedImage black = Algorithms.single(square);
                     gapFraction = Black.getGapFraction(black, mask);
                 }
-            /*
-            ADD IN HERE ANY OTHER THRESHOLDING METHODS
-             */
+                /*
+                ADD IN HERE ANY OTHER THRESHOLDING METHODS
+                */
                 String[] data = new String[]{paths[i],methods[method],"N/A","",String.valueOf(gapFraction)};
-                if(method==0){
-                    data[2]=String.valueOf(threshold);
-                }
+                if(method==0){ data[2]= threshold; }
+
                 //Write to the CSV
                 CSV.writeTo(csvPath,data);
-                pct = (i*100/paths.length);
-                progressBar.setValue(pct);
-                progressBar.setStringPainted(true);
+                setProgress(i*100/paths.length);
             }
-            progressBar.setValue(100);
+            setProgress(100);
+            return null;
+        }
 
+        @Override
+        public void done(){
+            output.append("Done.\n");
+            finish.setEnabled(true);
         }
     }
 
-    BatchUI(boolean[][] mask,String csvPAth) {
+    BatchUI(boolean[][] mask, String csv){
+        this.mask = mask;
+        csvPath=csv;
         setLayout(new BorderLayout());
-        progressBar = new JProgressBar(0, 100);
-        progressBar.setValue(0);
-        progressBar.setStringPainted(true);
+
+
+        //Create Components
         JPanel panel = new JPanel();
-        JButton start = new JButton("Batch Process");
-        taskOutput = new JTextArea(5, 20);
-        taskOutput.setMargin(new Insets(5,5,5,5));
-        taskOutput.setEditable(false);
-        JButton end = new JButton("Finish & Exit");
-        end.setEnabled(false);
+        output = new JTextArea(5,20);
+        JButton start = new JButton("Start");
         start.addActionListener(e -> {
-            try {
-                Batch.run(mask,csvPAth,progressBar);
-                start.setEnabled(false);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            end.setEnabled(true);
-        });
-        end.addActionListener(e -> {
-            System.exit(0);
+            start.setEnabled(false);
+            Batch batch = new Batch();
+            batch.addPropertyChangeListener(ev ->{
+                if ("progress".equals(ev.getPropertyName())) {
+                    int progress = (Integer) ev.getNewValue();
+                    progressBar.setValue(progress);
+                    output.append(progress+"% done.\n");
+                }
+            });
+            batch.execute();
         });
         panel.add(start);
-        panel.add(progressBar);
-        add(taskOutput,BorderLayout.CENTER);
 
-        add(panel, BorderLayout.PAGE_START);
-        add(end,BorderLayout.PAGE_END);
+        progressBar = new JProgressBar(0,100);
+        progressBar.setValue(0);
+        progressBar.setStringPainted(true);
+        panel.add(progressBar);
+        add(panel,BorderLayout.PAGE_START);
+        output.setEditable(false);
+        output.setMargin(new Insets(5,5,5,5));
+        add(new JScrollPane(output),BorderLayout.CENTER);
+        finish = new JButton("Finish & Exit");
+        finish.addActionListener(e -> System.exit(0));
+        finish.setEnabled(false);
+        add(finish,BorderLayout.PAGE_END);
+
     }
 }
