@@ -14,12 +14,10 @@ class SquareTheCircle {
             BufferedImage square = buildASquare(original);
             saveTheSquare(filepath, square);
             circleTheSquare(square);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+        } catch (IOException exception) { exception.printStackTrace(); }
     }
 
-    static BufferedImage buildASquare(BufferedImage rectangle) {
+    private static BufferedImage buildASquare(BufferedImage rectangle) {
         int x = Circle.circleX;
         int y = Circle.circleY;
         int radius = Circle.circleR;
@@ -48,19 +46,6 @@ class SquareTheCircle {
         quadrantOne(xSquare, radius, centre);
         quadrantThree(ySquare, radius, centre);
         quadrantFour(xSquare, ySquare, radius, centre);
-
-        //THIS TESTS IT BY PRINTING IT TO CONSOLE, IS REDUNDANT BUT I AM LEAVING IT IN
-        /*for(int x=0;x<xSquare;x++){
-            System.out.println(" ");
-            for(int y=0;y<ySquare;y++){
-                if(colourMask[x][y]) {
-                    System.out.print("X");
-                } else {
-                    System.out.print("_");
-                }
-            }
-        }*/
-
     }
     private static void quadrantOne(int xSquare, int radius, int centre){
         for(int x=centre;x<xSquare;x++){
@@ -117,9 +102,7 @@ class SquareTheCircle {
                 double angle = Math.atan(yDist/xDist);
                 double cosine = Math.cos(angle)*radius;
                 double sine = radius*Math.sin(angle);
-                if(sine >= yDist & cosine >= xDist){
-                    colourMask[x][y] = true;
-                }
+                if(sine >= yDist & cosine >= xDist){ colourMask[x][y] = true; }
             }
         }
     }
@@ -132,9 +115,7 @@ class SquareTheCircle {
             File f = new File(squareFilepath);
             if (f.exists()) {
                 boolean success = f.delete();
-                if (!success) {
-                    System.out.println("Failed to delete square.");
-                }
+                if (!success) { System.out.println("Failed to delete square.");}
             }
         }
     }
