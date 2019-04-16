@@ -8,17 +8,15 @@ class SquareTheCircle {
     private static boolean[][] colourMask = null;
 
     static void createTheRectangle(String filepath) {
-        BufferedImage original = null;
         try {
-            original = ImageIO.read(new File(filepath));
-        } catch (IOException exception) {
-            System.out.println("You done fucked up. There is no god.");
-        }
-        BufferedImage rectangular = original;
+            BufferedImage original = ImageIO.read(new File(filepath));
 
-        BufferedImage square = buildASquare(rectangular);
-        saveTheSquare(filepath, square);
-        circleTheSquare(square);
+            BufferedImage square = buildASquare(original);
+            saveTheSquare(filepath, square);
+            circleTheSquare(square);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
     static BufferedImage buildASquare(BufferedImage rectangle) {
@@ -28,21 +26,16 @@ class SquareTheCircle {
         x = x - radius;
         y = y - radius;
         int diameter = radius * 2;
-        BufferedImage square = rectangle.getSubimage(x, y, diameter, diameter);
-        return square;
+        return rectangle.getSubimage(x, y, diameter, diameter);
     }
 
     private static void saveTheSquare(String filepath, BufferedImage square) {
-        String newFilepath;
-        newFilepath = filepath.replaceAll("(.[a-zA-Z]{3,4}$)",
-                "_square_" + java.time.LocalDate.now());
+        String newFilepath = filepath.replaceAll("(.[a-zA-Z]{3,4}$)",
+                "_square_" + java.time.LocalDate.now())+".jpg";
         squareFilepath = newFilepath;
         File outputFile = new File(newFilepath);
-        try {
-            ImageIO.write(square, "jpg", outputFile);
-        } catch (IOException ignored) {
-            System.out.println("Love you! But this failed.");
-        }
+        try { ImageIO.write(square, "jpg", outputFile);}
+        catch (IOException e) { e.printStackTrace();}
     }
 
     private static void circleTheSquare(BufferedImage square) {
@@ -131,10 +124,18 @@ class SquareTheCircle {
         }
     }
 
-    static boolean[][] getColourMask() {
-        return colourMask;
-    }
-    static String getSquareFilepath() {
-        return squareFilepath;
+    static boolean[][] getColourMask() { return colourMask; }
+    static String getSquareFilepath() { return squareFilepath;}
+
+    static void deleteSquare() {
+        if(SquareTheCircle.getSquareFilepath()!=null) {
+            File f = new File(squareFilepath);
+            if (f.exists()) {
+                boolean success = f.delete();
+                if (!success) {
+                    System.out.println("Failed to delete square.");
+                }
+            }
+        }
     }
 }

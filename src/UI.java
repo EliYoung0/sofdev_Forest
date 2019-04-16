@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 class UI extends JFrame {
 
@@ -7,12 +9,22 @@ class UI extends JFrame {
      * Outermost Layer of the GUI
      */
     UI(){
+        try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); } catch (Exception e) {e.printStackTrace(); }
         //Replace with better name
         setTitle("Forest Program");
         //File Selector is initial container in frame
         setContentPane(new FileSelector(this));
-        setResizable(true);
         pack();
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                cleanup();
+            }
+        });
+    }
 
+    private void cleanup(){
+        Prop.deleteProperties();
+        SquareTheCircle.deleteSquare();
     }
 }

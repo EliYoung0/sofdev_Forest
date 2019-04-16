@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 abstract class Algorithms {
+
     static BufferedImage nobis(BufferedImage image,boolean[][] mask) throws IOException {
             return nobis(image,140,170,mask);
     }
@@ -305,4 +306,17 @@ abstract class Algorithms {
 
     }
 
+    static boolean bufferedImagesEqual(BufferedImage img1, BufferedImage img2) {
+        if (img1.getWidth() == img2.getWidth() && img1.getHeight() == img2.getHeight()) {
+            for (int x = 0; x < img1.getWidth(); x++) {
+                for (int y = 0; y < img1.getHeight(); y++) {
+                    if (img1.getRGB(x, y) != img2.getRGB(x, y))
+                        return false;
+                }
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
 }

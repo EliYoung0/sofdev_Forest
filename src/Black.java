@@ -4,8 +4,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 
-import java.io.IOException;
-
 abstract class Black {
 
     /**
@@ -13,9 +11,8 @@ abstract class Black {
      * @param original original image (no colors removed)
      * @param threshold integer for the threshold limit used
      * @return a black and white image of the original
-     * @throws IOException exception thrown if not a valid image filepath
      */
-    static BufferedImage makeBlack(BufferedImage original,int threshold, boolean[][] mask) throws IOException {
+    static BufferedImage makeBlack(BufferedImage original,int threshold, boolean[][] mask) {
         //Creates image from path
 
         Object dataElements = null;
@@ -85,7 +82,7 @@ abstract class Black {
         //Determines if each pixel is black or white
         for(int y = 0; y < black.getHeight(); y++) {
             for (int x = 0; x < black.getWidth(); x++) {
-                if(mask[y][x]) {
+                if(mask[x][y]) {
                     //Get colours in 0-255 values
                     dataElements = raster.getDataElements(x, y, dataElements);
                     int blue = colourModel.getBlue(dataElements);
