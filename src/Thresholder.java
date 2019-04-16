@@ -13,12 +13,10 @@ class Thresholder extends Container {
     private static BufferedImage blackOutput;
     static int method;
     private int currentThreshold;
-    private String filepath;
     boolean[][] mask;
 
-    Thresholder(String path, boolean[][] mask, String[] output, UI ui) {
+    Thresholder(String path, boolean[][] mask, String[] output, UI ui, boolean flag) {
         this.mask = mask;
-        filepath = path;
         setLayout(new GridBagLayout());
         JLabel imageLabel;
         GridBagConstraints c = new GridBagConstraints();
@@ -35,14 +33,13 @@ class Thresholder extends Container {
             add(imageLabel, c);
         } catch (IOException ex) {
             imageLabel = new JLabel();
-            System.out.println("Sherlock fucked up.");
         }
 
-        //For future algorithms
+        //Panel for algorithms
         JPanel algPanel = new JPanel();
         algPanel.setLayout(new BoxLayout(algPanel, BoxLayout.Y_AXIS));
 
-        //for the basic threshold panel
+        //for the manual threshold panel
         JPanel threshPanel = new JPanel();
         threshPanel.setLayout(new GridBagLayout());
 
@@ -95,7 +92,7 @@ class Thresholder extends Container {
                 //Remove following line in final product. Just to show functionality right now.
                 consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl,mask));
             }
-            catch (IOException ex){System.out.println(ex + "Eli and Sara Jane fucked up.");}
+            catch (IOException ex){ex.printStackTrace();}
         });
 
         c.gridheight=1;
@@ -134,9 +131,15 @@ class Thresholder extends Container {
             String cpath;
             try{
                 cpath=CSV.write(output);
-                BatchUI bui = new BatchUI(mask,cpath);
-                ui.setContentPane(bui);
-                ui.pack();
+                if(flag) {
+                    //SquareTheCircle.deleteSquare();
+                    BatchUI bui = new BatchUI(mask, cpath,ui);
+                    ui.setContentPane(bui);
+                    ui.pack();
+                }
+                else {
+                    System.exit(0);
+                }
             }
             catch (IOException it){ it.printStackTrace(); }
         });
@@ -151,28 +154,12 @@ class Thresholder extends Container {
 
     void setBlack(BufferedImage b) { blackOutput = b; }
 
-    private void saveBlack() {
-        String newFilepath;
-        newFilepath = filepath.replaceAll("(.[a-zA-Z]{3,4}$)",
-                "_basic_" + currentThreshold + "_" + java.time.LocalDate.now() + "$1");
-        File outputFile = new File(newFilepath);
-        try {
-            ImageIO.write(blackOutput, "jpg", outputFile);
-        } catch (IOException ignored) {
-        }
-    }
-
-    /**
-     * Returns the black & white image
-     * @return black white version of image
-     */
-    public static BufferedImage getBlackOutput() { return blackOutput; }
-
     /**
      * Sets the current threshold being used
      * @param currentThreshold threshold input or calculated by algorithm
      */
     void setCurrentThreshold(int currentThreshold) { this.currentThreshold = currentThreshold; }
+
 }
 
 class UpdateAction implements ActionListener {
@@ -194,26 +181,21 @@ class UpdateAction implements ActionListener {
         try {
             int threshold = Integer.parseInt(text.getText());
             if (threshold >= 0 && threshold <= 255) {
-                    Thresholder.method =0;
-                    BufferedImage og = ImageIO.read(new File(path));
-                    BufferedImage bl = Black.makeBlack(og, threshold,outer.mask);
-                    Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
-                    t.setIcon(new ImageIcon(i));
-                    t.repaint();
-                    outer.setBlack(bl);
-                    outer.setCurrentThreshold(threshold);
-                    //Remove following line in final product. Just to show functionality right now.
-                    console.append("\nGap Fraction is: " + Black.getGapFraction(bl,outer.mask));
-
-            } else {
-                console.append("\nThreshold must be an integer between 0 and 255.");
+                Thresholder.method = 0;
+                BufferedImage og = ImageIO.read(new File(path));
+                BufferedImage bl = Black.makeBlack(og, threshold,outer.mask);
+                Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
+                t.setIcon(new ImageIcon(i));
+                t.repaint();
+                outer.setBlack(bl);
+                outer.setCurrentThreshold(threshold);
+                //Remove following line in final product. Just to show functionality right now.
+                console.append("\nGap Fraction is: " + Black.getGapFraction(bl,outer.mask));
             }
-        } catch (NumberFormatException f) {
-            console.append("\nEnter a valid integer value.");
+            else {console.append("\nThreshold must be an integer between 0 and 255."); }
         }
-        catch (IOException ex){
-            console.append("\nInvalid image file path");
-        }
-
+        catch (NumberFormatException f) { console.append("\nEnter a valid integer value."); }
+        catch (IOException ex){console.append("\nInvalid image file path"); }
     }
+
 }

@@ -10,21 +10,23 @@ import java.io.File;
 import java.io.IOException;
 
 class Circle extends Container {
-    private String filepath;
+    private static String filepath;
     static int circleX;
     static int circleY;
     static int circleR;
     static double circleN;
-    private static BufferedImage circledCanopy;
+    private static Shape border;
+    private static JLabel canopyLabel;
 
     /**
      * Constructor of Circle Container
      * Used to define image center location, radius, and north direction
      * @param output String array containing output data including image path
      * @param ui outer window
+     * @param flag true if batch is to be called
      */
-    Circle(String[] output, UI ui){
-        circledCanopy=null;
+    Circle(String[] output, UI ui, boolean flag){
+        border =null;
         filepath = output[0];
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -34,7 +36,6 @@ class Circle extends Container {
         c.gridy = 0;
         c.gridx = 0;
         c.gridheight=3;
-        JLabel canopyLabel;
         try {
             BufferedImage image = ImageIO.read(new File(filepath));
             int height = image.getHeight();
@@ -64,6 +65,9 @@ class Circle extends Container {
         //Radius input
         JLabel radiusText = new JLabel("Radius pixel value: ");
         JTextField radiusInputField = new JTextField(20);
+        //Adds Draw Circle functionality
+        JButton drawCircle = new JButton("Draw Circle");
+        drawCircle.addActionListener(new CircleAction(filepath, xInputField, yInputField, radiusInputField, canopyLabel));
         //Adding components to panel
         circlePanel.add(directionText);
         circlePanel.add(xText);
@@ -72,10 +76,7 @@ class Circle extends Container {
         circlePanel.add(yInputField);
         circlePanel.add(radiusText);
         circlePanel.add(radiusInputField);
-        //Adds Draw Circle functionality
-        JButton drawCircle = new JButton("Draw Circle");
         circlePanel.add(drawCircle);
-        drawCircle.addActionListener(new CircleAction(filepath, xInputField, yInputField, radiusInputField, canopyLabel));
 
         //Adds north functionality
         c.gridy = 1;
@@ -95,7 +96,7 @@ class Circle extends Container {
         //Adds North Button for the action
         JButton addNorth = new JButton("Add North");
         northPanel.add(addNorth);
-        addNorth.addActionListener(new NorthAction(northInputField, canopyLabel));
+        addNorth.addActionListener(new NorthAction(northInputField));
 
         //Provide proceed button functionality
         JButton proceed = new JButton("Save & Continue");
@@ -105,7 +106,7 @@ class Circle extends Container {
             Prop.addProperty("radius", String.valueOf(circleR));
             Prop.addProperty("north", String.valueOf(circleN));
             SquareTheCircle.createTheRectangle(filepath);
-            Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(), SquareTheCircle.getColourMask(),output,ui);
+            Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(), SquareTheCircle.getColourMask(),output,ui,flag);
             ui.setContentPane(thresholder);
             ui.pack();
         };
@@ -151,16 +152,36 @@ class Circle extends Container {
     static BufferedImage readImage (String path) throws IOException { return ImageIO.read(new File(path)); }
 
     /**
-     * Stores the image with border created by center and radius to circledCanopy
+     * Stores the image with border created by center and radius to border
      * @param circleInput image to be stored
      */
-    static void setCircledCanopy (BufferedImage circleInput) { circledCanopy = circleInput; }
+    static void setBorder(Shape circleInput) { border = circleInput; }
 
-    /**
-     * Returns the image stored in circledCanopy
-     * @return circledCanopy image. image with border circle
-     */
-    static BufferedImage getCircledCanopy () { return circledCanopy; }
+    static void remake(Shape dot) {
+        try {
+            BufferedImage base = readImage(filepath);
+            Graphics image = base.getGraphics();
+            Graphics2D layers = (Graphics2D) image;
+            layers.setColor(Color.RED);
+            layers.fill(border);
+            layers.setColor(Color.BLACK);
+            layers.draw(border);
+            layers.setColor(Color.YELLOW);
+            layers.fill(dot);
+            layers.setColor(Color.BLACK);
+            layers.draw(dot);
+
+            layers.dispose();
+            image.dispose();
+            int width = base.getWidth();
+            int height = base.getHeight();
+            Image i = base.getScaledInstance((500 * width) / height, 500, Image.SCALE_SMOOTH);
+            canopyLabel.setIcon(new ImageIcon(i));
+            canopyLabel.repaint();
+
+        }
+        catch (IOException e) { e.printStackTrace(); }
+    }
 }
 
 class CircleAction implements ActionListener {
@@ -186,11 +207,8 @@ class CircleAction implements ActionListener {
         Circle.setCircleR(radius);
 
         //Calls colour image from file-path to be able to reset it every time
-        try {
-            canopyInput = Circle.readImage(path);
-        } catch (IOException g) {
-            System.out.println("Why");
-        }
+        try { canopyInput = Circle.readImage(path); }
+        catch (IOException g) {g.printStackTrace(); }
         //Creates graphic and circle and draws ring onto image
         Graphics image = canopyInput.getGraphics();
         Graphics2D circleRing = (Graphics2D) image;
@@ -202,6 +220,7 @@ class CircleAction implements ActionListener {
         circleRing.setColor(Color.BLACK);
         circleRing.draw(ring);
 
+
         //clears memory of useless info
         circleRing.dispose();
         image.dispose();
@@ -210,7 +229,7 @@ class CircleAction implements ActionListener {
         int width = canopyInput.getWidth();
         int height = canopyInput.getHeight();
         Image i = canopyInput.getScaledInstance((500 * width) / height, 500, Image.SCALE_SMOOTH);
-        Circle.setCircledCanopy(canopyInput);
+        Circle.setBorder(ring);
         returnImage.setIcon(new ImageIcon(i));
         returnImage.repaint();
     }
@@ -242,11 +261,9 @@ class CircleAction implements ActionListener {
 
 class NorthAction implements ActionListener {
     private JTextField north;
-    private JLabel returnImage;
 
-    NorthAction(JTextField northInputField, JLabel image){
+    NorthAction(JTextField northInputField){
         north = northInputField;
-        returnImage = image;
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -255,31 +272,14 @@ class NorthAction implements ActionListener {
         double radians = Math.toRadians(Circle.circleN);
         double radius = (double)Circle.circleR;
         double sin = Math.sin(radians - (0.5 * Math.PI));
-        double cos = Math.cos(radians - (0.5 * Math.PI));
+        double cos = Math.cos(radians + (0.5 * Math.PI));
         double a = radius * sin;
         double b = radius * cos;
         double yNorth = Circle.circleY + a;
         double xNorth = Circle.circleX + b;
 
-        BufferedImage canopyInput = Circle.getCircledCanopy();
-        Graphics image = canopyInput.getGraphics();
-
         //Creates north dot and draws it into the image
-        Graphics2D northArrow = (Graphics2D)image;
         Shape dot = new Ellipse2D.Double(xNorth-15, yNorth-15, 30, 30);
-        northArrow.setColor(Color.YELLOW);
-        northArrow.fill(dot);
-        northArrow.draw(dot);
-
-        //clears memory of useless info
-        northArrow.dispose();
-        image.dispose();
-
-        //Repaints image
-        int width = canopyInput.getWidth();
-        int height = canopyInput.getHeight();
-        Image i = canopyInput.getScaledInstance((500 * width) / height, 500, Image.SCALE_SMOOTH);
-        returnImage.setIcon(new ImageIcon(i));
-        returnImage.repaint();
+        Circle.remake(dot);
     }
 }
