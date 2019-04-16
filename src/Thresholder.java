@@ -97,6 +97,25 @@ class Thresholder extends Container {
             catch (IOException ex){System.out.println( ex);}
         });
 
+        //DHP Algorithm radio button
+        JButton dhp = new JButton("DHP Algorithm");
+        JLabel finalImageLabel2 = imageLabel;
+        dhp.addActionListener(e -> {
+            try {
+                BufferedImage og= ImageIO.read(new File(path));
+                BufferedImage bl = Algorithms.dhp(path);
+                method=3;
+                Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
+                finalImageLabel2.setIcon(new ImageIcon(i));
+                finalImageLabel2.repaint();
+                setBlack(bl);
+                //Remove following line in final product. Just to show functionality right now.
+                consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl,mask));
+            }
+            catch (IOException ex){ex.printStackTrace();}
+        });
+
+
         c.gridheight=1;
         c.gridx=1;
         c.gridy=0;
@@ -111,6 +130,8 @@ class Thresholder extends Container {
         threshPanel.add(nobis,tr);
         tr.gridy=3;
         threshPanel.add(single,tr);
+        tr.gridy=4;
+        threshPanel.add(dhp,tr);
         c.gridy=1;
         add(threshPanel,c);
         c.gridy=2;
@@ -120,7 +141,7 @@ class Thresholder extends Container {
         JButton proceed = new JButton("Save & Continue");
         //This part used to close the program
         proceed.addActionListener(e -> {
-            String[] methods = new String[]{"Manual","Nobis","Single Binary"};
+            String[] methods = new String[]{"Manual","Nobis","Single Binary","DHP"};
             output[1]=methods[method];
             Prop.addProperty("method",String.valueOf(method));
             if(method==0){
