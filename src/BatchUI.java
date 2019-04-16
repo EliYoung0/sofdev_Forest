@@ -44,13 +44,13 @@ class BatchUI extends Container {
             if(temp.isDirectory()) {
                 File[] files = temp.listFiles((dir, name) -> name.toLowerCase().endsWith(".jpg"));
                 if(files==null){return null;}
-                paths = new String[files.length];
+                paths = new String[files.length-1];
                 for (int a = 1; a < files.length; a++) {
-                    paths[a]=files[a].getAbsolutePath();
+                    paths[a-1]=files[a].getAbsolutePath();
                 }
             }
             double gapFraction = -1.0;
-            for(int i=1; i<paths.length; i++){
+            for(int i=0; i<paths.length; i++){
                 String[] methods= {"Manual","Nobis","Single Binary"};
                 BufferedImage original = ImageIO.read(new File(paths[i]));
                 BufferedImage square = SquareTheCircle.buildASquare(original);

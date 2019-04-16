@@ -7,9 +7,10 @@ import java.awt.event.ActionListener;
 import java.io.*;
 
 class FileSelector extends Container {
-    private static String path;
-    private static String[] full;
-    private static boolean flag;
+    private static String path; //file path of image to be processed in GUI
+    private static String[] full; //Array of full path(s) for files to process
+    private static boolean flag; //determines if batch processing is needed. True for yes
+    private JButton open;
 
     /**
      * File Selector Container Constructor
@@ -17,11 +18,12 @@ class FileSelector extends Container {
      * @param ui the outer window that holds File Selector
      */
     FileSelector(UI ui){
-        flag=true;
+        flag = false;
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(600,500));
         //Create Components
-        JButton open = new JButton("Open");
+        open = new JButton("Open");
+        open.setEnabled(false);
         ActionListener listener = e ->{
             if(path!=null){
                 Prop.createProperties();
@@ -53,19 +55,21 @@ class FileSelector extends Container {
      * @return returns the Panel to be shown by FileSelector
      */
     private JPanel createBrowser() {
-        JPanel fb = new JPanel();
-        fb.setBorder(new EmptyBorder(215,100,215,100));
-        fb.setLayout(new BoxLayout(fb,BoxLayout.X_AXIS));
+        JPanel browserPanel = new JPanel();
+        //Set layout of panel
+        browserPanel.setBorder(new EmptyBorder(215,100,215,100));
+        browserPanel.setLayout(new BoxLayout(browserPanel,BoxLayout.X_AXIS));
+        //Create components of panel: address bar and browse button
         JTextArea address = new JTextArea("",1,1);
         address.setBorder(new EtchedBorder(1,null,Color.black));
         JScrollPane addressScroll = new JScrollPane(address, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         addressScroll.setSize(new Dimension(313, 40));
-        JButton browse = new JButton("Browse");
+        JButton browse = new JButton("Browse Files");
         //Opens a new window when browse button is clicked
         browse.addActionListener(e -> {
             JFileChooser chooser = new JFileChooser();
             //Sets the allowed file extension types
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & GIF Images", "jpg");
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG Images", "jpg");
             chooser.setFileFilter(filter);
             //Sets whether files or folders or both are allowed
             chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
@@ -79,35 +83,30 @@ class FileSelector extends Container {
                     if(chooser.getSelectedFiles().length>1){return;}
                     //If so sets used path to first jpg in directory
                     File p = chooser.getSelectedFiles()[0];
-                    File[] fs = p.listFiles((dir, filename) -> filename.toLowerCase().endsWith(".jpg"));
-                    assert fs != null;
-                    if(fs.length==0){
-                        return;
-                    }
-                    else if(fs.length==1){
-                        flag=false;}
-                    setPath(fs[0].getAbsolutePath());
+                    File[] files = p.listFiles((dir, filename) -> filename.toLowerCase().endsWith(".jpg"));
+                    assert files != null;
+                    if(files.length==0){return;}
+                    setPath(files[0].getAbsolutePath());
                 }
                 //Otherwise sets used path to first image selected
-                else{
-                    if(chooser.getSelectedFiles().length==1){flag=false;}
-                    setPath(chooser.getSelectedFiles()[0].getAbsolutePath());
-                }
+                else{setPath(chooser.getSelectedFiles()[0].getAbsolutePath());}
 
 
                 //Goes through each file or directory selected and stores it for later
-                for (int i = 0; i < chooser.getSelectedFiles().length; i++) {
+                int size=chooser.getSelectedFiles().length;
+                if(size>1){flag=true;}
+                for (int i = 0; i <size; i++) {
                     full[i] = chooser.getSelectedFiles()[i].getAbsolutePath();
-
                     //Displays each path in address box
                     address.append(full[i]);
-                    if(i<chooser.getSelectedFiles().length-1){ address.append(", ");}
+                    if(i<size-1){ address.append(", ");}
                 }
+                open.setEnabled(true);
             }
         });
-        fb.add(addressScroll);
-        fb.add(browse);
-        return fb;
+        browserPanel.add(addressScroll);
+        browserPanel.add(browse);
+        return browserPanel;
     }
 
     /**

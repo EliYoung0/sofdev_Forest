@@ -128,10 +128,14 @@ class SquareTheCircle {
     static String getSquareFilepath() { return squareFilepath;}
 
     static void deleteSquare() {
-        File f = new File(squareFilepath);
-        if(f.exists()) {
-            boolean success = f.delete();
-            if (!success) { System.out.println("Failed to delete square."); }
+        if(SquareTheCircle.getSquareFilepath()!=null) {
+            File f = new File(squareFilepath);
+            if (f.exists()) {
+                boolean success = f.delete();
+                if (!success) {
+                    System.out.println("Failed to delete square.");
+                }
+            }
         }
     }
 }

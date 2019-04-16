@@ -9,11 +9,11 @@ class UI extends JFrame {
      * Outermost Layer of the GUI
      */
     UI(){
+        try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); } catch (Exception e) {e.printStackTrace(); }
         //Replace with better name
         setTitle("Forest Program");
         //File Selector is initial container in frame
         setContentPane(new FileSelector(this));
-        setResizable(true);
         pack();
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -25,8 +25,6 @@ class UI extends JFrame {
 
     private void cleanup(){
         Prop.deleteProperties();
-        if(SquareTheCircle.getSquareFilepath()!=null) {
-            SquareTheCircle.deleteSquare();
-        }
+        SquareTheCircle.deleteSquare();
     }
 }

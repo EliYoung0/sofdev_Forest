@@ -132,6 +132,7 @@ class Thresholder extends Container {
             try{
                 cpath=CSV.write(output);
                 if(flag) {
+                    SquareTheCircle.deleteSquare();
                     BatchUI bui = new BatchUI(mask, cpath,ui);
                     ui.setContentPane(bui);
                     ui.pack();
