@@ -92,7 +92,6 @@ class BatchUI extends Container {
         csvPath=csv;
         setLayout(new BorderLayout());
 
-
         //Create Components
         JPanel panel = new JPanel();
         output = new JTextArea(5,20);
@@ -109,6 +108,7 @@ class BatchUI extends Container {
             });
             batch.execute();
         });
+        start.setEnabled(false);
         panel.add(start);
 
         progressBar = new JProgressBar(0,100);

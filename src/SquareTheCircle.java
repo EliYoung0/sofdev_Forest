@@ -14,22 +14,13 @@ class SquareTheCircle {
             BufferedImage square = buildASquare(original);
             saveTheSquare(filepath, square);
             circleTheSquare(square);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+        } catch (IOException exception) { exception.printStackTrace(); }
     }
 
-    static BufferedImage buildASquare(BufferedImage rectangle) {
+    private static BufferedImage buildASquare(BufferedImage rectangle) {
         int x = Circle.circleX;
         int y = Circle.circleY;
         int radius = Circle.circleR;
-        x = x - radius;
-        y = y - radius;
-        int diameter = radius * 2;
-        return rectangle.getSubimage(x, y, diameter, diameter);
-    }
-
-    static BufferedImage buildASquare(BufferedImage rectangle,int x,int y,int radius) {
         x = x - radius;
         y = y - radius;
         int diameter = radius * 2;
@@ -111,9 +102,7 @@ class SquareTheCircle {
                 double angle = Math.atan(yDist/xDist);
                 double cosine = Math.cos(angle)*radius;
                 double sine = radius*Math.sin(angle);
-                if(sine >= yDist & cosine >= xDist){
-                    colourMask[x][y] = true;
-                }
+                if(sine >= yDist & cosine >= xDist){ colourMask[x][y] = true; }
             }
         }
     }
@@ -126,9 +115,7 @@ class SquareTheCircle {
             File f = new File(squareFilepath);
             if (f.exists()) {
                 boolean success = f.delete();
-                if (!success) {
-                    System.out.println("Failed to delete square.");
-                }
+                if (!success) { System.out.println("Failed to delete square.");}
             }
         }
     }
