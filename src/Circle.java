@@ -15,6 +15,7 @@ class Circle extends Container {
     static int circleY;
     static int circleR;
     static double circleN;
+    static double circleZ;
     private static Shape border;
     private static JLabel canopyLabel;
 
@@ -55,7 +56,8 @@ class Circle extends Container {
         circlePanel.setLayout(new BoxLayout(circlePanel, BoxLayout.Y_AXIS));
         add(circlePanel, c);
         //Directions
-        JLabel directionText = new JLabel("<html> Input values for the circle below. <br> (Circle must be drawn before placing north) </html>");
+        JLabel directionText = new JLabel("<html> Input values for the circle below. " +
+                "<br> (Circle must be drawn before placing north) </html>");
         //X-input
         JLabel xText = new JLabel("Centre x pixel value: ");
         JTextField xInputField = new JTextField(20);
@@ -78,7 +80,7 @@ class Circle extends Container {
         circlePanel.add(radiusInputField);
         circlePanel.add(drawCircle);
 
-        //Adds north functionality
+        //Adds north input functionality
         c.gridy = 1;
         c.gridx = 1;
         c.gridheight = 1;
@@ -98,6 +100,26 @@ class Circle extends Container {
         northPanel.add(addNorth);
         addNorth.addActionListener(new NorthAction(northInputField));
 
+        //Adds zenith functionality
+        c.gridy = 2;
+        c.gridx = 1;
+        c.gridheight = 1;
+        JPanel zenithPanel = new JPanel();
+        zenithPanel.setLayout(new BoxLayout(zenithPanel, BoxLayout.Y_AXIS));
+        add(zenithPanel, c);
+        //Zenith Input
+        JLabel zenithText1 = new JLabel("Time of day this image was taken at: ");
+        JLabel zenithText2 = new JLabel("(This will draw where the Sun is at the time the image was taken.)");
+        JTextField zenithInputField = new JTextField(20);
+        //Adds components to panel
+        zenithPanel.add(zenithText1);
+        zenithPanel.add(zenithText2);
+        zenithPanel.add(zenithInputField);
+        //Adds zenith button for the action
+        JButton addZenith = new JButton("Add Zenith");
+        zenithPanel.add(addZenith);
+        addZenith.addActionListener(new ZenithAction(zenithInputField));
+
         //Provide proceed button functionality
         JButton proceed = new JButton("Save & Continue");
         ActionListener listener = e -> {
@@ -116,7 +138,6 @@ class Circle extends Container {
         c.gridx = 0;
         c.gridwidth = 2;
         add(proceed, c);
-
     }
 
     /**
@@ -142,7 +163,7 @@ class Circle extends Container {
      * @param northInputField component where north value is stored
      */
     static void setCircleN (JTextField northInputField) { circleN = Double.parseDouble(northInputField.getText()); }
-
+    static void setCircleZ (JTextField zenithInputField) { circleZ = Double.parseDouble(zenithInputField.getText());}
     /**
      * Creates image from path of image file
      * @param path file path of image
@@ -166,7 +187,7 @@ class Circle extends Container {
             layers.fill(border);
             layers.setColor(Color.BLACK);
             layers.draw(border);
-            layers.setColor(Color.YELLOW);
+            layers.setColor(Color.MAGENTA);
             layers.fill(dot);
             layers.setColor(Color.BLACK);
             layers.draw(dot);
@@ -281,5 +302,30 @@ class NorthAction implements ActionListener {
         //Creates north dot and draws it into the image
         Shape dot = new Ellipse2D.Double(xNorth-15, yNorth-15, 30, 30);
         Circle.remake(dot);
+    }
+}
+
+class ZenithAction implements ActionListener {
+    private JTextField zenith;
+
+    ZenithAction(JTextField zenithInputField){
+        zenith = zenithInputField;
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        //Sets variable for later call
+        Circle.setCircleZ(zenith);
+        //Calculates starting point
+        double north = Math.toRadians(Circle.circleN);
+        double radius = (double)Circle.circleR;
+        double sin = Math.sin(north); //90 degrees to the left of north is East, where the Sun rises
+        double cos = Math.cos(north); //90 degrees to the left of north is East, where the Sun rises
+        double a = radius * sin;
+        double b = radius * cos;
+        double xZenith = Circle.circleY + a;
+        double yZenith = Circle.circleX + b;
+
+        Shape sun = new Ellipse2D.Double(xZenith-15, yZenith-15, 30,30);
+        Circle.remake(sun);
     }
 }

@@ -1,10 +1,25 @@
+
+/*
+This is not a true IndirectSiteFactor calculator.
+True ISF would have the option for multiple locations in the world,
+and would calculate the zenith based on the time of day, time of year, and N/S latitude.
+(This would mean that the zenith would be more variable and move around depending on the input image
+and where and when it was taken in the world. However, this would require a lot of calculations to discover,
+and since this program is only for Dr. Metz's use, it will not be as relevant.)
+
+*/
 public class IndirectSiteFactor {
     void ISF(){
+        double north = Circle.circleN;
+        //Azimuth is the direction the Sun is shining from
+        double azimuth = north - 90; //Hardcoded EAST direction of sun-shine
+        //Zenith is how high in the sky the Sun is
+        double zenith = Circle.circleZ; //hour of the day picture is taken at, time of year, etc.
+        //
+        //
 
     }
 
-    //Calculate azimuth - the direction the sun is shining from
-    //Calculate zenith - how high in the sky the sun is
     /*
     go along circumference from north to azimuth
     then calculate distance from centre of image that sun is (using zenith angle with height as opposite)
