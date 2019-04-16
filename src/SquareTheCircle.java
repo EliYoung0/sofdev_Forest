@@ -29,6 +29,13 @@ class SquareTheCircle {
         return rectangle.getSubimage(x, y, diameter, diameter);
     }
 
+    static BufferedImage buildASquare(BufferedImage rectangle,int x,int y,int radius) {
+        x = x - radius;
+        y = y - radius;
+        int diameter = radius * 2;
+        return rectangle.getSubimage(x, y, diameter, diameter);
+    }
+
     private static void saveTheSquare(String filepath, BufferedImage square) {
         String newFilepath = filepath.replaceAll("(.[a-zA-Z]{3,4}$)",
                 "_square_" + java.time.LocalDate.now())+".jpg";
@@ -48,19 +55,6 @@ class SquareTheCircle {
         quadrantOne(xSquare, radius, centre);
         quadrantThree(ySquare, radius, centre);
         quadrantFour(xSquare, ySquare, radius, centre);
-
-        //THIS TESTS IT BY PRINTING IT TO CONSOLE, IS REDUNDANT BUT I AM LEAVING IT IN
-        /*for(int x=0;x<xSquare;x++){
-            System.out.println(" ");
-            for(int y=0;y<ySquare;y++){
-                if(colourMask[x][y]) {
-                    System.out.print("X");
-                } else {
-                    System.out.print("_");
-                }
-            }
-        }*/
-
     }
     private static void quadrantOne(int xSquare, int radius, int centre){
         for(int x=centre;x<xSquare;x++){

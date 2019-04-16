@@ -132,7 +132,7 @@ class Thresholder extends Container {
             try{
                 cpath=CSV.write(output);
                 if(flag) {
-                    //SquareTheCircle.deleteSquare();
+                    SquareTheCircle.deleteSquare();
                     BatchUI bui = new BatchUI(mask, cpath,ui);
                     ui.setContentPane(bui);
                     ui.pack();
@@ -184,13 +184,12 @@ class UpdateAction implements ActionListener {
                 Thresholder.method = 0;
                 BufferedImage og = ImageIO.read(new File(path));
                 BufferedImage bl = Black.makeBlack(og, threshold,outer.mask);
+                outer.setBlack(bl);
+                outer.setCurrentThreshold(threshold);
+                console.append("\nGap Fraction is: " + Black.getGapFraction(bl,outer.mask));
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
                 t.setIcon(new ImageIcon(i));
                 t.repaint();
-                outer.setBlack(bl);
-                outer.setCurrentThreshold(threshold);
-                //Remove following line in final product. Just to show functionality right now.
-                console.append("\nGap Fraction is: " + Black.getGapFraction(bl,outer.mask));
             }
             else {console.append("\nThreshold must be an integer between 0 and 255."); }
         }
