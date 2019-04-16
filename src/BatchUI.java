@@ -50,10 +50,12 @@ class BatchUI extends Container {
                 }
             }
             double gapFraction = -1.0;
-            for(int i=0; i<paths.length; i++){
+            for(int i=1; i<paths.length; i++){
                 String[] methods= {"Manual","Nobis","Single Binary"};
+                BufferedImage first = ImageIO.read(new File(paths[0]));
                 BufferedImage original = ImageIO.read(new File(paths[i]));
                 BufferedImage square = SquareTheCircle.buildASquare(original);
+                System.out.println(Algorithms.bufferedImagesEqual(first,square));
                 if(method == 0) {
                     BufferedImage black = Black.makeBlack(square, Integer.parseInt(threshold), mask);
                     gapFraction = Black.getGapFraction(black, mask);

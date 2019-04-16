@@ -35,11 +35,11 @@ class Thresholder extends Container {
             imageLabel = new JLabel();
         }
 
-        //For future algorithms
+        //Panel for algorithms
         JPanel algPanel = new JPanel();
         algPanel.setLayout(new BoxLayout(algPanel, BoxLayout.Y_AXIS));
 
-        //for the basic threshold panel
+        //for the manual threshold panel
         JPanel threshPanel = new JPanel();
         threshPanel.setLayout(new GridBagLayout());
 
@@ -132,7 +132,7 @@ class Thresholder extends Container {
             try{
                 cpath=CSV.write(output);
                 if(flag) {
-                    SquareTheCircle.deleteSquare();
+                    //SquareTheCircle.deleteSquare();
                     BatchUI bui = new BatchUI(mask, cpath,ui);
                     ui.setContentPane(bui);
                     ui.pack();

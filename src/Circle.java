@@ -272,7 +272,7 @@ class NorthAction implements ActionListener {
         double radians = Math.toRadians(Circle.circleN);
         double radius = (double)Circle.circleR;
         double sin = Math.sin(radians - (0.5 * Math.PI));
-        double cos = Math.cos(radians - (0.5 * Math.PI));
+        double cos = Math.cos(radians + (0.5 * Math.PI));
         double a = radius * sin;
         double b = radius * cos;
         double yNorth = Circle.circleY + a;

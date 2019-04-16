@@ -86,6 +86,7 @@ class FileSelector extends Container {
                     File[] files = p.listFiles((dir, filename) -> filename.toLowerCase().endsWith(".jpg"));
                     assert files != null;
                     if(files.length==0){return;}
+                    if(files.length>1){flag=true;}
                     setPath(files[0].getAbsolutePath());
                 }
                 //Otherwise sets used path to first image selected
