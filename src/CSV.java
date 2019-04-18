@@ -1,8 +1,8 @@
 import java.io.*;
 
 abstract class CSV {
-    static String write(String[] data) throws IOException {
-        File csv = new File(data[0].substring(0,data[0].indexOf('.'))+ "_" + java.time.LocalDate.now()+".csv");
+    static String write(String[] data,String path) throws IOException {
+        File csv = new File(path);
         FileWriter fw = new FileWriter(csv);
         fw.write("Filepath,Filename,Algorithm,Manual Threshold,ISF,Gap Fraction");
         fw.append('\n');

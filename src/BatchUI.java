@@ -29,14 +29,11 @@ class BatchUI extends Container {
             String path = config.getProperty("path");
             String[] paths = path.split(",");
             int method = Integer.parseInt(config.getProperty("method"));
-
-            //values in properties that are not currently used.
-            /*
             double north = Double.parseDouble(config.getProperty("north"));
             int yCenter = Integer.parseInt(config.getProperty("yCenter"));
             int radius = Integer.parseInt(config.getProperty("radius"));
             int xCenter = Integer.parseInt(config.getProperty("xCenter"));
-            */
+
             input.close();
 
             //For loop to run through everything
@@ -50,12 +47,10 @@ class BatchUI extends Container {
                 }
             }
             double gapFraction = -1.0;
-            for(int i=1; i<paths.length; i++){
+            for(int i=0; i<paths.length; i++){
                 String[] methods= {"Manual","Nobis","Single Binary"};
-                BufferedImage first = ImageIO.read(new File(paths[0]));
-                BufferedImage original = ImageIO.read(new File(paths[i]));
-                BufferedImage square = SquareTheCircle.buildASquare(original);
-                System.out.println(Algorithms.bufferedImagesEqual(first,square));
+                SquareTheCircle.createTheRectangle(paths[i]);
+                BufferedImage square = ImageIO.read(new File(SquareTheCircle.getSquareFilepath()));
                 if(method == 0) {
                     BufferedImage black = Black.makeBlack(square, Integer.parseInt(threshold), mask);
                     gapFraction = Black.getGapFraction(black, mask);
@@ -68,7 +63,6 @@ class BatchUI extends Container {
                     BufferedImage black = Algorithms.single(square);
                     gapFraction = Black.getGapFraction(black, mask);
                 }
-
                 /*
                 ADD IN HERE ANY OTHER THRESHOLDING METHODS
                 */
@@ -80,6 +74,7 @@ class BatchUI extends Container {
                 CSV.writeTo(csvPath,data);
                 //Increment progress bar
                 setProgress(i*100/paths.length);
+                SquareTheCircle.deleteSquare();
             }
             setProgress(100);
             return null;
@@ -96,7 +91,6 @@ class BatchUI extends Container {
         this.mask = mask;
         csvPath=csv;
         setLayout(new BorderLayout());
-
 
         //Create Components
         JPanel panel = new JPanel();
