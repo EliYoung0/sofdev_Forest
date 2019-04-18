@@ -345,20 +345,23 @@ abstract class Algorithms {
         double th = lc + ((uc-lc)*(0.75));
 
         double temp;
+        double temp1;
+        double temp2 = th-tl;
 
         for (int x = 0; x < m; x++) {
             for (int y = 0; y < n; y++) {
-                temp = (blue[x][y] - tl) / (th-tl);
+                temp1 = (blue[x][y] - tl);
+                temp = temp1/temp2;
                 if(temp > 1.0){
                     image.setRGB(x, y, white.getRGB());
                 }
 
                 else if(temp < 0.0){
-                    //System.out.println(temp + '\n');
                     image.setRGB(x, y, black.getRGB());
                 }
                 else{
-                    image.setRGB(x, y, (int)temp*255);
+                    image.setRGB(x, y, (int)(temp*255));
+                    //System.out.println((int)(temp*255));
                 }
             }
         }

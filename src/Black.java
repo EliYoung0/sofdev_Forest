@@ -98,7 +98,6 @@ abstract class Black {
 //            }
 //        }
 //        //Calculates and returns gap fraction
-//        System.out.println("whiteCount: " + whiteCount + " Total: " + (whiteCount+blackCount));
 //        return ((whiteCount)/(whiteCount+blackCount));
 
         double rgbCount=0.0;
@@ -109,7 +108,7 @@ abstract class Black {
 
         for(int y = 0; y<black.getHeight(); y++){
             for(int x=0; x < black.getWidth(); x++){
-                if(mask[y][x]){
+                if(mask[x][y]){
                     dataElements = raster.getDataElements(x, y, dataElements);
                     int blue = colorModel.getBlue(dataElements);
                     blue = blue/255;
