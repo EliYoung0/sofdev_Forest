@@ -1,5 +1,6 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,9 +14,11 @@ class Thresholder extends Container {
     private static BufferedImage blackOutput;
     static int method;
     private int currentThreshold;
+    String path;
     boolean[][] mask;
 
     Thresholder(String path, boolean[][] mask, String[] output, UI ui, boolean flag) {
+        this.path=path;
         this.mask = mask;
         setLayout(new GridBagLayout());
         JLabel imageLabel;
@@ -129,19 +132,24 @@ class Thresholder extends Container {
             output[3]="";
             output[4]=String.valueOf(Black.getGapFraction(blackOutput,mask));
             String cpath;
-            try{
-                cpath=CSV.write(output);
-                if(flag) {
-                    SquareTheCircle.deleteSquare();
-                    BatchUI bui = new BatchUI(mask, cpath,ui);
-                    ui.setContentPane(bui);
-                    ui.pack();
-                }
-                else {
-                    System.exit(0);
+            //Create Window to select csv save directory
+            SaveDialog save = new SaveDialog(ui,this);
+            save.setVisible(true);
+            if(save.getExit()) {
+                try {
+                    cpath = CSV.write(output,save.getSaveLocation());
+                    if (flag) {
+                        SquareTheCircle.deleteSquare();
+                        BatchUI bui = new BatchUI(mask, cpath, ui);
+                        ui.setContentPane(bui);
+                        ui.pack();
+                    } else {
+                        System.exit(0);
+                    }
+                } catch (IOException it) {
+                    it.printStackTrace();
                 }
             }
-            catch (IOException it){ it.printStackTrace(); }
         });
 
         //Add components to Container
@@ -199,3 +207,116 @@ class UpdateAction implements ActionListener {
 
 }
 
+class SaveDialog extends JDialog{
+    private String saveLocation;
+    private boolean exit;
+    private JTextField address;
+    private JLabel warnings;
+    Thresholder thresh;
+
+    SaveDialog(Frame ui,Thresholder t){
+        super(ui,true);
+        thresh=t;
+        setTitle("Save CSV");
+        setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        setSize(new Dimension(300,200));
+        //Make Panel
+        JPanel browserPanel = new JPanel();
+        browserPanel.setLayout(new GridBagLayout());
+        GridBagConstraints d = new GridBagConstraints();
+        address = new JTextField("",10);
+        address.setToolTipText("Input Save File Location including CSV");
+        JScrollPane scroll = new JScrollPane(address, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        JButton browse = new JButton("Browse");
+        browse.addActionListener(e -> {
+            JFileChooser fc = new JFileChooser();
+            fc.setDialogTitle("Specify a file to save");
+            //Sets the allowed file extension types
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV", "csv");
+            String path =thresh.path.substring(0,thresh.path.indexOf('.'))+ "_" + java.time.LocalDate.now()+".csv";
+            fc.setSelectedFile(new File(path));
+            fc.setFileFilter(filter);
+            fc.setFileHidingEnabled(true);
+            int returnVal =fc.showSaveDialog(fc);
+            if(returnVal == JFileChooser.APPROVE_OPTION){
+                File file = fc.getSelectedFile();
+                address.setText(file.getAbsolutePath());
+            }
+        });
+        d.gridx=0;
+        d.gridy=0;
+        d.gridwidth=3;
+        browserPanel.add(scroll);
+        d.gridx=3;
+        d.gridwidth=1;
+        browserPanel.add(browse);
+        //Create components
+        JButton save = new JButton("Save");
+        warnings = new JLabel();
+        warnings.setForeground(Color.RED);
+        save.addActionListener(s->{
+            if(setPath()){
+                exit=true;
+                dispose();
+            }
+        });
+        JButton cancel = new JButton("Cancel");
+        cancel.addActionListener(l->{
+            exit=false;
+            dispose();
+        });
+        //Add components
+        c.gridy=0;
+        c.gridx=0;
+        c.gridwidth=4;
+        add(browserPanel,c);
+        c.gridy=1;
+        c.gridx=0;
+        c.gridwidth=4;
+        add(warnings,c);
+        c.gridy=2;
+        c.gridx=0;
+        c.gridwidth=2;
+        add(save,c);
+        c.gridy=2;
+        c.gridx=2;
+        c.gridwidth=2;
+        add(cancel,c);
+    }
+
+    private boolean setPath() {
+        try {
+            String string = address.getText();
+            if (isValidPath(string)) {
+                saveLocation = string;
+                return true;
+            } else {
+                warnings.setText("Not a valid file location");
+                return false;
+            }
+        }
+        catch (NullPointerException n){
+            warnings.setText("Please enter a file location");
+            return false;
+        }
+    }
+
+    private boolean isValidPath(String string) {
+        if(!string.endsWith(".csv")){return false;}
+        File f = new File(string);
+        if(f.isDirectory()){
+            return false;
+        }
+        else{
+            f=f.getParentFile();
+            return f.exists();
+        }
+    }
+
+
+    boolean getExit() { return exit; }
+
+    String getSaveLocation() { return saveLocation; }
+
+}

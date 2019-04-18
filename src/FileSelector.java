@@ -33,6 +33,7 @@ class FileSelector extends Container {
                     String[] output = new String[5];
                     output[0] = path;
                     Circle circle = new Circle(output, ui, flag);
+                    ui.setTitle(ui.getTitle()+": "+path);
                     ui.setContentPane(circle);
                     ui.pack();
                 } else {
