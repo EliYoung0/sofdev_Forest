@@ -108,7 +108,6 @@ class BatchUI extends Container {
             });
             batch.execute();
         });
-        start.setEnabled(false);
         panel.add(start);
 
         progressBar = new JProgressBar(0,100);
