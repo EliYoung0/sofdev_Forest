@@ -10,7 +10,7 @@ class UI extends JFrame {
      */
     UI(){
         try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); } catch (Exception e) {e.printStackTrace(); }
-        //Replace with better namex
+        //TODO:Replace with better name
         setTitle("Forest Program");
         //File Selector is initial container in frame
         setContentPane(new FileSelector(this));
@@ -23,6 +23,10 @@ class UI extends JFrame {
         });
     }
 
+    /**
+     * Called when window is closed
+     * Deletes created properties files and square image file if they exist
+     */
     private void cleanup(){
         Prop.deleteProperties();
         SquareTheCircle.deleteSquare();
