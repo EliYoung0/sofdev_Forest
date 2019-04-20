@@ -3,6 +3,7 @@ import java.awt.image.*;
 import javax.imageio.ImageIO;
 import java.io.*;
 
+@Deprecated
 public class ExtractBlue {
     //Note that extraction means the isolation of the blue channel, not the removal of blue
 
