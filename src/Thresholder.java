@@ -183,37 +183,61 @@ class Thresholder extends Container {
 }
 
 class UpdateAction implements ActionListener {
-    private JTextField text;
-    private JLabel t;
-    private String path;
-    private Thresholder outer;
-    private JTextArea console;
+    private JTextField text; //Text Field where manual threshold value is stored
+    private JLabel imageLabel; //Label where image is displayed
+    private String path; //File path of image to be displayed
+    private Thresholder outer; //Outer container
+    private JTextArea console; //Text area where warnings and gap fraction is outputted
 
-    UpdateAction(String path, JLabel t, JTextField thresh, Thresholder outer, JTextArea output) {
+    /**
+     * Constructor of UpdateAction
+     * Components that are used are fed in here
+     * @param path File path of image to be displayed
+     * @param imageLabel JLabel where image is displayed
+     * @param thresh integer manual threshold value
+     * @param outer Thresholder outer container
+     * @param output JTextArea where gap fraction is shown
+     */
+    UpdateAction(String path, JLabel imageLabel, JTextField thresh, Thresholder outer, JTextArea output) {
         text = thresh;
-        this.t = t;
+        this.imageLabel = imageLabel;
         this.outer = outer;
         this.path = path;
         console = output;
     }
 
+    /**
+     * Thresholds image at manually input value when button is pressed
+     * @param e ActionEvent that occurs when button is pressed
+     */
     public void actionPerformed(ActionEvent e) {
         try {
+            //Checks manual input value is valid
             int threshold = Integer.parseInt(text.getText());
             if (threshold >= 0 && threshold <= 255) {
+                //Tells the thrsholder that the method used is manual
                 Thresholder.method = 0;
+                //Creates black and white image from threshold value
                 BufferedImage og = ImageIO.read(new File(path));
                 BufferedImage bl = Black.makeBlack(og, threshold,outer.mask);
+                //Stores black image to thresholder
                 outer.setBlack(bl);
+                //Stores threshold value used to thresholder
                 outer.setCurrentThreshold(threshold);
+                //Outputs gap fraction to console text area
+                console.append("\nMethod: Manual. Threshold value: "+threshold);
                 console.append("\nGap Fraction is: " + Black.getGapFraction(bl,outer.mask));
+                //Displays black and white image in GUI
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
-                t.setIcon(new ImageIcon(i));
-                t.repaint();
+                imageLabel.setIcon(new ImageIcon(i));
+                imageLabel.repaint();
             }
+            //Feeds warning if input manual value is not between accepted values
             else {console.append("\nThreshold must be an integer between 0 and 255."); }
         }
+        //Feeds warning if manual input is not an integer
         catch (NumberFormatException f) { console.append("\nEnter a valid integer value."); }
+        //Feeds warning if image filepath is invalid
         catch (IOException ex){console.append("\nInvalid image file path"); }
     }
 
