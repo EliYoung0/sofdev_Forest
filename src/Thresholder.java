@@ -82,7 +82,7 @@ class Thresholder extends Container {
                 finalImageLabel.setIcon(new ImageIcon(i));
                 finalImageLabel.repaint();
                 setBlack(bl);
-                //Remove following line in final product. Just to show functionality right now.
+                consoleOutput.append("\nMethod: Nobis");
                 consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl,mask));
             }
             catch (IOException ex){ex.printStackTrace();}
@@ -100,15 +100,13 @@ class Thresholder extends Container {
                 finalImageLabel1.setIcon(new ImageIcon(i));
                 finalImageLabel1.repaint();
                 setBlack(bl);
-                //Remove following line in final product. Just to show functionality right now.
+                consoleOutput.append("\nMethod: Single Binary");
                 consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl,mask));
             }
             catch (IOException ex){ex.printStackTrace();}
         });
 
-        c.gridheight=1;
-        c.gridx=1;
-        c.gridy=0;
+        //Adds components to threshold panel
         GridBagConstraints tr = new GridBagConstraints();
         tr.fill = GridBagConstraints.VERTICAL;
         tr.gridy=0;
@@ -120,6 +118,11 @@ class Thresholder extends Container {
         threshPanel.add(nobis,tr);
         tr.gridy=3;
         threshPanel.add(single,tr);
+
+        //Adds components to container
+        c.gridheight=1;
+        c.gridx=1;
+        c.gridy=0;
         c.gridy=1;
         add(threshPanel,c);
         c.gridy=2;
@@ -127,7 +130,7 @@ class Thresholder extends Container {
 
         //Give proceed button functionality
         JButton proceed = new JButton("Save & Continue");
-        //This part used to close the program
+        //Adds action listener that either saves and closes program or continues to batch
         proceed.addActionListener(e -> {
             String[] methods = new String[]{"Manual","Nobis","Single Binary"};
             output[1]=methods[method];
@@ -160,7 +163,7 @@ class Thresholder extends Container {
             }
         });
 
-        //Add components to Container
+        //Add proceed button to container
         c.gridx=0;
         c.gridy=3;
         c.gridwidth=2;
