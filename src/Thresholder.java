@@ -10,13 +10,21 @@ import java.io.IOException;
 
 
 class Thresholder extends Container {
+    private static BufferedImage blackOutput; //Black and white image created
+    static int method; //Integer value representing threshold method {0: manual, 1: nobis, 2: single}
+    private int currentThreshold; //Threshold value if manual method is used
+    String path; //File path of square image to be make b&w
+    boolean[][] mask; //Image mask used by threshold algorithms
 
-    private static BufferedImage blackOutput;
-    static int method;
-    private int currentThreshold;
-    String path;
-    boolean[][] mask;
-
+    /**
+     * Constructor for thresholder container
+     * Creates components and adds listeners
+     * @param path String filepath of square image
+     * @param mask Image mask
+     * @param output String array of output data to be saved
+     * @param ui Outer JFrame
+     * @param flag Boolean flag for batch processing: true if batch is needed
+     */
     Thresholder(String path, boolean[][] mask, String[] output, UI ui, boolean flag) {
         this.path=path;
         this.mask = mask;
@@ -160,6 +168,10 @@ class Thresholder extends Container {
 
     }
 
+    /**
+     * Stores black and white image to blackOutput
+     * @param b black & white image to be stored
+     */
     void setBlack(BufferedImage b) { blackOutput = b; }
 
     /**
@@ -208,12 +220,17 @@ class UpdateAction implements ActionListener {
 }
 
 class SaveDialog extends JDialog{
-    private String saveLocation;
-    private boolean exit;
-    private JTextField address;
-    private JLabel warnings;
-    Thresholder thresh;
+    private String saveLocation; //Filepath where csv is to be saved
+    private boolean exit; //Boolean to determine exit clause of Dialog. True for save, false for cancel
+    private JTextField address; //Text field where address to used is entered
+    private JLabel warnings; //Label to display warnings
+    private Thresholder thresh; //Outer container that holds this dialog
 
+    /**
+     * Constructor for Save dialog.
+     * @param ui Outermost JFrame from which dialog is opened
+     * @param t Outer container. Used to get default path
+     */
     SaveDialog(Frame ui,Thresholder t){
         super(ui,true);
         thresh=t;
@@ -272,51 +289,72 @@ class SaveDialog extends JDialog{
         c.gridwidth=4;
         add(browserPanel,c);
         c.gridy=1;
-        c.gridx=0;
-        c.gridwidth=4;
         add(warnings,c);
         c.gridy=2;
-        c.gridx=0;
         c.gridwidth=2;
         add(save,c);
-        c.gridy=2;
         c.gridx=2;
         c.gridwidth=2;
         add(cancel,c);
     }
 
+    /**
+     * Checks if file path entered in the address bar is valid
+     * If it is valid, the path is stored to saveLocation
+     * @return true if file path is successfully saved. False if path is invalid or not entered yet
+     */
     private boolean setPath() {
+        //Tries to get text inputted into address bar
         try {
             String string = address.getText();
+            //Checks if inputted path is invalid
             if (isValidPath(string)) {
                 saveLocation = string;
                 return true;
             } else {
+                //Displays warning and returns false if invalid path
                 warnings.setText("Not a valid file location");
                 return false;
             }
         }
+        //Catches error if address bar is empty
         catch (NullPointerException n){
+            //Displays warning and returns false
             warnings.setText("Please enter a file location");
             return false;
         }
     }
 
+    /**
+     * Checks if file path given is valid
+     * @param string filepath to be checked
+     * @return true if valid, false if invalid
+     */
     private boolean isValidPath(String string) {
+        //If it has an incorrect extension returns false.
         if(!string.endsWith(".csv")){return false;}
         File f = new File(string);
+        //Checks if path is a directory
         if(f.isDirectory()){
             return false;
         }
         else{
+            //Checks the file paths parent directory exists
             f=f.getParentFile();
             return f.exists();
         }
     }
 
-
+    /**
+     * Returns the exit condition of the dialog
+     * @return the boolean exit condition stored at exit
+     */
     boolean getExit() { return exit; }
 
+    /**
+     * returns the filepath where csv is to be saved
+     * @return saveLocation where csv is to be created
+     */
     String getSaveLocation() { return saveLocation; }
 
 }
