@@ -2,7 +2,6 @@ import java.awt.*;
 import java.awt.image.*;
 import javax.imageio.ImageIO;
 import java.io.*;
-import java.util.Scanner;
 
 @Deprecated
 public class BasicBlackAndWhite {
