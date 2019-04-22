@@ -221,10 +221,21 @@ abstract class Algorithms {
         return b;
     }
 
+    /**
+     * Caller for Single Binary algorithm with image path provided
+     * @param path filepath to image to be processed
+     * @return Black & white image created by single binary algorithm
+     * @throws IOException throws exception if file does not exist
+     */
     static BufferedImage single(String path) throws IOException {
         return single(ImageIO.read(new File(path)));
     }
 
+    /**
+     * Creates Black & white version of image using Single Binary method
+     * @param image original image to be processed
+     * @return black & white version of image
+     */
     static BufferedImage single(BufferedImage image) {
         int m = image.getWidth();
         int n = image.getHeight();

@@ -77,7 +77,7 @@ class SquareTheCircle {
     }
 
     /**
-     * returns image mask stored
+     * returns the store imageMask
      * @return 2d boolean array of image mask
      */
     static boolean[][] getImageMask() { return imageMask; }
