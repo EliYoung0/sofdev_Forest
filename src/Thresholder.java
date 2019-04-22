@@ -50,12 +50,9 @@ class Thresholder extends Container {
         JPanel algPanel = new JPanel();
         algPanel.setLayout(new BoxLayout(algPanel, BoxLayout.Y_AXIS));
 
-        //for the manual threshold panel
+        //Panel for manual threshold input
         JPanel threshPanel = new JPanel();
         threshPanel.setLayout(new GridBagLayout());
-
-
-
         JTextField threshold = new JTextField(20);
         JButton update = new JButton("Update");
 
@@ -75,33 +72,40 @@ class Thresholder extends Container {
         JLabel finalImageLabel = imageLabel;
         nobis.addActionListener(e -> {
             try {
+                //Opens original image and calls nobis algorithm
                 BufferedImage og= ImageIO.read(new File(path));
                 BufferedImage bl = Algorithms.nobis(og,mask);
-                method=1;
+                //Redraws image displayed
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
                 finalImageLabel.setIcon(new ImageIcon(i));
                 finalImageLabel.repaint();
                 setBlack(bl);
+                //Outputs calculated gap fraction to console text area
                 consoleOutput.append("\nMethod: Nobis");
                 consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl,mask));
+                //Stores method used for batch processing and csv file
+                method=1;
             }
             catch (IOException ex){ex.printStackTrace();}
         });
-
 
         //Single Binary Threshold radio button
         JButton single = new JButton("Single Binary Threshold Algorithm");
         JLabel finalImageLabel1 = imageLabel;
         single.addActionListener(e -> {
             try {
-                method=2;
+                //Creates black & white image using single binary algorithm
                 BufferedImage bl = Algorithms.single(path);
+                //Redraws image
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
                 finalImageLabel1.setIcon(new ImageIcon(i));
                 finalImageLabel1.repaint();
                 setBlack(bl);
+                //Displayed calculated gap fraction
                 consoleOutput.append("\nMethod: Single Binary");
                 consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl,mask));
+                //Stores method used for later
+                method=2;
             }
             catch (IOException ex){ex.printStackTrace();}
         });
@@ -143,23 +147,23 @@ class Thresholder extends Container {
             output[3]="";
             output[4]=String.valueOf(Black.getGapFraction(blackOutput,mask));
             String cpath;
-            //Create Window to select csv save directory
+            //Create window to select csv save directory
             SaveDialog save = new SaveDialog(ui,this);
             save.setVisible(true);
+            //If user did not press cancel in dialog
             if(save.getExit()) {
                 try {
+                    //Saves first image's in csv file at location chosen in save dialog
                     cpath = CSV.write(output,save.getSaveLocation());
+                    //If more than one file chosen at file selector
                     if (flag) {
+                        //Deletes created square image and continues to batch processing
                         SquareTheCircle.deleteSquare();
                         BatchUI bui = new BatchUI(mask, cpath, ui);
                         ui.setContentPane(bui);
                         ui.pack();
-                    } else {
-                        System.exit(0);
-                    }
-                } catch (IOException it) {
-                    it.printStackTrace();
-                }
+                    } else { System.exit(0); }
+                } catch (IOException it) { it.printStackTrace(); }
             }
         });
 
