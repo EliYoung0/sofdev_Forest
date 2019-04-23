@@ -131,7 +131,8 @@ class Circle extends Container {
             Prop.addProperty("radius", String.valueOf(circleR));
             Prop.addProperty("north", String.valueOf(circleN));
             SquareTheCircle.createTheRectangle(filepath);
-            Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(), SquareTheCircle.getColourMask(),output,ui,flag);
+            Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(),
+                    SquareTheCircle.getColourMask(),output,ui,flag);
             ui.setContentPane(thresholder);
             ui.pack();
         };
@@ -178,7 +179,7 @@ class Circle extends Container {
         }
         catch (IOException e) { e.printStackTrace(); }
     }
-    static void drawEast(Shape sun) {
+    static void drawZenith(Shape sun) {
         try {
             BufferedImage base = readImage(filepath);
             Graphics image = base.getGraphics();
@@ -330,7 +331,8 @@ class ZenithAction implements ActionListener {
         //Calculates distance from east to west according to hour put in
         /*
         ATTENTION
-        THIS ASSUMES BEING CLOSE TO THE EQUATOR, assumes sun travels simply from East to West along the centre of the image
+        THIS ASSUMES BEING CLOSE TO THE EQUATOR
+        Assumes sun travels simply from East to West along the centre of the image
          */
         double zenith = Circle.circleZ;
         double zDistance = -1;
@@ -339,32 +341,17 @@ class ZenithAction implements ActionListener {
             zDistance = 0;
             System.out.println(zenith);
         } else if (zenith >= 6.0 && zenith <= 18.0) {
-            //Imitates the path of the sun along an invisible sphere
-            System.out.println(zenith);
-
-            //To get a parabola from 0-12 (daylight hours), with bottom at 12, this is it
-            double zMinusSix = zenith - 12;
-            double zPow = Math.pow(zMinusSix, 2);
-            double zThird = zPow / 3;
-            double zParabola = zThird - 12;
-            System.out.println(zParabola);
-
-            double convertedZenith = zParabola / Math.PI;
-            System.out.println(convertedZenith);
-            double zenithSin = Math.sin(convertedZenith);
-
-            zDistance = zenithSin * radius;
-            //zDistance = parabolaZenith * radius;
-            System.out.println(zDistance);
-            System.out.println("-------");
+            //Imitates the path of the sun along an invisible half-sphere
+            zDistance = 1824 + (980 * Math.cos((Math.PI/12 * zenith) + (Math.PI/2)));
         } else if (zenith > 18.0){
             zDistance = radius * 2;
             System.out.println(zenith);
         }
 
         double yZenith = Circle.circleY + a;
-        double xZenith = Circle.circleX + b + zDistance;
+        double xZenith = zDistance;
+
         Shape sun = new Ellipse2D.Double(xZenith-15, yZenith-15, 30,30);
-        Circle.drawEast(sun);
+        Circle.drawZenith(sun);
     }
 }
