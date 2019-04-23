@@ -2,16 +2,15 @@ import java.awt.*;
 import java.awt.image.*;
 import javax.imageio.ImageIO;
 import java.io.*;
-import java.util.Scanner;
 
+@Deprecated
 public class BasicBlackAndWhite {
 
     //Initiation of universal variable
     private static BufferedImage colourLessInput = RemoveColour.colourLessOutput;
-    static BufferedImage blackAndWhiteOutput;
+    private static BufferedImage blackAndWhiteOutput;
     private static double whitePixels=0;
     private static double blackPixels=0;
-    private static double gapFraction=0.0;
 
     public static void BasicBlackAndWhiteMain(int threshold) {
         blackAndWhiteMethod(threshold);
@@ -54,7 +53,7 @@ public class BasicBlackAndWhite {
             }
         }
 
-        gapFraction=(whitePixels/(whitePixels+blackPixels));
+        double gapFraction = (whitePixels / (whitePixels + blackPixels));
         System.out.println("Gap fraction = " + gapFraction);
 
     }

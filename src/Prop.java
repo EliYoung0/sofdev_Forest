@@ -6,8 +6,11 @@ import java.util.Properties;
 
 class Prop {
 
-    private static Properties prop;
+    private static Properties prop; //Properties file that has been created
 
+    /**
+     * Creates a new properties file to save properties for batch processing
+     */
     static void createProperties(){
         prop = new Properties();
         OutputStream output = null;
@@ -24,6 +27,10 @@ class Prop {
         }
     }
 
+    /**
+     * Adds file path of all files to be processed to existing properties file
+     * @param value string array of paths to be processed
+     */
     static void addFiles(String[] value){
         OutputStream output = null;
         try{
@@ -47,6 +54,11 @@ class Prop {
         }
     }
 
+    /**
+     * Adds a property to existing property file
+     * @param key name of property to be saved
+     * @param value value of property being saved
+     */
     static void addProperty(String key, String value){
         OutputStream output = null;
         try{
@@ -63,11 +75,16 @@ class Prop {
         }
     }
 
+    /**
+     * Deletes config.properties file if it exists.
+     */
     static void deleteProperties(){
-        File f1 = new File("./config.properties");
-        boolean success = f1.delete();
-        if (!success) {
-            System.out.println("Failed to delete");
+        File f = new File("./config.properties");
+        if(f.exists()) {
+            boolean success = f.delete();
+            if (!success) {
+                System.out.println("Failed to delete config.properties.");
+            }
         }
     }
 
