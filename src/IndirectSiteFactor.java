@@ -11,8 +11,10 @@ and since this program is only for Dr. Metz's use, it will not be as relevant.)
 Sherlock notes:
 Azimuth is the direction the Sun is shining from //Hardcoded EAST direction of sun-shine
  */
+
+//TODO Call this in Thresholder
 public class IndirectSiteFactor {
-    boolean[][] isfMask;
+    double[][] isfMask;
 
     void ISF(){
         double north = Circle.circleN;
@@ -25,7 +27,7 @@ public class IndirectSiteFactor {
 
     }
 
-    boolean[][] mask(){
+    double[][] mask(){
 
 
         return isfMask;
