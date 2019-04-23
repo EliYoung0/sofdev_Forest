@@ -12,9 +12,6 @@ import static java.awt.Color.white;
 
 abstract class Algorithms {
 
-
-    static BufferedImage nobis(BufferedImage image,boolean[][] mask) throws IOException {
-
     /**
      * Caller method for nobis. Calls inner nobis with upper and lower threshold limits
      * Limits should eventually be input however using defaults from matlab atm.
