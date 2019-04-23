@@ -101,7 +101,7 @@ class FileSelector extends Container {
                     for (int i = 0; i < size; i++) {
                         address.append(chooser.getSelectedFiles()[i].getAbsolutePath());
                         if (i < size - 1) {
-                            address.append(", ");
+                            address.append(",");
                         }
                     }
                 }
