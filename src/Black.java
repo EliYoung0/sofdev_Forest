@@ -73,28 +73,56 @@ abstract class Black {
      */
     static double getGapFraction(BufferedImage black,boolean[][] mask){
 
-        double whiteCount=0.0;
-        double blackCount=0.0;
-        Object dataElements = null;
-        ColorModel colourModel = black.getColorModel();
+//        double whiteCount=0.0;
+//        double blackCount=0.0;
+//        Object dataElements = null;
+//        ColorModel colourModel = black.getColorModel();
+//        Raster raster = black.getRaster();
+//
+//        //Determines if each pixel is black or white
+//        for(int y = 0; y < black.getHeight(); y++) {
+//            for (int x = 0; x < black.getWidth(); x++) {
+//                if(mask[y][x]) {
+//                    //Get colours in 0-255 values
+//                    dataElements = raster.getDataElements(x, y, dataElements);
+//                    int blue = colourModel.getBlue(dataElements);
+//                    if (blue == 255) {
+//                        whiteCount++;
+//                    } else {
+//                        blackCount++;
+//                    }
+//                }
+//            }
+//        }
+//        //Calculates and returns gap fraction
+//        return ((whiteCount)/(whiteCount+blackCount));
+
+        double rgbCount=0.0;
+        double totalCount=0.0;
+        Object dataElements=null;
+        ColorModel colorModel = black.getColorModel();
         Raster raster = black.getRaster();
+
+
+        for(int y = 0; y<black.getHeight(); y++){
+            for(int x=0; x < black.getWidth(); x++){
+                if(mask[x][y]){
 
         //Determines if each pixel is black or white
         for(int y = 0; y < black.getHeight(); y++) {
             for (int x = 0; x < black.getWidth(); x++) {
                 if(mask[x][y]) {
                     //Get colours in 0-255 values
+
                     dataElements = raster.getDataElements(x, y, dataElements);
-                    int blue = colourModel.getBlue(dataElements);
-                    if (blue == 255) {
-                        whiteCount++;
-                    } else {
-                        blackCount++;
-                    }
+                    int blue = colorModel.getBlue(dataElements);
+                    blue = blue/255;
+                    rgbCount = rgbCount + blue;
+                    totalCount++;
                 }
             }
         }
-        //Calculates and returns gap fraction
-        return ((whiteCount)/(whiteCount+blackCount));
+        //System.out.println("rgbCount: " + rgbCount + " Total: " + totalCount);
+        return rgbCount/totalCount;
     }
 }

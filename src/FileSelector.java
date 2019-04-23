@@ -10,7 +10,8 @@ class FileSelector extends Container {
     private static String path; //file path of image to be processed in GUI
     private static String[] full; //Array of full path(s) for files to process
     private static boolean flag; //determines if batch processing is needed. True for yes
-    private JButton open;
+    private JTextArea address; //Text area where address is input
+    private JLabel warning; //Label where warnings are displayed
 
     /**
      * File Selector Container Constructor
@@ -22,23 +23,27 @@ class FileSelector extends Container {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(600,500));
         //Create Components
-        open = new JButton("Open");
-        open.setEnabled(false);
+        JButton open = new JButton("Open");
         ActionListener listener = e ->{
-            if(path!=null){
-                Prop.createProperties();
-                Prop.addFiles(full);
-                String path = FileSelector.getPath();
-                if (new File(path).exists()) {
-                    String[] output = new String[5];
-                    output[0] = path;
-                    Circle circle = new Circle(output, ui, flag);
-                    ui.setTitle(ui.getTitle()+": "+path);
-                    ui.setContentPane(circle);
-                    ui.pack();
-                } else {
-                    System.out.print("Invalid File Path");
+            if(isValidPath(address.getText())) {
+                if (path != null) {
+                    Prop.createProperties();
+                    Prop.addFiles(full);
+                    String path = FileSelector.getPath();
+                    if (new File(path).exists()) {
+                        String[] output = new String[5];
+                        output[0] = path;
+                        Circle circle = new Circle(output, ui, flag);
+                        ui.setTitle(ui.getTitle() + ": " + path);
+                        ui.setContentPane(circle);
+                        ui.pack();
+                    } else {
+                        System.out.print("Invalid File Path");
+                    }
                 }
+            }
+            else{
+                warning.setText("Invalid File Path(s)");
             }
         };
         open.addActionListener(listener);
@@ -46,6 +51,8 @@ class FileSelector extends Container {
 
         //Add components to FileSelector
         add(fileBrowser,BorderLayout.CENTER);
+        warning = new JLabel();
+        add(warning,BorderLayout.PAGE_END);
         add(open,BorderLayout.PAGE_END);
     }
 
@@ -61,7 +68,7 @@ class FileSelector extends Container {
         browserPanel.setBorder(new EmptyBorder(215,100,215,100));
         browserPanel.setLayout(new BoxLayout(browserPanel,BoxLayout.X_AXIS));
         //Create components of panel: address bar and browse button
-        JTextArea address = new JTextArea("",1,1);
+        address = new JTextArea("",1,1);
         address.setBorder(new EtchedBorder(1,null,Color.black));
         JScrollPane addressScroll = new JScrollPane(address, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         addressScroll.setSize(new Dimension(313, 40));
@@ -77,33 +84,30 @@ class FileSelector extends Container {
             chooser.setMultiSelectionEnabled(true);
             int returnVal = chooser.showOpenDialog(chooser);
             if(returnVal == JFileChooser.APPROVE_OPTION) {
-                full = new String[chooser.getSelectedFiles().length];
-                address.setText("");
-                //Checks if selected path is directory
-                if(chooser.getSelectedFiles()[0].isDirectory()){
-                    if(chooser.getSelectedFiles().length>1){return;}
-                    //If so sets used path to first jpg in directory
-                    File p = chooser.getSelectedFiles()[0];
-                    File[] files = p.listFiles((dir, filename) -> filename.toLowerCase().endsWith(".jpg"));
-                    assert files != null;
-                    if(files.length==0){return;}
-                    if(files.length>1){flag=true;}
-                    setPath(files[0].getAbsolutePath());
+                String s = "";
+                for(int i =0;i<chooser.getSelectedFiles().length;i++){
+                    s=s.concat(chooser.getSelectedFiles()[i].getAbsolutePath());
+                    if(i<chooser.getSelectedFiles().length-1){
+                        s=s.concat(",");
+                    }
                 }
-                //Otherwise sets used path to first image selected
-                else{setPath(chooser.getSelectedFiles()[0].getAbsolutePath());}
 
-
-                //Goes through each file or directory selected and stores it for later
-                int size=chooser.getSelectedFiles().length;
-                if(size>1){flag=true;}
-                for (int i = 0; i <size; i++) {
-                    full[i] = chooser.getSelectedFiles()[i].getAbsolutePath();
-                    //Displays each path in address box
-                    address.append(full[i]);
-                    if(i<size-1){ address.append(", ");}
+                if(isValidPath(s)) {
+                    address.setText("");
+                    int size = chooser.getSelectedFiles().length;
+                    if (size > 1) {
+                        flag = true;
+                    }
+                    for (int i = 0; i < size; i++) {
+                        address.append(chooser.getSelectedFiles()[i].getAbsolutePath());
+                        if (i < size - 1) {
+                            address.append(", ");
+                        }
+                    }
                 }
-                open.setEnabled(true);
+            }
+            else{
+                warning.setText("Invalid File Path(s)");
             }
         });
         browserPanel.add(addressScroll);
@@ -122,5 +126,71 @@ class FileSelector extends Container {
      * @param val String file path of the first image
      */
     private static void setPath(String val) { path = val; }
+
+    /**
+     * Checks if input string is a valid file path or multiple valid file paths
+     * @param s String to be checked
+     * @return false if one or more of the input paths are invalid. true otherwise
+     */
+    private boolean isValidPath(String s){
+        assert s!=null;
+        //Splits s into an array of paths
+        String[] paths = s.split(",");
+        //If a single path
+        if(paths.length==1){
+            File f = new File(s);
+            //Checks path exits
+            if(f.exists()){
+                //If path is a directory
+                if(f.isDirectory()){
+                    File[] files = f.listFiles((dir, filename) -> filename.toLowerCase().endsWith(".jpg"));
+                    assert files != null;
+                    //Checks that directory has jpgs within
+                    if(files.length==0){return false;}
+                    //Sets flag if more than one file
+                    flag = files.length > 1;
+                    //Checks each file is valid
+                    for (File fi:files) {
+                        isValidFile(fi.getAbsolutePath());
+                    }
+                    //Sets path for GUI to use to be the first file
+                    path = files[0].getAbsolutePath();
+                    return true;
+                }
+                else {
+                    //If a path is a file checks file is valid
+                    if (!isValidFile(f.getAbsolutePath())) {
+                        return false;
+                    }
+                    flag=false;
+                }
+            }
+        }
+        //If multiple checks that all files are valid
+        else{
+            for (String p:paths) {
+                if(!isValidFile(p)){return false;}
+            }
+            flag=true;
+        }
+        full=paths;
+        path = paths[0];
+        return true;
+    }
+
+    /**
+     * Checks that a single file path is valid
+     * @param p file path to check
+     * @return true if a valid jpg file
+     */
+    private boolean isValidFile(String p){
+        //Check path has correct extension
+        if(!p.toLowerCase().endsWith(".jpg")){return false;}
+        File f = new File(p);
+        //Check image file exists
+        if(!f.exists()){return false;}
+        //Checks file is not a directory. Might not be needed
+        return !f.isDirectory();
+    }
 
 }

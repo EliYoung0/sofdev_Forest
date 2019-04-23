@@ -10,13 +10,21 @@ import java.io.IOException;
 
 
 class Thresholder extends Container {
+    private static BufferedImage blackOutput; //Black and white image created
+    static int method; //Integer value representing threshold method {0: manual, 1: nobis, 2: single}
+    private int currentThreshold; //Threshold value if manual method is used
+    String path; //File path of square image to be make b&w
+    boolean[][] mask; //Image mask used by threshold algorithms
 
-    private static BufferedImage blackOutput;
-    static int method;
-    private int currentThreshold;
-    String path;
-    boolean[][] mask;
-
+    /**
+     * Constructor for thresholder container
+     * Creates components and adds listeners
+     * @param path String filepath of square image
+     * @param mask Image mask
+     * @param output String array of output data to be saved
+     * @param ui Outer JFrame
+     * @param flag Boolean flag for batch processing: true if batch is needed
+     */
     Thresholder(String path, boolean[][] mask, String[] output, UI ui, boolean flag) {
         this.path=path;
         this.mask = mask;
@@ -42,12 +50,9 @@ class Thresholder extends Container {
         JPanel algPanel = new JPanel();
         algPanel.setLayout(new BoxLayout(algPanel, BoxLayout.Y_AXIS));
 
-        //for the manual threshold panel
+        //Panel for manual threshold input
         JPanel threshPanel = new JPanel();
         threshPanel.setLayout(new GridBagLayout());
-
-
-
         JTextField threshold = new JTextField(20);
         JButton update = new JButton("Update");
 
@@ -67,30 +72,55 @@ class Thresholder extends Container {
         JLabel finalImageLabel = imageLabel;
         nobis.addActionListener(e -> {
             try {
+                //Opens original image and calls nobis algorithm
                 BufferedImage og= ImageIO.read(new File(path));
                 BufferedImage bl = Algorithms.nobis(og,mask);
-                method=1;
+                //Redraws image displayed
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
                 finalImageLabel.setIcon(new ImageIcon(i));
                 finalImageLabel.repaint();
                 setBlack(bl);
-                //Remove following line in final product. Just to show functionality right now.
+                //Outputs calculated gap fraction to console text area
+                consoleOutput.append("\nMethod: Nobis");
                 consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl,mask));
+                //Stores method used for batch processing and csv file
+                method=1;
             }
             catch (IOException ex){ex.printStackTrace();}
         });
-
 
         //Single Binary Threshold radio button
         JButton single = new JButton("Single Binary Threshold Algorithm");
         JLabel finalImageLabel1 = imageLabel;
         single.addActionListener(e -> {
             try {
-                method=2;
+                //Creates black & white image using single binary algorithm
                 BufferedImage bl = Algorithms.single(path);
+                //Redraws image
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
                 finalImageLabel1.setIcon(new ImageIcon(i));
                 finalImageLabel1.repaint();
+                setBlack(bl);
+                //Displayed calculated gap fraction
+                consoleOutput.append("\nMethod: Single Binary");
+                consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl,mask));
+                //Stores method used for later
+                method=2;
+            }
+            catch (IOException ex){ex.printStackTrace();}
+        });
+
+        //DHP Algorithm radio button
+        JButton dhp = new JButton("DHP Algorithm");
+        JLabel finalImageLabel2 = imageLabel;
+        dhp.addActionListener(e -> {
+            try {
+                BufferedImage og= ImageIO.read(new File(path));
+                BufferedImage bl = Algorithms.dhp(path);
+                method=3;
+                Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
+                finalImageLabel2.setIcon(new ImageIcon(i));
+                finalImageLabel2.repaint();
                 setBlack(bl);
                 //Remove following line in final product. Just to show functionality right now.
                 consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl,mask));
@@ -98,9 +128,13 @@ class Thresholder extends Container {
             catch (IOException ex){ex.printStackTrace();}
         });
 
+
         c.gridheight=1;
         c.gridx=1;
         c.gridy=0;
+
+        //Adds components to threshold panel
+
         GridBagConstraints tr = new GridBagConstraints();
         tr.fill = GridBagConstraints.VERTICAL;
         tr.gridy=0;
@@ -112,6 +146,13 @@ class Thresholder extends Container {
         threshPanel.add(nobis,tr);
         tr.gridy=3;
         threshPanel.add(single,tr);
+        tr.gridy=4;
+        threshPanel.add(dhp,tr);
+
+        //Adds components to container
+        c.gridheight=1;
+        c.gridx=1;
+        c.gridy=0;
         c.gridy=1;
         add(threshPanel,c);
         c.gridy=2;
@@ -119,9 +160,9 @@ class Thresholder extends Container {
 
         //Give proceed button functionality
         JButton proceed = new JButton("Save & Continue");
-        //This part used to close the program
+        //Adds action listener that either saves and closes program or continues to batch
         proceed.addActionListener(e -> {
-            String[] methods = new String[]{"Manual","Nobis","Single Binary"};
+            String[] methods = new String[]{"Manual","Nobis","Single Binary","DHP"};
             output[1]=methods[method];
             Prop.addProperty("method",String.valueOf(method));
             if(method==0){
@@ -132,27 +173,27 @@ class Thresholder extends Container {
             output[3]="";
             output[4]=String.valueOf(Black.getGapFraction(blackOutput,mask));
             String cpath;
-            //Create Window to select csv save directory
+            //Create window to select csv save directory
             SaveDialog save = new SaveDialog(ui,this);
             save.setVisible(true);
+            //If user did not press cancel in dialog
             if(save.getExit()) {
                 try {
+                    //Saves first image's in csv file at location chosen in save dialog
                     cpath = CSV.write(output,save.getSaveLocation());
+                    //If more than one file chosen at file selector
                     if (flag) {
+                        //Deletes created square image and continues to batch processing
                         SquareTheCircle.deleteSquare();
                         BatchUI bui = new BatchUI(mask, cpath, ui);
                         ui.setContentPane(bui);
                         ui.pack();
-                    } else {
-                        System.exit(0);
-                    }
-                } catch (IOException it) {
-                    it.printStackTrace();
-                }
+                    } else { System.exit(0); }
+                } catch (IOException it) { it.printStackTrace(); }
             }
         });
 
-        //Add components to Container
+        //Add proceed button to container
         c.gridx=0;
         c.gridy=3;
         c.gridwidth=2;
@@ -160,6 +201,10 @@ class Thresholder extends Container {
 
     }
 
+    /**
+     * Stores black and white image to blackOutput
+     * @param b black & white image to be stored
+     */
     void setBlack(BufferedImage b) { blackOutput = b; }
 
     /**
@@ -171,49 +216,78 @@ class Thresholder extends Container {
 }
 
 class UpdateAction implements ActionListener {
-    private JTextField text;
-    private JLabel t;
-    private String path;
-    private Thresholder outer;
-    private JTextArea console;
+    private JTextField text; //Text Field where manual threshold value is stored
+    private JLabel imageLabel; //Label where image is displayed
+    private String path; //File path of image to be displayed
+    private Thresholder outer; //Outer container
+    private JTextArea console; //Text area where warnings and gap fraction is outputted
 
-    UpdateAction(String path, JLabel t, JTextField thresh, Thresholder outer, JTextArea output) {
+    /**
+     * Constructor of UpdateAction
+     * Components that are used are fed in here
+     * @param path File path of image to be displayed
+     * @param imageLabel JLabel where image is displayed
+     * @param thresh integer manual threshold value
+     * @param outer Thresholder outer container
+     * @param output JTextArea where gap fraction is shown
+     */
+    UpdateAction(String path, JLabel imageLabel, JTextField thresh, Thresholder outer, JTextArea output) {
         text = thresh;
-        this.t = t;
+        this.imageLabel = imageLabel;
         this.outer = outer;
         this.path = path;
         console = output;
     }
 
+    /**
+     * Thresholds image at manually input value when button is pressed
+     * @param e ActionEvent that occurs when button is pressed
+     */
     public void actionPerformed(ActionEvent e) {
         try {
+            //Checks manual input value is valid
             int threshold = Integer.parseInt(text.getText());
             if (threshold >= 0 && threshold <= 255) {
+                //Tells the thrsholder that the method used is manual
                 Thresholder.method = 0;
+                //Creates black and white image from threshold value
                 BufferedImage og = ImageIO.read(new File(path));
                 BufferedImage bl = Black.makeBlack(og, threshold,outer.mask);
+                //Stores black image to thresholder
                 outer.setBlack(bl);
+                //Stores threshold value used to thresholder
                 outer.setCurrentThreshold(threshold);
+                //Outputs gap fraction to console text area
+                console.append("\nMethod: Manual. Threshold value: "+threshold);
                 console.append("\nGap Fraction is: " + Black.getGapFraction(bl,outer.mask));
+                //Displays black and white image in GUI
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
-                t.setIcon(new ImageIcon(i));
-                t.repaint();
+                imageLabel.setIcon(new ImageIcon(i));
+                imageLabel.repaint();
             }
+            //Feeds warning if input manual value is not between accepted values
             else {console.append("\nThreshold must be an integer between 0 and 255."); }
         }
+        //Feeds warning if manual input is not an integer
         catch (NumberFormatException f) { console.append("\nEnter a valid integer value."); }
+        //Feeds warning if image filepath is invalid
         catch (IOException ex){console.append("\nInvalid image file path"); }
     }
 
 }
 
 class SaveDialog extends JDialog{
-    private String saveLocation;
-    private boolean exit;
-    private JTextField address;
-    private JLabel warnings;
-    Thresholder thresh;
+    private String saveLocation; //Filepath where csv is to be saved
+    private boolean exit; //Boolean to determine exit clause of Dialog. True for save, false for cancel
+    private JTextField address; //Text field where address to used is entered
+    private JLabel warnings; //Label to display warnings
+    private Thresholder thresh; //Outer container that holds this dialog
 
+    /**
+     * Constructor for Save dialog.
+     * @param ui Outermost JFrame from which dialog is opened
+     * @param t Outer container. Used to get default path
+     */
     SaveDialog(Frame ui,Thresholder t){
         super(ui,true);
         thresh=t;
@@ -272,51 +346,72 @@ class SaveDialog extends JDialog{
         c.gridwidth=4;
         add(browserPanel,c);
         c.gridy=1;
-        c.gridx=0;
-        c.gridwidth=4;
         add(warnings,c);
         c.gridy=2;
-        c.gridx=0;
         c.gridwidth=2;
         add(save,c);
-        c.gridy=2;
         c.gridx=2;
         c.gridwidth=2;
         add(cancel,c);
     }
 
+    /**
+     * Checks if file path entered in the address bar is valid
+     * If it is valid, the path is stored to saveLocation
+     * @return true if file path is successfully saved. False if path is invalid or not entered yet
+     */
     private boolean setPath() {
+        //Tries to get text inputted into address bar
         try {
             String string = address.getText();
+            //Checks if inputted path is invalid
             if (isValidPath(string)) {
                 saveLocation = string;
                 return true;
             } else {
+                //Displays warning and returns false if invalid path
                 warnings.setText("Not a valid file location");
                 return false;
             }
         }
+        //Catches error if address bar is empty
         catch (NullPointerException n){
+            //Displays warning and returns false
             warnings.setText("Please enter a file location");
             return false;
         }
     }
 
+    /**
+     * Checks if file path given is valid
+     * @param string filepath to be checked
+     * @return true if valid, false if invalid
+     */
     private boolean isValidPath(String string) {
+        //If it has an incorrect extension returns false.
         if(!string.endsWith(".csv")){return false;}
         File f = new File(string);
+        //Checks if path is a directory
         if(f.isDirectory()){
             return false;
         }
         else{
+            //Checks the file paths parent directory exists
             f=f.getParentFile();
             return f.exists();
         }
     }
 
-
+    /**
+     * Returns the exit condition of the dialog
+     * @return the boolean exit condition stored at exit
+     */
     boolean getExit() { return exit; }
 
+    /**
+     * returns the filepath where csv is to be saved
+     * @return saveLocation where csv is to be created
+     */
     String getSaveLocation() { return saveLocation; }
 
 }

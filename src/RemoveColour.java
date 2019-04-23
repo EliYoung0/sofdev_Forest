@@ -3,6 +3,7 @@ import java.awt.image.*;
 import javax.imageio.ImageIO;
 import java.io.*;
 
+@Deprecated
 public class RemoveColour {
     //Initiation of universal variable
     private static BufferedImage blueExtractInput = ExtractBlue.blueExtractOutput;
