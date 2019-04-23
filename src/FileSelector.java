@@ -10,8 +10,8 @@ class FileSelector extends Container {
     private static String path; //file path of image to be processed in GUI
     private static String[] full; //Array of full path(s) for files to process
     private static boolean flag; //determines if batch processing is needed. True for yes
-    private JTextArea address;
-    private JLabel warning;
+    private JTextArea address; //Text area where address is input
+    private JLabel warning; //Label where warnings are displayed
 
     /**
      * File Selector Container Constructor
@@ -127,24 +127,38 @@ class FileSelector extends Container {
      */
     private static void setPath(String val) { path = val; }
 
+    /**
+     * Checks if input string is a valid file path or multiple valid file paths
+     * @param s String to be checked
+     * @return false if one or more of the input paths are invalid. true otherwise
+     */
     private boolean isValidPath(String s){
         assert s!=null;
+        //Splits s into an array of paths
         String[] paths = s.split(",");
+        //If a single path
         if(paths.length==1){
             File f = new File(s);
+            //Checks path exits
             if(f.exists()){
+                //If path is a directory
                 if(f.isDirectory()){
                     File[] files = f.listFiles((dir, filename) -> filename.toLowerCase().endsWith(".jpg"));
                     assert files != null;
+                    //Checks that directory has jpgs within
                     if(files.length==0){return false;}
+                    //Sets flag if more than one file
                     flag = files.length > 1;
+                    //Checks each file is valid
                     for (File fi:files) {
                         isValidFile(fi.getAbsolutePath());
                     }
+                    //Sets path for GUI to use to be the first file
                     path = files[0].getAbsolutePath();
                     return true;
                 }
                 else {
+                    //If a path is a file checks file is valid
                     if (!isValidFile(f.getAbsolutePath())) {
                         return false;
                     }
@@ -152,6 +166,7 @@ class FileSelector extends Container {
                 }
             }
         }
+        //If multiple checks that all files are valid
         else{
             for (String p:paths) {
                 if(!isValidFile(p)){return false;}
@@ -163,10 +178,18 @@ class FileSelector extends Container {
         return true;
     }
 
+    /**
+     * Checks that a single file path is valid
+     * @param p file path to check
+     * @return true if a valid jpg file
+     */
     private boolean isValidFile(String p){
+        //Check path has correct extension
         if(!p.toLowerCase().endsWith(".jpg")){return false;}
         File f = new File(p);
+        //Check image file exists
         if(!f.exists()){return false;}
+        //Checks file is not a directory. Might not be needed
         return !f.isDirectory();
     }
 

@@ -10,13 +10,13 @@ import java.io.File;
 import java.io.IOException;
 
 class Circle extends Container {
-    private static String filepath;
-    static int circleX;
-    static int circleY;
-    static int circleR;
-    static double circleN;
-    private static Shape border;
-    private static JLabel canopyLabel;
+    private static String filepath; //File path of image being processed
+    static int circleX; //Center x value of image
+    static int circleY; //Center y value of image
+    static int circleR; //Radius of image
+    static double circleN; //North direction of image in degrees
+    private static Shape border; //Border shape to be drawn to image
+    private static JLabel canopyLabel; //Label where image is shown
 
     /**
      * Constructor of Circle Container
@@ -106,7 +106,7 @@ class Circle extends Container {
             Prop.addProperty("radius", String.valueOf(circleR));
             Prop.addProperty("north", String.valueOf(circleN));
             SquareTheCircle.createTheRectangle(filepath);
-            Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(), SquareTheCircle.getColourMask(),output,ui,flag);
+            Thresholder thresholder = new Thresholder(SquareTheCircle.getSquareFilepath(), SquareTheCircle.getImageMask(),output,ui,flag);
             ui.setContentPane(thresholder);
             ui.pack();
         };
@@ -157,6 +157,10 @@ class Circle extends Container {
      */
     static void setBorder(Shape circleInput) { border = circleInput; }
 
+    /**
+     * Redraws the canopy label with north dot and border ring
+     * @param dot Shape object of north dot to be added to image
+     */
     static void remake(Shape dot) {
         try {
             BufferedImage base = readImage(filepath);
@@ -185,13 +189,21 @@ class Circle extends Container {
 }
 
 class CircleAction implements ActionListener {
-    private JTextField x;
-    private JTextField y;
-    private JTextField radius;
-    private BufferedImage canopyInput;
-    private JLabel returnImage;
-    private String path;
+    private JTextField x; //Text field where center x is input
+    private JTextField y; //Text field where center y is input
+    private JTextField radius; //Text field where radius is input
+    private BufferedImage canopyInput; //Image to be shown
+    private JLabel returnImage; //label where image is shown
+    private String path; //path of original image
 
+    /**
+     * Stores needed components on construction to be used in actionPerformed
+     * @param path String of filepath of image being processed
+     * @param x JTextField where center x is input
+     * @param y JTextField where center y is input
+     * @param radius JTextField where radius is input
+     * @param image JLabel where image is shown
+     */
     CircleAction(String path, JTextField x, JTextField y, JTextField radius, JLabel image) {
         this.path = path;
         this.x = x;
@@ -200,6 +212,11 @@ class CircleAction implements ActionListener {
         returnImage = image;
     }
 
+    /**
+     * Stores the center x, center y, and radius values input.
+     * Then draws a border ring on image based on these values
+     * @param e ActionEvent that is triggered when draw circle is pressed
+     */
     public void actionPerformed(ActionEvent e) {
         //sets Circle universal variables
         Circle.setCircleX(x);
@@ -260,12 +277,21 @@ class CircleAction implements ActionListener {
 }
 
 class NorthAction implements ActionListener {
-    private JTextField north;
+    private JTextField north; //Text field where north value is input
 
+    /**
+     * Stores the north text field as variable on create
+     * @param northInputField JTextField where north value is input
+     */
     NorthAction(JTextField northInputField){
         north = northInputField;
     }
 
+    /**
+     * Calculates where the north dot is placed on image.
+     * Then calls remake() to draw image with north dot shown.
+     * @param e ActionEvent that indicates north button is pushed
+     */
     public void actionPerformed(ActionEvent e) {
         //Set variables and then calculate
         Circle.setCircleN(north);
