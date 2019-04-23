@@ -15,8 +15,9 @@ public class IndirectSiteFactor {
         double azimuth = north - 90; //Hardcoded EAST direction of sun-shine
         //Zenith is how high in the sky the Sun is
         double zenith = Circle.circleZ; //hour of the day picture is taken at, time of year, etc.
-        //
-        //
+        double zenithCentre = Circle.circleZDistance;
+        double[] centre = new double[]{Circle.circleX, Circle.circleY};
+
 
     }
 

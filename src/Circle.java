@@ -18,6 +18,7 @@ class Circle extends Container {
     private static Shape border; //Border shape to be drawn to image
     private static JLabel canopyLabel; //Label where image is shown
     static double circleZ;
+    static double circleZDistance;
     static Shape dot;
 
     /**
@@ -169,6 +170,7 @@ class Circle extends Container {
     static void setCircleZ (JTextField zenithInputField) { circleZ = Double.parseDouble(zenithInputField.getText());}
     static void setBorder(Shape circleInput) { border = circleInput; }
     static void setCircleDot(Shape dotInput) { dot = dotInput;}
+    static void setCircleZDistance(double zDistanceInput) { circleZDistance = zDistanceInput;}
 
     /**
      * Creates image from path of image file
@@ -176,8 +178,8 @@ class Circle extends Container {
      * @return image stored in file path
      * @throws IOException in the case the file path is not valid
      */
-
     static BufferedImage readImage (String path) throws IOException { return ImageIO.read(new File(path)); }
+
     /**
      * Redraws the canopy label with north dot and border ring
      * @param dot Shape object of north dot to be added to image
@@ -371,14 +373,6 @@ class ZenithAction implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         //Sets variable for later call
         Circle.setCircleZ(zenith);
-        //Calculates starting point (East)
-        double north = Math.toRadians(Circle.circleN);
-        double radius = (double)Circle.circleR;
-        double sin = Math.sin(north);
-        double cos = Math.cos(north + Math.PI);
-        double a = radius * sin;
-        double b = radius * cos;
-        //Calculates distance from east to west according to hour put in
         /*
         ATTENTION
         THIS ASSUMES BEING CLOSE TO THE EQUATOR
@@ -392,13 +386,14 @@ class ZenithAction implements ActionListener {
             System.out.println(zenith);
         } else if (zenith >= 6.0 && zenith <= 18.0) {
             //Imitates the path of the sun along an invisible half-sphere
-            zDistance = 1824 + (980 * Math.cos((Math.PI/12 * zenith) + (Math.PI/2)));
+            zDistance = Circle.circleX + ((double)Circle.circleR * Math.cos((Math.PI/12 * zenith) + (Math.PI/2)));
         } else if (zenith > 18.0){
-            zDistance = radius * 2;
+            zDistance = (double)Circle.circleR * 2;
             System.out.println(zenith);
         }
 
-        double yZenith = Circle.circleY + a;
+        Circle.setCircleZDistance(zDistance);
+        double yZenith = Circle.circleY + ((double)Circle.circleR * Math.sin(Math.toRadians(Circle.circleN)));
         double xZenith = zDistance;
 
         Shape sun = new Ellipse2D.Double(xZenith-15, yZenith-15, 30,30);
