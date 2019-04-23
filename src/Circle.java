@@ -57,10 +57,10 @@ class Circle extends Container {
         //Directions
         JLabel directionText = new JLabel("<html> Input values for the circle below. <br> (Circle must be drawn before placing north) </html>");
         //X-input
-        JLabel xText = new JLabel("Centre x pixel value: ");
+        JLabel xText = new JLabel("Center x pixel value: ");
         JTextField xInputField = new JTextField(20);
         //Y-input
-        JLabel yText = new JLabel("Centre y pixel value: ");
+        JLabel yText = new JLabel("Center y pixel value: ");
         JTextField yInputField = new JTextField(20);
         //Radius input
         JLabel radiusText = new JLabel("Radius pixel value: ");
