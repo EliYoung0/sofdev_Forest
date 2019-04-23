@@ -1,7 +1,7 @@
 Forest Canopy Photograph Analysis Program
 =======
 
-This project was created with the goal of creating a Java program capable of implementing various algorithms to analyze forest canopy photos and calculate various metrics including gap fraction and ISF to be used in the study of the effects of sunlight on plant growth.
+This project was created with the goal of making a Java program capable of implementing various algorithms to analyze forest canopy photos and calculate various metrics including gap fraction and ISF to be used in the study of the effects of sunlight on plant growth.
 
 ## Table of Contents:
 1. Installation
@@ -41,7 +41,7 @@ This project was created by a group of Lewis & Clark College students:
  * Eli Young
 
 We would also like to thank Professor Peter Drake for his help with our coding difficulties and
-Professor Margaret Metz for her patients and support.
+Professor Margaret Metz for her patience and support.
 
 ## Github:
 Our code can be found at
