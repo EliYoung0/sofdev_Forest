@@ -365,6 +365,8 @@ class NorthAction implements ActionListener {
 
 class ZenithAction implements ActionListener {
     private JTextField zenith;
+    double yZenith = -1;
+    double xZenith = -1;
 
     ZenithAction(JTextField zenithInputField){
         zenith = zenithInputField;
@@ -382,19 +384,17 @@ class ZenithAction implements ActionListener {
         double zDistance = -1;
         //These if statements assume sun will rise at or around 06:00 and sets at or around 18:00 daily
         if (zenith < 6.0) {
-            zDistance = 0;
-            System.out.println(zenith);
+            zDistance = Circle.circleX;
         } else if (zenith >= 6.0 && zenith <= 18.0) {
             //Imitates the path of the sun along an invisible half-sphere
             zDistance = Circle.circleX + ((double)Circle.circleR * Math.cos((Math.PI/12 * zenith) + (Math.PI/2)));
         } else if (zenith > 18.0){
-            zDistance = (double)Circle.circleR * 2;
-            System.out.println(zenith);
+            zDistance = Circle.circleX+(double)Circle.circleR;
         }
 
         Circle.setCircleZDistance(zDistance);
-        double yZenith = Circle.circleY + ((double)Circle.circleR * Math.sin(Math.toRadians(Circle.circleN)));
-        double xZenith = zDistance;
+        yZenith = Circle.circleY + ((double)Circle.circleR * Math.sin(Math.toRadians(Circle.circleN)));
+        xZenith = zDistance;
 
         Shape sun = new Ellipse2D.Double(xZenith-15, yZenith-15, 30,30);
         Circle.drawZenith(sun);

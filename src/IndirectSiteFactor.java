@@ -7,10 +7,6 @@ and where and when it was taken in the world. However, this would require a lot 
 and since this program is only for Dr. Metz's use, it will not be as relevant.)
 */
 
-/*
-Sherlock notes:
-Azimuth is the direction the Sun is shining from //Hardcoded EAST direction of sun-shine
- */
 
 //TODO Call this in Thresholder
 public class IndirectSiteFactor {
@@ -23,19 +19,29 @@ public class IndirectSiteFactor {
         double zenithCentre = Circle.circleZDistance;
         double[] centre = new double[]{Circle.circleX+Circle.circleR, Circle.circleX-Circle.circleR,
                 Circle.circleY+Circle.circleR, Circle.circleY-Circle.circleR}; //X+R, X-R, Y+R, Y-R
-
-
+        
+        mask(zenith, zenithCentre, centre);
     }
 
-    double[][] mask(){
+    /*
+    This calculation is done by splitting the plane into nine portions, which,
+    if the Sun was at noon (peak), would mean that there would be nine portions of 10 degrees
+    each on every side to the horizon.
+     */
+    double[][] mask(double zenith, double zenithCentre, double[] centre){
+        int w = -1;//square.getWitdh();
+        for(int i=0; i<9; i++) {
+            for(int x=0; x<w; x++){
+                for(int y=0; y<w; y++){
 
+                }
+            }
+        }
 
+        
         return isfMask;
     }
-}
-//Average distances on the plane along the multiples of 30deg or pi/6
-//Create ellipse on distances of 10degrees, or nine slices, from centre to the circumference
-//Calculate and draw slices
+}//Calculate and draw slices
 //??Figure out weighting??? >Azimuth and zenith
 
 
