@@ -12,6 +12,7 @@ class FileSelector extends Container {
     private static boolean flag; //determines if batch processing is needed. True for yes
     private JTextArea address; //Text area where address is input
     private JLabel warning; //Label where warnings are displayed
+    private JButton open;
 
     /**
      * File Selector Container Constructor
@@ -24,7 +25,7 @@ class FileSelector extends Container {
         setPreferredSize(new Dimension(600,510));
 
         //Create Components
-        JButton open = new JButton("Open");
+        open = new JButton("Open");
         ActionListener listener = e ->{
             //Checks entered file path(s) are valid
             if(isValidPath(address.getText())) {
@@ -189,4 +190,19 @@ class FileSelector extends Container {
         return !f.isDirectory();
     }
 
+    /**
+     * Returns address bar
+     * @return address bar
+     */
+    JTextArea getAddress() {
+        return address;
+    }
+
+    /**
+     * Get open button
+     * @return open button
+     */
+    public JButton getOpen() {
+        return open;
+    }
 }

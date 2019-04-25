@@ -123,6 +123,7 @@ class Thresholder extends Container {
                 finalImageLabel2.repaint();
                 setBlack(bl);
                 //Remove following line in final product. Just to show functionality right now.
+                consoleOutput.append("\nMethod: DHP");
                 consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl,mask));
             }
             catch (IOException ex){ex.printStackTrace();}
