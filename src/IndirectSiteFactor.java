@@ -7,7 +7,6 @@ and where and when it was taken in the world. However, this would require a lot 
 and since this program is only for Dr. Metz's use, it will not be as relevant.)
 */
 
-
 //TODO Call this in Thresholder
 public class IndirectSiteFactor {
     double[][] isfMask;
@@ -41,9 +40,4 @@ public class IndirectSiteFactor {
         }
         return isfMask;
     }
-}//Calculate and draw slices
-//??Figure out weighting??? >Azimuth and zenith
-
-
-//Need to create a mask with the different weighted values
-//Paint onto image?
+}
