@@ -12,7 +12,6 @@ import static java.awt.Color.white;
 
 abstract class Algorithms {
 
-
     /**
      * Caller method for nobis. Calls inner nobis with upper and lower threshold limits
      * Limits should eventually be input however using defaults from matlab atm.
@@ -553,21 +552,38 @@ abstract class Algorithms {
         double[][] blue = toArray(image, m, n);
 
         //for every row
-        for(int r = 0; r < n; r++){
+        for(int x1 = 0; x1 < n; x1++){
             //for every column
-            for(int c = 0; c < m; c++){
-                //if not in the mask (zeros outside, 1 inside)
-                if(mask[r][c]==true){
-                    //go in a circle around it adding together the blue values that aren't in the mask
+            for(int y1 = 0; y1 < m; y1++){
+                //if not in the mask (false outside image, true inside)
+                if(mask[x1][y1]){
+                    //go in a circle around it (5 sq) adding together the blue values that aren't in the mask
+                    double avg = 0;
+                    int count = 0;
+                    for(int x2 = -2; x2 < 3; x2++) {
+                        for (int y2 = -2; y2 < 3; y2++) {
+                            if (mask[x1 + x2][y1 + y2])
+                                avg += blue[x1 + x2][y1 + y2];
+                            count++;
+                        }
+                    }
                     //figure out the average
+                    avg = avg/count;
                     //if this pixel is above the average
+                    if(blue[x1][y1]>avg) {
                         //make it white
+                        image.setRGB(x1, y1, white.getRGB());
+                    }
                     //else
+                    else {
                         //make it black
+                        image.setRGB(x1, y1, black.getRGB());
+                    }
                 }
             }
         }
 
         //return the created image
+        return image;
     }
 }
