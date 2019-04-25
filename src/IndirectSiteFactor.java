@@ -16,11 +16,7 @@ public class IndirectSiteFactor {
         double north = Circle.circleN;
         //Zenith is how high in the sky the Sun is, in hour decimal i.e. 1:30pm = 13.5
         double zenith = Circle.circleZ;
-        double zenithCentre = Circle.circleZDistance;
-        double[] centre = new double[]{Circle.circleX+Circle.circleR, Circle.circleX-Circle.circleR,
-                Circle.circleY+Circle.circleR, Circle.circleY-Circle.circleR}; //X+R, X-R, Y+R, Y-R
-        
-        mask(zenith, zenithCentre, centre);
+        mask(zenith);
     }
 
     /*
@@ -28,17 +24,21 @@ public class IndirectSiteFactor {
     if the Sun was at noon (peak), would mean that there would be nine portions of 10 degrees
     each on every side to the horizon.
      */
-    double[][] mask(double zenith, double zenithCentre, double[] centre){
-        int w = -1;//square.getWitdh();
-        for(int i=0; i<9; i++) {
-            for(int x=0; x<w; x++){
-                for(int y=0; y<w; y++){
-
-                }
+    double[][] mask(double zenith){
+        int w = Circle.circleR * 2;
+        for(int x=0; x<w; x++){
+            for(int y=0; y<w; y++){
+                double xDist = (double)Circle.circleX - x;
+                double yDist = (double)Circle.circleY - y;
+                double distance = Math.sqrt(Math.pow(xDist,2) + Math.pow(yDist,2));
+                double zDist = Math.sqrt(Math.pow(Circle.circleR, 2) - Math.pow(distance,2));
+                double zenDistance = Circle.circleX + ((double)Circle.circleR * Math.cos((Math.PI/12 * zenith) + (Math.PI/2)));
+                double zenX = zenDistance * Math.cos(Circle.circleN + (Math.PI / 2));
+                double zenY = zenDistance * Math.sin(Circle.circleN + (Math.PI / 2));
+                double zenZ = Math.sqrt(Math.pow(Circle.circleR,2) - Math.pow(zenDistance,2));
+                isfMask[x][y] = (xDist * zenX) + (yDist * zenY) + (zDist * zenZ);
             }
         }
-
-        
         return isfMask;
     }
 }//Calculate and draw slices

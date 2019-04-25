@@ -381,20 +381,20 @@ class ZenithAction implements ActionListener {
         Assumes sun travels simply from East to West along the centre of the image
          */
         double zenith = Circle.circleZ;
-        double zDistance = -1;
+        double zenDistance = -1;
         //These if statements assume sun will rise at or around 06:00 and sets at or around 18:00 daily
         if (zenith < 6.0) {
-            zDistance = Circle.circleX;
+            zenDistance = Circle.circleX;
         } else if (zenith >= 6.0 && zenith <= 18.0) {
             //Imitates the path of the sun along an invisible half-sphere
-            zDistance = Circle.circleX + ((double)Circle.circleR * Math.cos((Math.PI/12 * zenith) + (Math.PI/2)));
+            zenDistance = Circle.circleX + ((double)Circle.circleR * Math.cos((Math.PI/12 * zenith) + (Math.PI/2)));
         } else if (zenith > 18.0){
-            zDistance = Circle.circleX+(double)Circle.circleR;
+            zenDistance = Circle.circleX+(double)Circle.circleR;
         }
 
-        Circle.setCircleZDistance(zDistance);
+        Circle.setCircleZDistance(zenDistance);
         yZenith = Circle.circleY + ((double)Circle.circleR * Math.sin(Math.toRadians(Circle.circleN)));
-        xZenith = zDistance;
+        xZenith = zenDistance;
 
         Shape sun = new Ellipse2D.Double(xZenith-15, yZenith-15, 30,30);
         Circle.drawZenith(sun);
