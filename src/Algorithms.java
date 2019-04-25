@@ -562,9 +562,12 @@ abstract class Algorithms {
                     int count = 0;
                     for(int x2 = -2; x2 < 3; x2++) {
                         for (int y2 = -2; y2 < 3; y2++) {
-                            if (mask[x1 + x2][y1 + y2])
-                                avg += blue[x1 + x2][y1 + y2];
-                            count++;
+                            if((x1+x2>0) && (y1+y2>0) && (x1+x2<m) && (y1+y2<n)) {
+                                if (mask[x1 + x2][y1 + y2]) {
+                                    avg += blue[x1 + x2][y1 + y2];
+                                    count++;
+                                }
+                            }
                         }
                     }
                     //figure out the average
