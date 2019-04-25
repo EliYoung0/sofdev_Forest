@@ -95,6 +95,7 @@ class Thresholder extends Container {
         single.addActionListener(e -> {
             try {
                 //Creates black & white image using single binary algorithm
+                BufferedImage og= ImageIO.read(new File(path));
                 BufferedImage bl = Algorithms.single(path);
                 //Redraws image
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
@@ -123,6 +124,7 @@ class Thresholder extends Container {
                 finalImageLabel2.repaint();
                 setBlack(bl);
                 //Remove following line in final product. Just to show functionality right now.
+                consoleOutput.append("\nMethod: DHP");
                 consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl,mask));
             }
             catch (IOException ex){ex.printStackTrace();}
@@ -248,7 +250,7 @@ class UpdateAction implements ActionListener {
             //Checks manual input value is valid
             int threshold = Integer.parseInt(text.getText());
             if (threshold >= 0 && threshold <= 255) {
-                //Tells the thrsholder that the method used is manual
+                //Tells the thresholder that the method used is manual
                 Thresholder.method = 0;
                 //Creates black and white image from threshold value
                 BufferedImage og = ImageIO.read(new File(path));

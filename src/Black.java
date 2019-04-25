@@ -42,10 +42,12 @@ abstract class Black {
         colourModel = original.getColorModel();
         raster = original.getRaster();
 
+        Algorithms.gapmask = new double[original.getWidth()][original.getHeight()];
+
         //Goes through each pixel and changes it to black or white based on threshold value
         for(int y = 0; y < original.getHeight(); y++) {
             for (int x = 0; x < original.getWidth(); x++) {
-                if(mask[y][x]) {
+                if(mask[x][y]) {
                     //Get colours in 0-255 values
                     dataElements = raster.getDataElements(x, y, dataElements);
                     int blue = colourModel.getBlue(dataElements);
@@ -55,8 +57,10 @@ abstract class Black {
                     //Compares pixel to threshold
                     if (blue >= threshold) {
                         original.setRGB(x, y, white.getRGB());
+                        Algorithms.gapmask[x][y] = 1;
                     } else {
                         original.setRGB(x, y, black.getRGB());
+                        Algorithms.gapmask[x][y] = 0;
                     }
                 }
             }
@@ -107,10 +111,12 @@ abstract class Black {
             for (int x = 0; x < black.getWidth(); x++) {
                 if (mask[x][y]) {
                     //Get colours in 0-255 values
-                    dataElements = raster.getDataElements(x, y, dataElements);
+                    /*dataElements = raster.getDataElements(x, y, dataElements);
                     int blue = colorModel.getBlue(dataElements);
                     blue = blue / 255;
                     rgbCount = rgbCount + blue;
+                    totalCount++;*/
+                    rgbCount = rgbCount + Algorithms.gapmask[x][y];
                     totalCount++;
                 }
             }

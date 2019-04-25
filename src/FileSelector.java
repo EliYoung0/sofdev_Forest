@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.*;
 
 class FileSelector extends Container {
-    private static String path; //file path of image to be processed in GUI
+    public static String path; //file path of image to be processed in GUI
     private static String[] full; //Array of full path(s) for files to process
     private static boolean flag; //determines if batch processing is needed. True for yes
     private JTextArea address; //Text area where address is input
@@ -119,7 +119,7 @@ class FileSelector extends Container {
      * Returns the file path text field object
      * @return the address text field
      */
-    private static String getPath() { return path; }
+    public static String getPath() { return path; }
 
     /**
      * Sets the path of the first image to process
