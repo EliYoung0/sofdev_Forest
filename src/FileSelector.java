@@ -12,6 +12,7 @@ class FileSelector extends Container {
     private static boolean flag; //determines if batch processing is needed. True for yes
     private JTextArea address; //Text area where address is input
     private JLabel warning; //Label where warnings are displayed
+    private JButton open;
 
     /**
      * File Selector Container Constructor
@@ -21,39 +22,42 @@ class FileSelector extends Container {
     FileSelector(UI ui){
         flag = false;
         setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(600,500));
+        setPreferredSize(new Dimension(600,510));
+
         //Create Components
-        JButton open = new JButton("Open");
+        open = new JButton("Open");
         ActionListener listener = e ->{
+            //Checks entered file path(s) are valid
             if(isValidPath(address.getText())) {
-                if (path != null) {
-                    Prop.createProperties();
-                    Prop.addFiles(full);
-                    String path = FileSelector.getPath();
-                    if (new File(path).exists()) {
-                        String[] output = new String[5];
-                        output[0] = path;
-                        Circle circle = new Circle(output, ui, flag);
-                        ui.setTitle(ui.getTitle() + ": " + path);
-                        ui.setContentPane(circle);
-                        ui.pack();
-                    } else {
-                        System.out.print("Invalid File Path");
-                    }
-                }
+                //Stores all path(s) into properties file for batch processing
+                Prop.createProperties();
+                Prop.addFiles(full);
+                String path = FileSelector.getPath();
+                if (new File(path).exists()) {
+                    String[] output = new String[5];
+                    output[0] = path;
+                    Circle circle = new Circle(output, ui, flag);
+                    ui.setTitle(ui.getTitle() + ": " + path);
+                    ui.setContentPane(circle);
+                    ui.pack();
+                } else { warning.setText("Please enter a file path."); }
             }
-            else{
-                warning.setText("Invalid File Path(s)");
-            }
+            else{ warning.setText("File Path(s) Invalid"); }
         };
         open.addActionListener(listener);
-        JPanel fileBrowser = createBrowser();
+
+        //Add components to open panel
+        JPanel openPanel = new JPanel(new BorderLayout());
+        warning = new JLabel(" ");
+        warning.setForeground(Color.red);
+        warning.setHorizontalAlignment(JLabel.CENTER);
+        openPanel.add(warning,BorderLayout.PAGE_START);
+        openPanel.add(open,BorderLayout.PAGE_END);
 
         //Add components to FileSelector
+        JPanel fileBrowser = createBrowser();
         add(fileBrowser,BorderLayout.CENTER);
-        warning = new JLabel();
-        add(warning,BorderLayout.PAGE_END);
-        add(open,BorderLayout.PAGE_END);
+        add(openPanel,BorderLayout.PAGE_END);
     }
 
 
@@ -87,28 +91,20 @@ class FileSelector extends Container {
                 String s = "";
                 for(int i =0;i<chooser.getSelectedFiles().length;i++){
                     s=s.concat(chooser.getSelectedFiles()[i].getAbsolutePath());
-                    if(i<chooser.getSelectedFiles().length-1){
-                        s=s.concat(",");
-                    }
+                    if(i<chooser.getSelectedFiles().length-1){ s=s.concat(","); }
                 }
 
                 if(isValidPath(s)) {
                     address.setText("");
                     int size = chooser.getSelectedFiles().length;
-                    if (size > 1) {
-                        flag = true;
-                    }
+                    if (size > 1) { flag = true; }
                     for (int i = 0; i < size; i++) {
                         address.append(chooser.getSelectedFiles()[i].getAbsolutePath());
-                        if (i < size - 1) {
-                            address.append(", ");
-                        }
+                        if (i < size - 1) { address.append(","); }
                     }
                 }
             }
-            else{
-                warning.setText("Invalid File Path(s)");
-            }
+            else{ warning.setText("Invalid File Path(s)"); }
         });
         browserPanel.add(addressScroll);
         browserPanel.add(browse);
@@ -145,7 +141,7 @@ class FileSelector extends Container {
                 if(f.isDirectory()){
                     File[] files = f.listFiles((dir, filename) -> filename.toLowerCase().endsWith(".jpg"));
                     assert files != null;
-                    //Checks that directory has jpgs within
+                    //Checks that directory has jpg's within
                     if(files.length==0){return false;}
                     //Sets flag if more than one file
                     flag = files.length > 1;
@@ -155,6 +151,7 @@ class FileSelector extends Container {
                     }
                     //Sets path for GUI to use to be the first file
                     path = files[0].getAbsolutePath();
+                    full=new String[]{f.getAbsolutePath()};
                     return true;
                 }
                 else {
@@ -193,4 +190,19 @@ class FileSelector extends Container {
         return !f.isDirectory();
     }
 
+    /**
+     * Returns address bar
+     * @return address bar
+     */
+    JTextArea getAddress() {
+        return address;
+    }
+
+    /**
+     * Get open button
+     * @return open button
+     */
+    public JButton getOpen() {
+        return open;
+    }
 }

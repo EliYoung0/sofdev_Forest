@@ -17,6 +17,7 @@ class Circle extends Container {
     static double circleN; //North direction of image in degrees
     private static Shape border; //Border shape to be drawn to image
     private static JLabel canopyLabel; //Label where image is shown
+    private JButton proceed;
     static double circleZ;
     static double circleZDistance;
     static Shape dot;
@@ -125,7 +126,7 @@ class Circle extends Container {
         addZenith.addActionListener(new ZenithAction(zenithInputField));
 
         //Provide proceed button functionality
-        JButton proceed = new JButton("Save & Continue");
+        proceed = new JButton("Save & Continue");
         ActionListener listener = e -> {
             Prop.addProperty("xCenter",String.valueOf(circleX));
             Prop.addProperty("yCenter",String.valueOf(circleY));
@@ -237,6 +238,25 @@ class Circle extends Container {
 
         }
         catch (IOException e) { e.printStackTrace(); }
+    }
+
+    /**
+     * Sets the Circle values.
+     * Used by UITest
+     * @param x center x value
+     * @param y center y value
+     * @param r radius value
+     * @param n north value
+     */
+    void setValues(int x,int y, int r, int n){
+        circleX=x;
+        circleY=y;
+        circleR=r;
+        circleN=n;
+    }
+
+    JButton getProceed(){
+        return proceed;
     }
 }
 
