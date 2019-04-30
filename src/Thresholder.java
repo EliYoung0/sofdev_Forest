@@ -118,7 +118,6 @@ class Thresholder extends Container {
         JButton dhp = new JButton("DHP Algorithm");
         dhp.addActionListener(e -> {
             try {
-                BufferedImage og= ImageIO.read(new File(path));
                 BufferedImage bl = Algorithms.dhp(path);
                 method=3;
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
@@ -131,7 +130,6 @@ class Thresholder extends Container {
             }
             catch (IOException ex){ex.printStackTrace();}
         });
-
 
         c.gridheight=1;
         c.gridx=1;
@@ -174,7 +172,7 @@ class Thresholder extends Container {
                 output[2]=String.valueOf(currentThreshold);
             }
             else{output[2]="N/A";}
-            output[3]="";
+            output[3]=String.valueOf(IndirectSiteFactor.getISF(blackOutput));
             output[4]=String.valueOf(Black.getGapFraction(blackOutput,mask));
             String cpath;
             //Create window to select csv save directory
@@ -192,7 +190,7 @@ class Thresholder extends Container {
                         BatchUI bui = new BatchUI(mask, cpath, ui);
                         ui.setContentPane(bui);
                         ui.pack();
-                    } else { System.exit(0); }
+                    } else { ui.dispose(); }
                 } catch (IOException it) { it.printStackTrace(); }
             }
         });
