@@ -11,12 +11,14 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 
-//TODO Call this in Thresholder
 public class IndirectSiteFactor {
-    /*
-    This calculation is done by splitting the plane into nine portions, which,
-    if the Sun was at noon (peak), would mean that there would be nine portions of 10 degrees
-    each on every side to the horizon.
+
+    /**
+     * Creates
+     * @param zenith
+     * @param height
+     * @param width
+     * @return
      */
     private static double[][] mask(double zenith, int height, int width){
         double[][] isfMask = new double[width][height];
@@ -33,11 +35,18 @@ public class IndirectSiteFactor {
                 double zenY = zenDistance * Math.sin(Circle.circleN + (Math.PI / 2));
                 double zenZ = Math.sqrt(Math.pow(Circle.circleR,2) - Math.pow(zenDistance,2));
                 isfMask[x][y] = (xDist * zenX) + (yDist * zenY) + (zDist * zenZ);
+                System.out.print(isfMask[x][y]);
             }
+            System.out.println();
         }
         return isfMask;
     }
 
+    /**
+     *
+     * @param black
+     * @return
+     */
     static double getISF(BufferedImage black) {
         double [][] mask = mask(Circle.circleZ, black.getHeight(), black.getWidth());
         double rgbCount=0.0;

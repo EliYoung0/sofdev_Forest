@@ -191,6 +191,7 @@ class Thresholder extends Container {
             }
             else{output[2]="N/A";}
             output[3]=String.valueOf(IndirectSiteFactor.getISF(blackOutput));
+            System.out.println(output[3]);
             output[4]=String.valueOf(Black.getGapFraction(blackOutput,mask));
             String cpath;
             //Create window to select csv save directory
@@ -208,7 +209,7 @@ class Thresholder extends Container {
                         BatchUI bui = new BatchUI(mask, cpath, ui);
                         ui.setContentPane(bui);
                         ui.pack();
-                    } else { System.exit(0); }
+                    } else { ui.dispose(); }
                 } catch (IOException it) { it.printStackTrace(); }
             }
         });
