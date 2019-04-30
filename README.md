@@ -35,11 +35,11 @@ Or press cancel to go back to the thresholding screen.
 the program.
 
 ## Algorithms
-* __Manual:__
-* __Nobis:__
-* __Single Binary:__
-* __DHP:__
-* __Local:__
+* __Manual:__ User inputs a threshold from 0 to 255.  Any pixels which are brighter than that threshold are turned to white, all others are turned black.
+* __Nobis:__ Description coming soon
+* __Single Binary:__ Description coming soon
+* __DHP:__ Description coming soon
+* __Local:__ Goes through every pixel and compares it with the mean of all the pixels in a 5x5 square centered on the target pixel.  If the target pixel is brighter than the mean, then that pixel is turned white.  Otherwise it is turned black.
 
 ## Authors and Acknowledgements:
 This project was created by a group of Lewis & Clark College students:
