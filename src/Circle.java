@@ -19,6 +19,7 @@ class Circle extends Container {
     private static JLabel canopyLabel; //Label where image is shown
     private JButton proceed;
     static double circleZ;
+    private static double circleZDistance;
     private static Shape dot;
 
     /**
@@ -170,6 +171,7 @@ class Circle extends Container {
     static void setCircleZ (JTextField zenithInputField) { circleZ = Double.parseDouble(zenithInputField.getText());}
     static void setBorder(Shape circleInput) { border = circleInput; }
     static void setCircleDot(Shape dotInput) { dot = dotInput;}
+    static void setCircleZDistance(double zDistanceInput) { circleZDistance = zDistanceInput;}
 
     /**
      * Creates image from path of image file
@@ -389,17 +391,13 @@ class ZenithAction implements ActionListener {
         zenith = zenithInputField;
     }
 
-    /**
-     * Adds a yellow dot to the canopy image on the border to represent the location of the sun.
-     * THIS ASSUMES BEING CLOSE TO THE EQUATOR
-     * Assumes sun travels simply from East to West along the centre of the image
-     * @param e Add zenith button clicked
-     */
     public void actionPerformed(ActionEvent e) {
         //Sets variable for later call
         Circle.setCircleZ(zenith);
         /*
         ATTENTION
+        THIS ASSUMES BEING CLOSE TO THE EQUATOR
+        Assumes sun travels simply from East to West along the centre of the image
          */
         double zenith = Circle.circleZ;
         double zenDistance;
@@ -407,7 +405,9 @@ class ZenithAction implements ActionListener {
         if (zenith < 6.0) { zenDistance = -Circle.circleR; }
         //Imitates the path of the sun along an invisible half-sphere
         else if (zenith >= 6.0 && zenith <= 18.0) { zenDistance = ((double)Circle.circleR * Math.cos(((Math.PI/12) * zenith) + (Math.PI/2))); }
-        else{ zenDistance = (double)Circle.circleR;}
+        else{ zenDistance = (double)Circle.circleR; }
+
+        Circle.setCircleZDistance(zenDistance);
         double yZenith = Circle.circleY+zenDistance*Math.cos(Circle.circleN*(Math.PI/180)+(Math.PI/2));
         double xZenith = Circle.circleX+zenDistance*Math.sin(Circle.circleN*(Math.PI/180)+(Math.PI/2));
 

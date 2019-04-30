@@ -143,7 +143,7 @@ class FileSelector extends Container {
                 if(f.isDirectory()){
                     File[] files = f.listFiles((dir, filename) -> filename.toLowerCase().endsWith(".jpg"));
                     assert files != null;
-                    //Checks that directory has jpg's within
+                    //Checks that directory has jpgs within
                     if(files.length==0){return false;}
                     //Sets flag if more than one file
                     flag = files.length > 1;
