@@ -342,6 +342,11 @@ abstract class Algorithms {
         return image;
     }
 
+    /**
+     * Calculates maxleft, maxright, average pixels, max frequency, upper corner and lower corner
+     * Called from Thresholder to make values available to all algorithms
+     */
+
 
     public static void calcValues() {
 
@@ -517,6 +522,13 @@ abstract class Algorithms {
         }
         return true;
     }
+
+    /**
+     * Makes histogram of DN (digital number) values of each pixel in the image
+     * @param DN array of DN values
+     * @param blue array of blue channel of image
+     * @param image image to be processed
+     */
 
     private static void makeHistogram(double[] DN, double[][] blue, BufferedImage image) {
         for (int i = 0; i < image.getWidth(); i++) {
