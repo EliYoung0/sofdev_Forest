@@ -272,7 +272,7 @@ abstract class Algorithms {
      * @throws IOException throws exception if file does not exist
      */
     static BufferedImage single(String path) throws IOException {
-        return single(ImageIO.read(new File(path)));
+        return single(image);
     }
 
     /**
@@ -282,73 +282,6 @@ abstract class Algorithms {
      * @return black & white version of image
      */
     static BufferedImage single(BufferedImage image) {
-        int m = image.getWidth();
-        int n = image.getHeight();
-        double max = 0;
-        int maxright;
-        int maxleft;
-        int L1 = 5;
-        int L2 = 55;
-        int R1 = 200;
-        int R2 = 250;
-        double average;
-        int maxfrequency;
-
-        //Turn Image into array of blue pixel values
-        double[][] blue = toArray(image, m, n);
-
-        double[] DN = new double[256];
-        //fill DN array to make "histogram"
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if ((((i - Circle.circleX) * (i - Circle.circleX)) + ((j - Circle.circleY) * (j - Circle.circleY))) <= (Circle.circleR * Circle.circleR)) {
-                    DN[(int) blue[i][j]]++;
-                    if (DN[(int) blue[i][j]] > max) {
-                        max = DN[(int) blue[i][j]];
-                    }
-                }
-            }
-        }
-
-
-        //find maxright and maxleft
-        maxleft = findMax(L1, L2, DN);
-        maxright = findMax(R1, R2, DN);
-
-        while ((L2 - maxleft) < 10) {
-            L2 = L2 + 25;
-            maxleft = findMax(L1, L2, DN);
-        }
-
-        while ((maxright - R1) < 10) {
-            R1 = R1 - 25;
-            maxright = findMax(R1, R2, DN);
-        }
-
-        average = averagePixels(DN);
-
-        if (max > average) {
-            maxfrequency = (int) average;
-        } else {
-            maxfrequency = (int) max;
-        }
-
-        //Find first and last nonempty bin
-        int rbin = 255;
-        while (DN[rbin] == 0) {
-            rbin--;
-        }
-
-        int lbin = 0;
-        while (DN[lbin] == 0) {
-            lbin++;
-        }
-
-        int slope = (maxfrequency) / (maxright - lbin);
-        int uc = upperCorner(DN, slope, maxfrequency, maxleft, maxright);
-
-        slope = (maxfrequency) / (maxleft - rbin);
-        int lc = lowerCorner(DN, slope, maxfrequency, maxleft, maxright);
 
         gapmask = new double[m][n];
 
@@ -366,7 +299,6 @@ abstract class Algorithms {
                 }
             }
         }
-
 
         return image;
     }
@@ -390,81 +322,6 @@ abstract class Algorithms {
      * @return black & white version of image
      */
     static BufferedImage dhp(BufferedImage image) {
-//        int m = image.getWidth();
-//        int n = image.getHeight();
-//        double max = 0;
-//        int maxright;
-//        int maxleft;
-//        int L1 = 5;
-//        int L2 = 55;
-//        int R1 = 200;
-//        int R2 = 250;
-//        double average;
-//        int maxfrequency;
-//
-//        //Turn Image into array of blue pixel values
-//        double[][] blue = toArray(image, m, n);
-//
-//        //Back-correct gamma of blue channel
-//        for (int i = 0; i < m; i++) {
-//            for (int j = 0; j < n; j++) {
-//                blue[i][j] = 255.0 * Math.pow((blue[i][j] / 255.0), (1.0 / 2.2));
-//            }
-//        }
-//
-//        double[] DN = new double[256];
-//        //fill DN array to make "histogram"
-//        for (int i = 0; i < m; i++) {
-//            for (int j = 0; j < n; j++) {
-//                if ((((i - Circle.circleX) * (i - Circle.circleX)) + ((j - Circle.circleY) * (j - Circle.circleY))) <= (Circle.circleR * Circle.circleR)) {
-//                    DN[(int) blue[i][j]]++;
-//                    if (DN[(int) blue[i][j]] > max) {
-//                        max = DN[(int) blue[i][j]];
-//                    }
-//                }
-//            }
-//        }
-//
-//
-//        //find maxright and maxleft
-//        maxleft = findMax(L1, L2, DN);
-//        maxright = findMax(R1, R2, DN);
-//
-//        while ((L2 - maxleft) < 10) {
-//            L2 = L2 + 25;
-//            maxleft = findMax(L1, L2, DN);
-//        }
-//
-//        while ((maxright - R1) < 10) {
-//            R1 = R1 - 25;
-//            maxright = findMax(R1, R2, DN);
-//        }
-//
-//        average = averagePixels(DN);
-//
-//        if (max > average) {
-//            maxfrequency = (int) average;
-//        } else {
-//            maxfrequency = (int) max;
-//        }
-//
-//        //Find first and last nonempty bin
-//        int rbin = 255;
-//        while (DN[rbin] == 0) {
-//            rbin--;
-//        }
-//
-//        int lbin = 0;
-//        while (DN[lbin] == 0) {
-//            lbin++;
-//        }
-//
-//        int slope = (maxfrequency) / (maxright - lbin);
-//        int uc = upperCorner(DN, slope, maxfrequency, maxleft, maxright);
-//
-//        slope = (maxfrequency) / (maxleft - rbin);
-//        int lc = lowerCorner(DN, slope, maxfrequency, maxleft, maxright);
-
 
         double tl = lc + ((uc - lc) * (0.25));
         double th = lc + ((uc - lc) * (0.75));
