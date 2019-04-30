@@ -10,10 +10,10 @@ import java.io.IOException;
 
 
 class Thresholder extends Container {
-    private static BufferedImage blackOutput; //Black and white image created
+    private BufferedImage blackOutput; //Black and white image created
     static int method; //Integer value representing threshold method {0: manual, 1: nobis, 2: single}
     private int currentThreshold; //Threshold value if manual method is used
-    public static String path; //File path of square image to be make b&w
+    public String path; //File path of square image to be make b&w
     boolean[][] mask; //Image mask used by threshold algorithms
 
     /**
@@ -98,7 +98,6 @@ class Thresholder extends Container {
         single.addActionListener(e -> {
             try {
                 //Creates black & white image using single binary algorithm
-                BufferedImage og= ImageIO.read(new File(path));
                 BufferedImage bl = Algorithms.single(path);
                 //Redraws image
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
@@ -118,7 +117,6 @@ class Thresholder extends Container {
         JButton dhp = new JButton("DHP Algorithm");
         dhp.addActionListener(e -> {
             try {
-                BufferedImage og= ImageIO.read(new File(path));
                 BufferedImage bl = Algorithms.dhp(path);
                 method=3;
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
