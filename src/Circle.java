@@ -17,6 +17,9 @@ class Circle extends Container {
     static double circleN; //North direction of image in degrees
     private static Shape border; //Border shape to be drawn to image
     private static JLabel canopyLabel; //Label where image is shown
+    private JButton proceed;
+    static double circleZ;
+    private static Shape dot;
 
     /**
      * Constructor of Circle Container
@@ -55,12 +58,13 @@ class Circle extends Container {
         circlePanel.setLayout(new BoxLayout(circlePanel, BoxLayout.Y_AXIS));
         add(circlePanel, c);
         //Directions
-        JLabel directionText = new JLabel("<html> Input values for the circle below. <br> (Circle must be drawn before placing north) </html>");
+        JLabel directionText = new JLabel("<html> Input values for the circle below. " +
+                "<br> (Circle must be drawn before placing north) </html>");
         //X-input
-        JLabel xText = new JLabel("Center x pixel value: ");
+        JLabel xText = new JLabel("Centre x pixel value: ");
         JTextField xInputField = new JTextField(20);
         //Y-input
-        JLabel yText = new JLabel("Center y pixel value: ");
+        JLabel yText = new JLabel("Centre y pixel value: ");
         JTextField yInputField = new JTextField(20);
         //Radius input
         JLabel radiusText = new JLabel("Radius pixel value: ");
@@ -78,7 +82,7 @@ class Circle extends Container {
         circlePanel.add(radiusInputField);
         circlePanel.add(drawCircle);
 
-        //Adds north functionality
+        //Adds north input functionality
         c.gridy = 1;
         c.gridx = 1;
         c.gridheight = 1;
@@ -98,8 +102,30 @@ class Circle extends Container {
         northPanel.add(addNorth);
         addNorth.addActionListener(new NorthAction(northInputField));
 
+        //Adds zenith functionality
+        c.gridy = 2;
+        c.gridx = 1;
+        c.gridheight = 1;
+        JPanel zenithPanel = new JPanel();
+        zenithPanel.setLayout(new BoxLayout(zenithPanel, BoxLayout.Y_AXIS));
+        add(zenithPanel, c);
+        //Zenith Input
+        JLabel zenithText1 = new JLabel("Time of day this image was taken at: ");
+        JLabel zenithText2 = new JLabel("(This will draw where the Sun is at the time the image was taken.)");
+        JLabel zenithText3 = new JLabel("(Time of day from 0-24 in decimal format, e.g. 1:30pm is 13.5.)");
+        JTextField zenithInputField = new JTextField(20);
+        //Adds components to panel
+        zenithPanel.add(zenithText1);
+        zenithPanel.add(zenithText2);
+        zenithPanel.add(zenithText3);
+        zenithPanel.add(zenithInputField);
+        //Adds zenith button for the action
+        JButton addZenith = new JButton("Add Zenith");
+        zenithPanel.add(addZenith);
+        addZenith.addActionListener(new ZenithAction(zenithInputField));
+
         //Provide proceed button functionality
-        JButton proceed = new JButton("Save & Continue");
+        proceed = new JButton("Save & Continue");
         ActionListener listener = e -> {
             Prop.addProperty("xCenter",String.valueOf(circleX));
             Prop.addProperty("yCenter",String.valueOf(circleY));
@@ -116,7 +142,6 @@ class Circle extends Container {
         c.gridx = 0;
         c.gridwidth = 2;
         add(proceed, c);
-
     }
 
     /**
@@ -142,6 +167,9 @@ class Circle extends Container {
      * @param northInputField component where north value is stored
      */
     static void setCircleN (JTextField northInputField) { circleN = Double.parseDouble(northInputField.getText()); }
+    static void setCircleZ (JTextField zenithInputField) { circleZ = Double.parseDouble(zenithInputField.getText());}
+    static void setBorder(Shape circleInput) { border = circleInput; }
+    static void setCircleDot(Shape dotInput) { dot = dotInput;}
 
     /**
      * Creates image from path of image file
@@ -152,16 +180,10 @@ class Circle extends Container {
     static BufferedImage readImage (String path) throws IOException { return ImageIO.read(new File(path)); }
 
     /**
-     * Stores the image with border created by center and radius to border
-     * @param circleInput image to be stored
-     */
-    static void setBorder(Shape circleInput) { border = circleInput; }
-
-    /**
      * Redraws the canopy label with north dot and border ring
      * @param dot Shape object of north dot to be added to image
      */
-    static void remake(Shape dot) {
+    static void drawNorth(Shape dot) {
         try {
             BufferedImage base = readImage(filepath);
             Graphics image = base.getGraphics();
@@ -170,7 +192,7 @@ class Circle extends Container {
             layers.fill(border);
             layers.setColor(Color.BLACK);
             layers.draw(border);
-            layers.setColor(Color.YELLOW);
+            layers.setColor(Color.MAGENTA);
             layers.fill(dot);
             layers.setColor(Color.BLACK);
             layers.draw(dot);
@@ -185,6 +207,55 @@ class Circle extends Container {
 
         }
         catch (IOException e) { e.printStackTrace(); }
+    }
+
+    static void drawZenith(Shape sun) {
+        try {
+            BufferedImage base = readImage(filepath);
+            Graphics image = base.getGraphics();
+            Graphics2D layers = (Graphics2D) image;
+            layers.setColor(Color.RED);
+            layers.fill(border);
+            layers.setColor(Color.BLACK);
+            layers.draw(border);
+            layers.setColor(Color.MAGENTA);
+            layers.fill(dot);
+            layers.setColor(Color.BLACK);
+            layers.draw(dot);
+            layers.setColor(Color.YELLOW);
+            layers.fill(sun);
+            layers.setColor(Color.BLACK);
+            layers.draw(sun);
+
+            layers.dispose();
+            image.dispose();
+            int width = base.getWidth();
+            int height = base.getHeight();
+            Image i = base.getScaledInstance((500 * width) / height, 500, Image.SCALE_SMOOTH);
+            canopyLabel.setIcon(new ImageIcon(i));
+            canopyLabel.repaint();
+
+        }
+        catch (IOException e) { e.printStackTrace(); }
+    }
+
+    /**
+     * Sets the Circle values.
+     * Used by UITest
+     * @param x center x value
+     * @param y center y value
+     * @param r radius value
+     * @param n north value
+     */
+    void setValues(int x,int y, int r, int n){
+        circleX=x;
+        circleY=y;
+        circleR=r;
+        circleN=n;
+    }
+
+    JButton getProceed(){
+        return proceed;
     }
 }
 
@@ -306,6 +377,41 @@ class NorthAction implements ActionListener {
 
         //Creates north dot and draws it into the image
         Shape dot = new Ellipse2D.Double(xNorth-15, yNorth-15, 30, 30);
-        Circle.remake(dot);
+        Circle.setCircleDot(dot);
+        Circle.drawNorth(dot);
+    }
+}
+
+class ZenithAction implements ActionListener {
+    private JTextField zenith;
+
+    ZenithAction(JTextField zenithInputField){
+        zenith = zenithInputField;
+    }
+
+    /**
+     * Adds a yellow dot to the canopy image on the border to represent the location of the sun.
+     * THIS ASSUMES BEING CLOSE TO THE EQUATOR
+     * Assumes sun travels simply from East to West along the centre of the image
+     * @param e Add zenith button clicked
+     */
+    public void actionPerformed(ActionEvent e) {
+        //Sets variable for later call
+        Circle.setCircleZ(zenith);
+        /*
+        ATTENTION
+         */
+        double zenith = Circle.circleZ;
+        double zenDistance;
+        //These if statements assume sun will rise at or around 06:00 and sets at or around 18:00 daily
+        if (zenith < 6.0) { zenDistance = -Circle.circleR; }
+        //Imitates the path of the sun along an invisible half-sphere
+        else if (zenith >= 6.0 && zenith <= 18.0) { zenDistance = ((double)Circle.circleR * Math.cos(((Math.PI/12) * zenith) + (Math.PI/2))); }
+        else{ zenDistance = (double)Circle.circleR;}
+        double yZenith = Circle.circleY+zenDistance*Math.cos(Circle.circleN*(Math.PI/180)+(Math.PI/2));
+        double xZenith = Circle.circleX+zenDistance*Math.sin(Circle.circleN*(Math.PI/180)+(Math.PI/2));
+
+        Shape sun = new Ellipse2D.Double(xZenith-15, yZenith-15, 30,30);
+        Circle.drawZenith(sun);
     }
 }

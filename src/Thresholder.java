@@ -95,7 +95,6 @@ class Thresholder extends Container {
 
         //Single Binary Threshold radio button
         JButton single = new JButton("Single Binary Threshold Algorithm");
-        JLabel finalImageLabel1 = imageLabel;
         single.addActionListener(e -> {
             try {
                 //Creates black & white image using single binary algorithm
@@ -103,8 +102,8 @@ class Thresholder extends Container {
                 BufferedImage bl = Algorithms.single(path);
                 //Redraws image
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
-                finalImageLabel1.setIcon(new ImageIcon(i));
-                finalImageLabel1.repaint();
+                finalImageLabel.setIcon(new ImageIcon(i));
+                finalImageLabel.repaint();
                 setBlack(bl);
                 //Displayed calculated gap fraction
                 consoleOutput.append("\nMethod: Single Binary");
@@ -117,15 +116,14 @@ class Thresholder extends Container {
 
         //DHP Algorithm radio button
         JButton dhp = new JButton("DHP Algorithm");
-        JLabel finalImageLabel2 = imageLabel;
         dhp.addActionListener(e -> {
             try {
                 BufferedImage og= ImageIO.read(new File(path));
                 BufferedImage bl = Algorithms.dhp(path);
                 method=3;
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
-                finalImageLabel2.setIcon(new ImageIcon(i));
-                finalImageLabel2.repaint();
+                finalImageLabel.setIcon(new ImageIcon(i));
+                finalImageLabel.repaint();
                 setBlack(bl);
                 //Remove following line in final product. Just to show functionality right now.
                 consoleOutput.append("\nMethod: DHP");
