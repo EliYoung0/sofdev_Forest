@@ -103,11 +103,6 @@ abstract class Black {
         ColorModel colorModel = black.getColorModel();
         Raster raster = black.getRaster();
 
-
-        for(int y = 0; y<black.getHeight(); y++){
-            for(int x=0; x < black.getWidth(); x++){
-                if(mask[x][y]){
-
         //Determines if each pixel is black or white
         for(int y = 0; y < black.getHeight(); y++) {
             for (int x = 0; x < black.getWidth(); x++) {
@@ -125,5 +120,4 @@ abstract class Black {
         //System.out.println("rgbCount: " + rgbCount + " Total: " + totalCount);
         return rgbCount/totalCount;
     }
-
 }
