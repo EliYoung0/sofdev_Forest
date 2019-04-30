@@ -13,6 +13,7 @@ class FileSelector extends Container {
     private JTextArea address; //Text area where address is input
     private JLabel warning; //Label where warnings are displayed
     private JButton open;
+    private Boolean goodExit;
 
     /**
      * File Selector Container Constructor
@@ -34,15 +35,22 @@ class FileSelector extends Container {
                 Prop.addFiles(full);
                 String path = FileSelector.getPath();
                 if (new File(path).exists()) {
+                    goodExit=true;
                     String[] output = new String[5];
                     output[0] = path;
                     Circle circle = new Circle(output, ui, flag);
                     ui.setTitle(ui.getTitle() + ": " + path);
                     ui.setContentPane(circle);
                     ui.pack();
-                } else { warning.setText("Please enter a file path."); }
+                } else {
+                    goodExit = false;
+                    warning.setText("Please enter a file path.");
+                }
             }
-            else{ warning.setText("File Path(s) Invalid"); }
+            else{
+                goodExit=false;
+                warning.setText("File Path(s) Invalid");
+            }
         };
         open.addActionListener(listener);
 
@@ -116,12 +124,6 @@ class FileSelector extends Container {
      * @return the address text field
      */
     private static String getPath() { return path; }
-
-    /**
-     * Sets the path of the first image to process
-     * @param val String file path of the first image
-     */
-    private static void setPath(String val) { path = val; }
 
     /**
      * Checks if input string is a valid file path or multiple valid file paths
@@ -202,7 +204,24 @@ class FileSelector extends Container {
      * Get open button
      * @return open button
      */
-    public JButton getOpen() {
+    JButton getOpen() {
         return open;
     }
+
+    /**
+     * Used to test file select
+     * @return true if properly exits, false if error occurs
+     */
+    Boolean getGoodExit() {
+        return goodExit;
+    }
+
+    /**
+     * Used by test class.
+     * @return full path for batch
+     */
+    String[] getFull() {
+        return full;
+    }
+
 }

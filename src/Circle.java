@@ -19,8 +19,8 @@ class Circle extends Container {
     private static JLabel canopyLabel; //Label where image is shown
     private JButton proceed;
     static double circleZ;
-    static double circleZDistance;
-    static Shape dot;
+    private static double circleZDistance;
+    private static Shape dot;
 
     /**
      * Constructor of Circle Container
@@ -210,6 +210,7 @@ class Circle extends Container {
         }
         catch (IOException e) { e.printStackTrace(); }
     }
+
     static void drawZenith(Shape sun) {
         try {
             BufferedImage base = readImage(filepath);
@@ -385,8 +386,6 @@ class NorthAction implements ActionListener {
 
 class ZenithAction implements ActionListener {
     private JTextField zenith;
-    double yZenith = -1;
-    double xZenith = -1;
 
     ZenithAction(JTextField zenithInputField){
         zenith = zenithInputField;
@@ -401,20 +400,16 @@ class ZenithAction implements ActionListener {
         Assumes sun travels simply from East to West along the centre of the image
          */
         double zenith = Circle.circleZ;
-        double zenDistance = -1;
+        double zenDistance;
         //These if statements assume sun will rise at or around 06:00 and sets at or around 18:00 daily
-        if (zenith < 6.0) {
-            zenDistance = Circle.circleX;
-        } else if (zenith >= 6.0 && zenith <= 18.0) {
-            //Imitates the path of the sun along an invisible half-sphere
-            zenDistance = Circle.circleX + ((double)Circle.circleR * Math.cos((Math.PI/12 * zenith) + (Math.PI/2)));
-        } else if (zenith > 18.0){
-            zenDistance = Circle.circleX+(double)Circle.circleR;
-        }
+        if (zenith < 6.0) { zenDistance = -Circle.circleR; }
+        //Imitates the path of the sun along an invisible half-sphere
+        else if (zenith >= 6.0 && zenith <= 18.0) { zenDistance = ((double)Circle.circleR * Math.cos(((Math.PI/12) * zenith) + (Math.PI/2))); }
+        else{ zenDistance = (double)Circle.circleR; }
 
         Circle.setCircleZDistance(zenDistance);
-        yZenith = Circle.circleY + ((double)Circle.circleR * Math.sin(Math.toRadians(Circle.circleN)));
-        xZenith = zenDistance;
+        double yZenith = Circle.circleY+zenDistance*Math.cos(Circle.circleN*(Math.PI/180)+(Math.PI/2));
+        double xZenith = Circle.circleX+zenDistance*Math.sin(Circle.circleN*(Math.PI/180)+(Math.PI/2));
 
         Shape sun = new Ellipse2D.Double(xZenith-15, yZenith-15, 30,30);
         Circle.drawZenith(sun);
