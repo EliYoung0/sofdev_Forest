@@ -107,8 +107,8 @@ abstract class Black {
         ColorModel colorModel = black.getColorModel();
         Raster raster = black.getRaster();
 
-        for (int y = 0; y < black.getHeight(); y++) {
-            for (int x = 0; x < black.getWidth(); x++) {
+        for (int x = 0; x < black.getWidth(); x++) {
+            for (int y = 0; y < black.getHeight(); y++) {
                 if (mask[x][y]) {
                     //Get colours in 0-255 values
                     /*dataElements = raster.getDataElements(x, y, dataElements);

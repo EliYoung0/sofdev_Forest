@@ -13,7 +13,7 @@ class Thresholder extends Container {
     private static BufferedImage blackOutput; //Black and white image created
     static int method; //Integer value representing threshold method {0: manual, 1: nobis, 2: single}
     private int currentThreshold; //Threshold value if manual method is used
-    String path; //File path of square image to be make b&w
+    public static String path; //File path of square image to be make b&w
     boolean[][] mask; //Image mask used by threshold algorithms
 
     /**
@@ -67,6 +67,10 @@ class Thresholder extends Container {
         JLabel updateText = new JLabel("<html>Simple converter to black and white." +
                 "<br>Enter the average RGB value which is the lower bound for white:  " +
                 "<br> (RGB values are from 0-255.) </html>");
+
+
+        Algorithms.calcValues();
+
         //Nobis Algorithm radio button
         JButton nobis = new JButton("Nobis Algorithm");
         JLabel finalImageLabel = imageLabel;
