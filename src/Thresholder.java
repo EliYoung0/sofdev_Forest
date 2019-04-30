@@ -13,7 +13,7 @@ class Thresholder extends Container {
     private static BufferedImage blackOutput; //Black and white image created
     static int method; //Integer value representing threshold method {0: manual, 1: nobis, 2: single}
     private int currentThreshold; //Threshold value if manual method is used
-    String path; //File path of square image to be make b&w
+    public static String path; //File path of square image to be make b&w
     boolean[][] mask; //Image mask used by threshold algorithms
 
     /**
@@ -67,6 +67,10 @@ class Thresholder extends Container {
         JLabel updateText = new JLabel("<html>Simple converter to black and white." +
                 "<br>Enter the average RGB value which is the lower bound for white:  " +
                 "<br> (RGB values are from 0-255.) </html>");
+
+
+        Algorithms.calcValues();
+
         //Nobis Algorithm radio button
         JButton nobis = new JButton("Nobis Algorithm");
         JLabel finalImageLabel = imageLabel;
@@ -91,15 +95,15 @@ class Thresholder extends Container {
 
         //Single Binary Threshold radio button
         JButton single = new JButton("Single Binary Threshold Algorithm");
-        JLabel finalImageLabel1 = imageLabel;
         single.addActionListener(e -> {
             try {
                 //Creates black & white image using single binary algorithm
+                BufferedImage og= ImageIO.read(new File(path));
                 BufferedImage bl = Algorithms.single(path);
                 //Redraws image
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
-                finalImageLabel1.setIcon(new ImageIcon(i));
-                finalImageLabel1.repaint();
+                finalImageLabel.setIcon(new ImageIcon(i));
+                finalImageLabel.repaint();
                 setBlack(bl);
                 //Displayed calculated gap fraction
                 consoleOutput.append("\nMethod: Single Binary");
@@ -112,17 +116,17 @@ class Thresholder extends Container {
 
         //DHP Algorithm radio button
         JButton dhp = new JButton("DHP Algorithm");
-        JLabel finalImageLabel2 = imageLabel;
         dhp.addActionListener(e -> {
             try {
                 BufferedImage og= ImageIO.read(new File(path));
                 BufferedImage bl = Algorithms.dhp(path);
                 method=3;
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
-                finalImageLabel2.setIcon(new ImageIcon(i));
-                finalImageLabel2.repaint();
+                finalImageLabel.setIcon(new ImageIcon(i));
+                finalImageLabel.repaint();
                 setBlack(bl);
                 //Remove following line in final product. Just to show functionality right now.
+                consoleOutput.append("\nMethod: DHP");
                 consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl,mask));
             }
             catch (IOException ex){ex.printStackTrace();}
@@ -270,7 +274,7 @@ class UpdateAction implements ActionListener {
             //Checks manual input value is valid
             int threshold = Integer.parseInt(text.getText());
             if (threshold >= 0 && threshold <= 255) {
-                //Tells the thrsholder that the method used is manual
+                //Tells the thresholder that the method used is manual
                 Thresholder.method = 0;
                 //Creates black and white image from threshold value
                 BufferedImage og = ImageIO.read(new File(path));
