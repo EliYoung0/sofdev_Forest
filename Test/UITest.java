@@ -1,7 +1,9 @@
+import jdk.nashorn.internal.ir.annotations.Ignore;
+
 import javax.swing.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+@Ignore
 class UITest {
 
     public static void main(String[] args) {
