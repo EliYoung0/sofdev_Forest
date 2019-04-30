@@ -13,7 +13,7 @@ class Thresholder extends Container {
     private BufferedImage blackOutput; //Black and white image created
     static int method; //Integer value representing threshold method {0: manual, 1: nobis, 2: single}
     private int currentThreshold; //Threshold value if manual method is used
-    public String path; //File path of square image to be make b&w
+    public static String path; //File path of square image to be make b&w
     boolean[][] mask; //Image mask used by threshold algorithms
 
     /**
@@ -26,7 +26,7 @@ class Thresholder extends Container {
      * @param flag Boolean flag for batch processing: true if batch is needed
      */
     Thresholder(String path, boolean[][] mask, String[] output, UI ui, boolean flag) {
-        this.path=path;
+        Thresholder.path =path;
         this.mask = mask;
         setLayout(new GridBagLayout());
         JLabel imageLabel;
@@ -176,7 +176,7 @@ class Thresholder extends Container {
             output[4]=String.valueOf(Black.getGapFraction(blackOutput,mask));
             String cpath;
             //Create window to select csv save directory
-            SaveDialog save = new SaveDialog(ui,this);
+            SaveDialog save = new SaveDialog(ui);
             save.setVisible(true);
             //If user did not press cancel in dialog
             if(save.getExit()) {
@@ -283,16 +283,14 @@ class SaveDialog extends JDialog{
     private boolean exit; //Boolean to determine exit clause of Dialog. True for save, false for cancel
     private JTextField address; //Text field where address to used is entered
     private JLabel warnings; //Label to display warnings
-    private Thresholder thresh; //Outer container that holds this dialog
 
     /**
      * Constructor for Save dialog.
      * @param ui Outermost JFrame from which dialog is opened
-     * @param t Outer container. Used to get default path
      */
-    SaveDialog(Frame ui,Thresholder t){
+    SaveDialog(Frame ui){
         super(ui,true);
-        thresh=t;
+        //Outer container that holds this dialog
         setTitle("Save CSV");
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -310,7 +308,7 @@ class SaveDialog extends JDialog{
             fc.setDialogTitle("Specify a file to save");
             //Sets the allowed file extension types
             FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV", "csv");
-            String path =thresh.path.substring(0,thresh.path.indexOf('.'))+ "_" + java.time.LocalDate.now()+".csv";
+            String path = Thresholder.path.substring(0, Thresholder.path.indexOf('.'))+ "_" + java.time.LocalDate.now()+".csv";
             fc.setSelectedFile(new File(path));
             fc.setFileFilter(filter);
             fc.setFileHidingEnabled(true);
