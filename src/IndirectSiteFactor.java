@@ -11,19 +11,18 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 
-public class IndirectSiteFactor {
+class IndirectSiteFactor {
 
     /**
-     * Creates
-     * @param zenith
-     * @param height
-     * @param width
-     * @return
+     * Creates a double mask that is weighed based on the distance from the inputted zenith.
+     * @param zenith is a double representing hours
+     * @param height is an integer from the corresponding image
+     * @param width is an integer from the corresponding image
+     *
+     * @return a double mask filled with the weighted values, isfMask.
      */
     private static double[][] mask(double zenith, int height, int width){
         double[][] isfMask = new double[width][height];
-        boolean[][] imageMask = SquareTheCircle.getImageMask();
-
         int w = Circle.circleR * 2;
         for(int x=0; x<w; x++){
             for(int y=0; y<w; y++){
@@ -47,9 +46,10 @@ public class IndirectSiteFactor {
     }
 
     /**
+     * Calculates the Indirect Site Factor number, by multiplying the weighted matrix against the white and black values and then dividing that by the total number of pixels within the circle of the image
      *
-     * @param black
-     * @return
+     * @param black a buffered image that is square and already thresholded to black and white
+     * @return a decimal value that is comparable to Gap Fraction, and is a result of weighing white pixels in relation to the location of the Sun
      */
     static double getISF(BufferedImage black) {
         double [][] mask = mask(Circle.circleZ, black.getHeight(), black.getWidth());
