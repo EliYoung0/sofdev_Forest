@@ -6,8 +6,9 @@ This project was created with the goal of making a Java program capable of imple
 ## Table of Contents:
 1. Installation
 2. Usage
-3. Authors and Acknowledgements
-4. Github
+3. Algorithms
+4. Authors and Acknowledgements
+5. Github
 
 ## Installation
 1. Download Forest.jar file from the github repository.
@@ -32,6 +33,13 @@ Or press cancel to go back to the thresholding screen.
 12. If you have more than one file to process, press the start processing button to start batch processing.
 13. When the batch processing button has completed, the finish and exit button will become clickable. Click this to close
 the program.
+
+## Algorithms
+* __Manual:__
+* __Nobis:__
+* __Single Binary:__
+* __DHP:__
+* __Local:__
 
 ## Authors and Acknowledgements:
 This project was created by a group of Lewis & Clark College students:
