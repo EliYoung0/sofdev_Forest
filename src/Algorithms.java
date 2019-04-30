@@ -11,10 +11,27 @@ import static java.awt.Color.black;
 import static java.awt.Color.white;
 
 abstract class Algorithms {
+    private static int m;
+    private static int n;
+    private static double max;
+    private static BufferedImage image;
+    private static double[] DN;
+    private static double[][] blue;
+    private static int maxright;
+    private static int maxleft;
+    private static double average;
+    private static int maxfrequency;
+    private static int uc;
+    private static int lc;
+
+    public static double[][] gapmask;
+
+
+
 
     /**
      * Caller method for nobis. Calls inner nobis with upper and lower threshold limits
-     * Limits should eventually be input however using defaults from matlab atm.
+     * Limits should eventually be input (lc and uc) however using defaults from matlab atm.
      *
      * @param image original color image input
      * @param mask  2d boolean array defining region of pixels to be used
@@ -113,6 +130,9 @@ abstract class Algorithms {
             max = max(zeroes);
             thresh = max - 1;
         }
+
+        gapmask = new double[m][n];
+
         for (int x = 0; x < m; x++) {
             for (int y = 0; y < n; y++) {
                 Color black = new Color(0, 0, 0);
@@ -120,8 +140,10 @@ abstract class Algorithms {
                 //Compares pixel to threshold
                 if (blue[x][y] > tr) {
                     image.setRGB(x, y, white.getRGB());
+                    gapmask[x][y] = 1;
                 } else {
                     image.setRGB(x, y, black.getRGB());
+                    gapmask[x][y] = 0;
                 }
             }
         }
@@ -250,7 +272,7 @@ abstract class Algorithms {
      * @throws IOException throws exception if file does not exist
      */
     static BufferedImage single(String path) throws IOException {
-        return single(ImageIO.read(new File(path)));
+        return single(image);
     }
 
     /**
@@ -260,74 +282,8 @@ abstract class Algorithms {
      * @return black & white version of image
      */
     static BufferedImage single(BufferedImage image) {
-        int m = image.getWidth();
-        int n = image.getHeight();
-        double max = 0;
-        int maxright;
-        int maxleft;
-        int L1 = 5;
-        int L2 = 55;
-        int R1 = 200;
-        int R2 = 250;
-        double average;
-        int maxfrequency;
 
-        //Turn Image into array of blue pixel values
-        double[][] blue = toArray(image, m, n);
-
-        double[] DN = new double[256];
-        //fill DN array to make "histogram"
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if ((((i - Circle.circleX) * (i - Circle.circleX)) + ((j - Circle.circleY) * (j - Circle.circleY))) <= (Circle.circleR * Circle.circleR)) {
-                    DN[(int) blue[i][j]]++;
-                    if (DN[(int) blue[i][j]] > max) {
-                        max = DN[(int) blue[i][j]];
-                    }
-                }
-            }
-        }
-
-
-        //find maxright and maxleft
-        maxleft = findMax(L1, L2, DN);
-        maxright = findMax(R1, R2, DN);
-
-        while ((L2 - maxleft) < 10) {
-            L2 = L2 + 25;
-            maxleft = findMax(L1, L2, DN);
-        }
-
-        while ((maxright - R1) < 10) {
-            R1 = R1 - 25;
-            maxright = findMax(R1, R2, DN);
-        }
-
-        average = averagePixels(DN);
-
-        if (max > average) {
-            maxfrequency = (int) average;
-        } else {
-            maxfrequency = (int) max;
-        }
-
-        //Find first and last nonempty bin
-        int rbin = 255;
-        while (DN[rbin] == 0) {
-            rbin--;
-        }
-
-        int lbin = 0;
-        while (DN[lbin] == 0) {
-            lbin++;
-        }
-
-        int slope = (maxfrequency) / (maxright - lbin);
-        int uc = upperCorner(DN, slope, maxfrequency, maxleft, maxright);
-
-        slope = (maxfrequency) / (maxleft - rbin);
-        int lc = lowerCorner(DN, slope, maxfrequency, maxleft, maxright);
-
+        gapmask = new double[m][n];
 
         for (int x = 0; x < m; x++) {
             for (int y = 0; y < n; y++) {
@@ -336,96 +292,36 @@ abstract class Algorithms {
                 //Compares pixel to threshold
                 if (blue[x][y] > (lc + (0.5 * (uc - lc)))) {
                     image.setRGB(x, y, white.getRGB());
+                    gapmask[x][y] = 1;
                 } else {
                     image.setRGB(x, y, black.getRGB());
+                    gapmask[x][y] = 0;
                 }
             }
         }
-
 
         return image;
     }
 
 
+    /**
+     * Caller for DHP algorithm with image path provided
+     *
+     * @param path filepath to image to be processed
+     * @return Black & white image created by DHP algorithm
+     * @throws IOException throws exception if file does not exist
+     */
     static BufferedImage dhp(String path) throws IOException {
-        return dhp(ImageIO.read(new File(path)));
+        return dhp(image);
     }
 
+    /**
+     * Creates Black & white version of image using DHP method
+     *
+     * @param image original image to be processed
+     * @return black & white version of image
+     */
     static BufferedImage dhp(BufferedImage image) {
-        int m = image.getWidth();
-        int n = image.getHeight();
-        double max = 0;
-        int maxright;
-        int maxleft;
-        int L1 = 5;
-        int L2 = 55;
-        int R1 = 200;
-        int R2 = 250;
-        double average;
-        int maxfrequency;
-
-        //Turn Image into array of blue pixel values
-        double[][] blue = toArray(image, m, n);
-
-        //Back-correct gamma of blue channel
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                blue[i][j] = 255.0 * Math.pow((blue[i][j] / 255.0), (1.0 / 2.2));
-            }
-        }
-
-        double[] DN = new double[256];
-        //fill DN array to make "histogram"
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if ((((i - Circle.circleX) * (i - Circle.circleX)) + ((j - Circle.circleY) * (j - Circle.circleY))) <= (Circle.circleR * Circle.circleR)) {
-                    DN[(int) blue[i][j]]++;
-                    if (DN[(int) blue[i][j]] > max) {
-                        max = DN[(int) blue[i][j]];
-                    }
-                }
-            }
-        }
-
-
-        //find maxright and maxleft
-        maxleft = findMax(L1, L2, DN);
-        maxright = findMax(R1, R2, DN);
-
-        while ((L2 - maxleft) < 10) {
-            L2 = L2 + 25;
-            maxleft = findMax(L1, L2, DN);
-        }
-
-        while ((maxright - R1) < 10) {
-            R1 = R1 - 25;
-            maxright = findMax(R1, R2, DN);
-        }
-
-        average = averagePixels(DN);
-
-        if (max > average) {
-            maxfrequency = (int) average;
-        } else {
-            maxfrequency = (int) max;
-        }
-
-        //Find first and last nonempty bin
-        int rbin = 255;
-        while (DN[rbin] == 0) {
-            rbin--;
-        }
-
-        int lbin = 0;
-        while (DN[lbin] == 0) {
-            lbin++;
-        }
-
-        int slope = (maxfrequency) / (maxright - lbin);
-        int uc = upperCorner(DN, slope, maxfrequency, maxleft, maxright);
-
-        slope = (maxfrequency) / (maxleft - rbin);
-        int lc = lowerCorner(DN, slope, maxfrequency, maxleft, maxright);
 
         double tl = lc + ((uc - lc) * (0.25));
         double th = lc + ((uc - lc) * (0.75));
@@ -434,26 +330,109 @@ abstract class Algorithms {
         double temp1;
         double temp2 = th - tl;
 
+        gapmask = new double[m][n];
+
         for (int x = 0; x < m; x++) {
             for (int y = 0; y < n; y++) {
                 temp1 = (blue[x][y] - tl);
                 temp = temp1 / temp2;
                 if (temp > 1.0) {
                     image.setRGB(x, y, white.getRGB());
+                    gapmask[x][y] = 1;
                 } else if (temp < 0.0) {
                     image.setRGB(x, y, black.getRGB());
+                    gapmask[x][y] = 0;
                 } else {
-                    image.setRGB(x, y, (int) (temp * 255));
-                    //System.out.println((int)(temp*255));
+                    image.setRGB(x, y, (int) (temp) * 255);
+                    gapmask[x][y] = temp;
                 }
             }
         }
 
-
         return image;
     }
 
+    /**
+     * Calculates maxleft, maxright, average pixels, max frequency, upper corner and lower corner
+     * Called from Thresholder to make values available to all algorithms
+     */
 
+
+    public static void calcValues() {
+
+        {
+            try {
+                image = ImageIO.read(new File(Thresholder.path));
+                m = image.getWidth();
+                n = image.getHeight();
+
+                //Turn Image into array of blue pixel values
+                blue = toArray(image, image.getWidth(), image.getHeight());
+                DN = new double[256];
+
+                //fill DN array to make "histogram"
+                makeHistogram(DN, blue, image);
+
+                int L1 = 5;
+                int L2 = 55;
+                int R1 = 200;
+                int R2 = 250;
+
+                //find maxright and maxleft
+                maxleft = findMax(L1, L2, DN);
+                maxright = findMax(R1, R2, DN);
+
+                while((L2 -maxleft) < 10){
+                    L2 = L2 + 25;
+                    maxleft = findMax(L1, L2, DN);
+                }
+
+                while((maxright -R1) < 10) {
+                    R1 = R1 - 25;
+                    maxright = findMax(R1, R2, DN);
+                }
+
+                average = averagePixels(DN);
+
+                if(max >average) {
+                    maxfrequency = (int) average;
+                }else {
+                    maxfrequency = (int) max;
+                }
+
+                //Find first and last nonempty bin
+                int rbin = 255;
+                while(DN[rbin]==0) {
+                    rbin--;
+                }
+
+                int lbin = 0;
+                while(DN[lbin]==0){
+                    lbin++;
+                }
+
+                int slope = (maxfrequency) / (maxright - lbin);
+                uc = upperCorner(DN, slope, maxfrequency, maxleft, maxright);
+
+                slope =(maxfrequency)/(maxleft -rbin);
+                lc = lowerCorner(DN, slope, maxfrequency, maxleft, maxright);
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    /**
+     * Finds the DN (digital number) that corresponds to the most pixels in the image
+     *
+     * @param lo low DN cutoff of window to be analyzed
+     * @param hi high DN cutoff of window to be analyzed
+     * @param DN array of DNs of all pixels in the image
+     * @return int value of DN corresponding to the most pixels
+     */
     private static int findMax(int lo, int hi, double[] DN) {
         int max = lo;
         for (int i = lo; i <= hi; i++) {
@@ -464,6 +443,12 @@ abstract class Algorithms {
         return max;
     }
 
+    /**
+     * Calculates the average DN of the image's pixels
+     *
+     * @param DN array of DNs of image's pixels
+     * @return double average DN
+     */
     private static double averagePixels(double[] DN) {
         double total = 0;
         for (int i = 0; i <= 255; i++) {
@@ -472,6 +457,17 @@ abstract class Algorithms {
         return total / 255;
     }
 
+
+    /**
+     * Calculates upper corner value needed to calculate various thresholds
+     *
+     * @param DN           array of DN values of image's pixels
+     * @param slope        from DN of maximum frequency to highest or lowest non-empty bin (DN value)
+     * @param maxfrequency DN value corresponding to the most pixels
+     * @param maxleft      DN with the most pixels within a given window on the left of the histogram
+     * @param maxright     DN with the most pixels within a given window on the right of the histogram
+     * @return int DN upper corner calculated using equation from MacFarlane 2011
+     */
     private static int upperCorner(double[] DN, int slope, int maxfrequency, int maxleft, int maxright) {
         double maxd = 0;
         int maxindex = 0;
@@ -488,6 +484,16 @@ abstract class Algorithms {
         return maxindex;
     }
 
+    /**
+     * Calculates lower corner value needed to calculate various thresholds
+     *
+     * @param DN           array of DN values of image's pixels
+     * @param slope        from DN of maximum frequency to highest or lowest non-empty bin (DN value)
+     * @param maxfrequency DN value corresponding to the most pixels
+     * @param maxleft      DN with the most pixels within a given window on the left of the histogram
+     * @param maxright     DN with the most pixels within a given window on the right of the histogram
+     * @return int DN lower corner calculated using equation from MacFarlane 2011
+     */
     private static int lowerCorner(double[] DN, int slope, int maxfrequency, int maxleft, int maxright) {
         double maxd = 0;
         int maxindex = 0;
@@ -528,65 +534,23 @@ abstract class Algorithms {
     }
 
     /**
-     * Caller for local algorithm with image path provided
-     *
-     * @param path filepath to image to be processed
-     * @return Black & white image created by the local algorithm
-     * @throws IOException throws exception if file does not exist
+     * Makes histogram of DN (digital number) values of each pixel in the image
+     * @param DN array of DN values
+     * @param blue array of blue channel of image
+     * @param image image to be processed
      */
-    static BufferedImage local(String path, boolean[][] mask) throws IOException {
-        return local(ImageIO.read(new File(path)), mask);
-    }
 
-    /**
-     * Creates Black & white version of image using the local method
-     *
-     * @param image original image to be processed
-     * @return black & white version of image
-     */
-    static BufferedImage local(BufferedImage image, boolean[][] mask) {
-        int m = image.getWidth();
-        int n = image.getHeight();
-
-        //Turn Image into array of blue pixel values
-        double[][] blue = toArray(image, m, n);
-
-        //for every row
-        for(int x1 = 0; x1 < n; x1++){
-            //for every column
-            for(int y1 = 0; y1 < m; y1++){
-                //if not in the mask (false outside image, true inside)
-                if(mask[x1][y1]){
-                    //go in a circle around it (5 sq) adding together the blue values that aren't in the mask
-                    double avg = 0;
-                    int count = 0;
-                    for(int x2 = -2; x2 < 3; x2++) {
-                        for (int y2 = -2; y2 < 3; y2++) {
-                            if((x1+x2>0) && (y1+y2>0) && (x1+x2<m) && (y1+y2<n)) {
-                                if (mask[x1 + x2][y1 + y2]) {
-                                    avg += blue[x1 + x2][y1 + y2];
-                                    count++;
-                                }
-                            }
-                        }
-                    }
-                    //figure out the average
-                    avg = avg/count;
-                    //if this pixel is above the average
-                    if(blue[x1][y1]>avg) {
-                        //make it white
-                        image.setRGB(x1, y1, white.getRGB());
-                    }
-                    //else
-                    else {
-                        //make it black
-                        image.setRGB(x1, y1, black.getRGB());
+    private static void makeHistogram(double[] DN, double[][] blue, BufferedImage image) {
+        for (int i = 0; i < image.getWidth(); i++) {
+            for (int j = 0; j < image.getHeight(); j++) {
+                if ((((i - Circle.circleX) * (i - Circle.circleX)) + ((j - Circle.circleY) * (j - Circle.circleY))) <= (Circle.circleR * Circle.circleR)) {
+                    DN[(int) blue[i][j]]++;
+                    if (DN[(int) blue[i][j]] > max) {
+                        max = DN[(int)blue[i][j]];
                     }
                 }
             }
         }
-
-        //return the created image
-        return image;
     }
 }
+
