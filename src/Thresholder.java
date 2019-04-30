@@ -127,6 +127,26 @@ class Thresholder extends Container {
             catch (IOException ex){ex.printStackTrace();}
         });
 
+        //Local Threshold radio button
+        JButton local = new JButton("Local Thresholding Algorithm");
+        //JLabel finalImageLabel1 = imageLabel;
+        local.addActionListener(e -> {
+            try {
+                //Creates black & white image using local algorithm
+                BufferedImage bl = Algorithms.local(path, mask);
+                //Redraws image
+                Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
+                finalImageLabel1.setIcon(new ImageIcon(i));
+                finalImageLabel1.repaint();
+                setBlack(bl);
+                //Displayed calculated gap fraction
+                consoleOutput.append("\nMethod: Local");
+                consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl,mask));
+                //Stores method used for later
+                method=2;
+            }
+            catch (IOException ex){ex.printStackTrace();}
+        });
 
         c.gridheight=1;
         c.gridx=1;
@@ -147,6 +167,8 @@ class Thresholder extends Container {
         threshPanel.add(single,tr);
         tr.gridy=4;
         threshPanel.add(dhp,tr);
+        tr.gridy=5;
+        threshPanel.add(local,tr);
 
         //Adds components to container
         c.gridheight=1;

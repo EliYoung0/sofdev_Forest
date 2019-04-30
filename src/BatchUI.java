@@ -95,7 +95,7 @@ class BatchUI extends Container {
         //Create Components
         JPanel panel = new JPanel();
         output = new JTextArea(5,20);
-        JButton start = new JButton("Start Processing!");
+        JButton start = new JButton("Start");
         start.addActionListener(e -> {
             start.setEnabled(false);
             Batch batch = new Batch();
