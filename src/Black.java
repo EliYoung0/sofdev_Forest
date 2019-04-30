@@ -1,4 +1,3 @@
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -75,8 +74,7 @@ abstract class Black {
      * @param black Image to have gap fraction calculated
      * @return a double that is the gap fraction
      */
-    static double getGapFraction(BufferedImage black, boolean[][] mask) {
-
+    static double getGapFraction(BufferedImage black,boolean[][] mask){
         double rgbCount = 0.0;
         double totalCount = 0.0;
 
