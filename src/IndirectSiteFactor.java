@@ -22,6 +22,7 @@ public class IndirectSiteFactor {
      */
     private static double[][] mask(double zenith, int height, int width){
         double[][] isfMask = new double[width][height];
+        boolean[][] imageMask = SquareTheCircle.getImageMask();
 
         int w = Circle.circleR * 2;
         for(int x=0; x<w; x++){
@@ -29,15 +30,18 @@ public class IndirectSiteFactor {
                 double xDist = (double)Circle.circleX - x;
                 double yDist = (double)Circle.circleY - y;
                 double distance = Math.sqrt(Math.pow(xDist,2) + Math.pow(yDist,2));
-                double zDist = Math.sqrt(Math.pow(Circle.circleR, 2) - Math.pow(distance,2));
-                double zenDistance = Circle.circleX + ((double)Circle.circleR * Math.cos((Math.PI/12 * zenith) + (Math.PI/2)));
-                double zenX = zenDistance * Math.cos(Circle.circleN + (Math.PI / 2));
-                double zenY = zenDistance * Math.sin(Circle.circleN + (Math.PI / 2));
-                double zenZ = Math.sqrt(Math.pow(Circle.circleR,2) - Math.pow(zenDistance,2));
-                isfMask[x][y] = (xDist * zenX) + (yDist * zenY) + (zDist * zenZ);
-                System.out.print(isfMask[x][y]);
+                if(distance<=Circle.circleR){
+                    double zDist = Math.sqrt(Math.pow(Circle.circleR, 2) - Math.pow(distance,2));
+                    double zenDistance =(double)Circle.circleR * Math.cos((Math.PI/12 * zenith) + (Math.PI/2));
+                    double zenX = zenDistance * Math.cos(Circle.circleN + (Math.PI / 2));
+                    double zenY = zenDistance * Math.sin(Circle.circleN + (Math.PI / 2));
+                    double zenZ = Math.sqrt(Math.pow(Circle.circleR,2) - Math.pow(zenDistance,2));
+                    isfMask[x][y] = (xDist * zenX) + (yDist * zenY) + (zDist * zenZ);
+                    isfMask[x][y] = isfMask[x][y]/(Circle.circleR*Circle.circleR);
+                } else {
+                    isfMask[x][y] = 0;
+                }
             }
-            System.out.println();
         }
         return isfMask;
     }
