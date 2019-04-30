@@ -15,9 +15,10 @@ class SquareTheCircle {
      */
     static void createTheRectangle(String filepath) {
         try {
-            originalPath=filepath;
             //Opens original image
-            BufferedImage original = ImageIO.read(new File(filepath));
+            File og = new File(filepath);
+            BufferedImage original = ImageIO.read(og);
+            originalPath=og.getAbsolutePath();
             //Crops image to square
             BufferedImage square = buildASquare(original);
             //Saves this square image to filepath similar to the one given
@@ -48,15 +49,15 @@ class SquareTheCircle {
      * @param square square image to be saved
      */
     private static void saveTheSquare(String filepath, BufferedImage square) {
-        File dir = new File("./square/");
+        String dirPath = originalPath.substring(0,originalPath.lastIndexOf('/'))+"/square/";
+        File dir = new File(dirPath);
         dir.mkdir();
         //Creates file path "filepath_square_time.jpg"
         String newFilepath = filepath.replaceAll("(.[a-zA-Z]{3,4}$)",
                 "_square_" + java.time.LocalDate.now())+".jpg";
-        //squareFilepath = originalPath.substring(0,originalPath.lastIndexOf(File.pathSeparator))+"/square/"+newFilepath;
-        squareFilepath=newFilepath;
+        squareFilepath = dirPath+newFilepath.substring(newFilepath.lastIndexOf('/')+1);
         //Saves square to created filepath
-        File outputFile = new File(newFilepath);
+        File outputFile = new File(squareFilepath);
         try { ImageIO.write(square, "jpg", outputFile);}
         catch (IOException e) { e.printStackTrace();}
     }
