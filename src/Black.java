@@ -1,4 +1,3 @@
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -72,31 +71,6 @@ abstract class Black {
      * @return a double that is the gap fraction
      */
     static double getGapFraction(BufferedImage black,boolean[][] mask){
-
-//        double whiteCount=0.0;
-//        double blackCount=0.0;
-//        Object dataElements = null;
-//        ColorModel colourModel = black.getColorModel();
-//        Raster raster = black.getRaster();
-//
-//        //Determines if each pixel is black or white
-//        for(int y = 0; y < black.getHeight(); y++) {
-//            for (int x = 0; x < black.getWidth(); x++) {
-//                if(mask[y][x]) {
-//                    //Get colours in 0-255 values
-//                    dataElements = raster.getDataElements(x, y, dataElements);
-//                    int blue = colourModel.getBlue(dataElements);
-//                    if (blue == 255) {
-//                        whiteCount++;
-//                    } else {
-//                        blackCount++;
-//                    }
-//                }
-//            }
-//        }
-//        //Calculates and returns gap fraction
-//        return ((whiteCount)/(whiteCount+blackCount));
-
         double rgbCount=0.0;
         double totalCount=0.0;
         Object dataElements=null;

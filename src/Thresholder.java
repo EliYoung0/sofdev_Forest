@@ -190,7 +190,7 @@ class Thresholder extends Container {
                 output[2]=String.valueOf(currentThreshold);
             }
             else{output[2]="N/A";}
-            output[3]="";
+            output[3]=String.valueOf(IndirectSiteFactor.getISF(blackOutput));
             output[4]=String.valueOf(Black.getGapFraction(blackOutput,mask));
             String cpath;
             //Create window to select csv save directory

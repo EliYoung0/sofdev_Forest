@@ -11,8 +11,8 @@ class UITest {
         ui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ui.setVisible(true);
         FileSelector f = (FileSelector)ui.getContentPane();
-        f.getAddress().setText("/Users/kepler/Desktop/a");
-        assertEquals(f.getAddress().getText(),"/Users/kepler/Desktop/a");
+        f.getAddress().setText("/Users/kepler/Desktop/");
+        assertEquals(f.getAddress().getText(),"/Users/kepler/Desktop/");
         f.getOpen().doClick();
 
         Circle c = (Circle)ui.getContentPane();
