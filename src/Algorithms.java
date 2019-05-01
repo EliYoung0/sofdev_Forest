@@ -303,7 +303,6 @@ abstract class Algorithms {
         return image;
     }
 
-
     /**
      * Caller for DHP algorithm with image path provided
      *
@@ -321,7 +320,7 @@ abstract class Algorithms {
      * @param image original image to be processed
      * @return black & white version of image
      */
-    static BufferedImage dhp(BufferedImage image) {
+    private static BufferedImage dhp(BufferedImage image) {
 
         double tl = lc + ((uc - lc) * (0.25));
         double th = lc + ((uc - lc) * (0.75));
@@ -356,9 +355,7 @@ abstract class Algorithms {
      * Calculates maxleft, maxright, average pixels, max frequency, upper corner and lower corner
      * Called from Thresholder to make values available to all algorithms
      */
-
-
-    public static void calcValues() {
+    static void calcValues() {
 
         {
             try {
@@ -457,7 +454,6 @@ abstract class Algorithms {
         return total / 255;
     }
 
-
     /**
      * Calculates upper corner value needed to calculate various thresholds
      *
@@ -511,7 +507,6 @@ abstract class Algorithms {
 
     }
 
-
     /**
      * Checks if 2 images are equal based on same pixel values
      *
@@ -539,7 +534,6 @@ abstract class Algorithms {
      * @param blue array of blue channel of image
      * @param image image to be processed
      */
-
     private static void makeHistogram(double[] DN, double[][] blue, BufferedImage image) {
         for (int i = 0; i < image.getWidth(); i++) {
             for (int j = 0; j < image.getHeight(); j++) {
