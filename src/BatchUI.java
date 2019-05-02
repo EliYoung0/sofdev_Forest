@@ -49,7 +49,7 @@ class BatchUI extends Container {
             }
             double gapFraction;
             for(int i=0; i<paths.length; i++){
-                String[] methods= {"Manual","Nobis","Single Binary","DHP"};
+                String[] methods= {"Manual","Nobis","Single Binary","DHP","Local"};
                 SquareTheCircle.createTheRectangle(paths[i]);
                 BufferedImage square = ImageIO.read(new File(SquareTheCircle.getSquareFilepath()));
                 BufferedImage black;
@@ -65,8 +65,12 @@ class BatchUI extends Container {
                     black = Algorithms.single(square);
                     gapFraction = Black.getGapFraction(black, mask);
                 }
-                else {
+                else if(method == 3) {
                     black = Algorithms.dhp(paths[i]);
+                    gapFraction = Black.getGapFraction(black, mask);
+                }
+                else {
+                    black = Algorithms.local(square,mask);
                     gapFraction = Black.getGapFraction(black, mask);
                 }
                 //Calculates gap fraction
@@ -76,7 +80,7 @@ class BatchUI extends Container {
                 //Write to the CSV
                 CSV.writeTo(csvPath,data);
                 //Increment progress bar
-                setProgress(i*100/paths.length);
+                setProgress(i*100/(paths.length-1));
                 SquareTheCircle.deleteSquare();
             }
             setProgress(100);

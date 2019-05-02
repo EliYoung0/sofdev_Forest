@@ -12,7 +12,7 @@ class Thresholder extends Container {
     private JButton proceed;
     private JButton[] algs;
     private BufferedImage blackOutput; //Black and white image created
-    static int method; //Integer value representing threshold method {0: manual, 1: nobis, 2: single}
+    static int method; //Integer value representing threshold method {0: manual, 1: nobis, 2: single,3:dhp,4:local}
     private int currentThreshold; //Threshold value if manual method is used
     public static String path; //File path of square image to be make b&w
     boolean[][] mask; //Image mask used by threshold algorithms
@@ -148,10 +148,10 @@ class Thresholder extends Container {
                 finalImageLabel.repaint();
                 setBlack(bl);
                 //Displayed calculated gap fraction
-                consoleOutput.append("\nMethod: local");
+                consoleOutput.append("\nMethod: Local Algorithm");
                 consoleOutput.append("\nGap Fraction is: " + Black.getGapFraction(bl,mask));
                 //Stores method used for later
-                method=3;
+                method=4;
             }
             catch (IOException ex){ex.printStackTrace();}
         });
@@ -191,7 +191,7 @@ class Thresholder extends Container {
         proceed = new JButton("Save & Continue");
         //Adds action listener that either saves and closes program or continues to batch
         proceed.addActionListener(e -> {
-            String[] methods = new String[]{"Manual","Nobis","Single Binary","DHP"};
+            String[] methods = new String[]{"Manual","Nobis","Single Binary","DHP","Local"};
             output[1]=methods[method];
             Prop.addProperty("method",String.valueOf(method));
             if(method==0){

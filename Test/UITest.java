@@ -11,8 +11,8 @@ class UITest {
         ui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ui.setVisible(true);
         FileSelector f = (FileSelector)ui.getContentPane();
-        f.getAddress().setText("./testresources/a/1.jpg");
-        assertEquals(f.getAddress().getText(),"./testresources/a/1.jpg");
+        f.getAddress().setText("./testresources/a/");
+        assertEquals(f.getAddress().getText(),"./testresources/a/");
         f.getOpen().doClick();
 
         Circle c = (Circle)ui.getContentPane();
@@ -21,8 +21,6 @@ class UITest {
 
         Thresholder t = (Thresholder)ui.getContentPane();
         JButton[] algs = t.getAlgButtons();
-        algs[2].doClick();
-        t.getProceedButton().doClick();
 
     }
 }
