@@ -29,10 +29,6 @@ class BatchUI extends Container {
             String path = config.getProperty("path");
             String[] paths = path.split(",");
             int method = Integer.parseInt(config.getProperty("method"));
-            double north = Double.parseDouble(config.getProperty("north"));
-            int yCenter = Integer.parseInt(config.getProperty("yCenter"));
-            int radius = Integer.parseInt(config.getProperty("radius"));
-            int xCenter = Integer.parseInt(config.getProperty("xCenter"));
 
             input.close();
 
@@ -46,28 +42,34 @@ class BatchUI extends Container {
                     paths[a-1]=files[a].getAbsolutePath();
                 }
             }
-            double gapFraction = -1.0;
+            double gapFraction;
             for(int i=0; i<paths.length; i++){
-                String[] methods= {"Manual","Nobis","Single Binary"};
+                String[] methods= {"Manual","Nobis","Single Binary","DHP"};
                 SquareTheCircle.createTheRectangle(paths[i]);
                 BufferedImage square = ImageIO.read(new File(SquareTheCircle.getSquareFilepath()));
+                BufferedImage black;
                 if(method == 0) {
-                    BufferedImage black = Black.makeBlack(square, Integer.parseInt(threshold), mask);
+                    black = Black.makeBlack(square, Integer.parseInt(threshold), mask);
                     gapFraction = Black.getGapFraction(black, mask);
                 }
                 else if(method == 1) {
-                    BufferedImage black = Algorithms.nobis(square, mask);
+                    black = Algorithms.nobis(square, mask);
                     gapFraction = Black.getGapFraction(black, mask);
                 }
                 else if(method == 2){
-                    BufferedImage black = Algorithms.single(square);
+                    black = Algorithms.single(square);
                     gapFraction = Black.getGapFraction(black, mask);
+                }
+                else {
+                    black = Algorithms.dhp(paths[i]);
+                    gapFraction = Black.getGapFraction(black, mask);
+
                 }
                 /*
                 ADD IN HERE ANY OTHER THRESHOLDING METHODS
                 */
                 //Calculates gap fraction
-                String[] data = new String[]{paths[i],methods[method],"N/A","",String.valueOf(gapFraction)};
+                String[] data = new String[]{paths[i],methods[method],"N/A", String.valueOf(IndirectSiteFactor.getISF(black)),String.valueOf(gapFraction)};
                 if(method==0){ data[2]= threshold; }
 
                 //Write to the CSV
@@ -95,7 +97,7 @@ class BatchUI extends Container {
         //Create Components
         JPanel panel = new JPanel();
         output = new JTextArea(5,20);
-        JButton start = new JButton("Start Processing!");
+        JButton start = new JButton("Start");
         start.addActionListener(e -> {
             start.setEnabled(false);
             Batch batch = new Batch();
