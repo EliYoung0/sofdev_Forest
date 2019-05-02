@@ -35,7 +35,7 @@ abstract class Algorithms {
      */
     static BufferedImage nobis(BufferedImage image, boolean[][] mask) {
 
-        return nobis(image, maxleft, maxright, mask);
+        return nobis(image, 140, 170, mask);
     }
 
     /**
