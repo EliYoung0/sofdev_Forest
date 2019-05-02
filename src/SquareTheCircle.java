@@ -51,6 +51,7 @@ class SquareTheCircle {
     private static void saveTheSquare(String filepath, BufferedImage square) {
         String dirPath = originalPath.substring(0,originalPath.lastIndexOf('/'))+"/square/";
         File dir = new File(dirPath);
+        //noinspection ResultOfMethodCallIgnored
         dir.mkdir();
         //Creates file path "filepath_square_time.jpg"
         String newFilepath = filepath.replaceAll("(.[a-zA-Z]{3,4}$)",
