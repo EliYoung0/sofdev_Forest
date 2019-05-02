@@ -70,9 +70,6 @@ class BatchUI extends Container {
                     gapFraction = Black.getGapFraction(black, mask);
 
                 }
-                /*
-                ADD IN HERE ANY OTHER THRESHOLDING METHODS
-                */
                 //Calculates gap fraction
                 String[] data = new String[]{paths[i],methods[method],"N/A", String.valueOf(IndirectSiteFactor.getISF(black)),String.valueOf(gapFraction)};
                 if(method==0){ data[2]= threshold; }
@@ -112,6 +109,7 @@ class BatchUI extends Container {
         //Create Components
         JPanel panel = new JPanel();
         output = new JTextArea(5,20);
+        output.append("Press Start to begin the batch process.\n");
         JButton start = new JButton("Start");
         start.addActionListener(e -> {
             start.setEnabled(false);
