@@ -251,11 +251,12 @@ class Circle extends Container {
      * @param r radius value
      * @param n north value
      */
-    void setValues(int x,int y, int r, int n){
+    void setValues(int x,int y, int r, int n,int z){
         circleX=x;
         circleY=y;
         circleR=r;
         circleN=n;
+        circleZ=z;
     }
 
     /**

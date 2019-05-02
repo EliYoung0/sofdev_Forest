@@ -18,7 +18,7 @@ This project was created with the goal of making a Java program capable of imple
 1. Open jar file
 2. Select one or more jpg files to analyze or select a folder containing at least one jpg by using the browse button
 or by entering the file path into the address bar.
-3. After proceeding to the next screen enter the image's center x and center y pixel as well as the radius of the circular 
+3. After proceeding to the next screen enter the image's center x and center y pixel as well as the radius of the circular
 image.
 4. Press the draw circle button to display the image border and re-enter values if the border is off.
 5. Enter the direction of north and press the add north button to display the direction of north.
@@ -36,8 +36,8 @@ the program. Results will have been saved to a .csv file in the location previou
 
 ## Algorithms
 * __Manual:__ User inputs a threshold from 0 to 255.  Any pixels which are brighter than that threshold are turned to white, all others are turned black.
-* __Nobis:__ Description coming soon
-* __Single Binary:__ Upper and lower corners are calculated from a histogram (formatted as an array) of DN (digital number) values of all pixels in the image. The threshold used is the midpoint between the upper and lower corners; any pixels brighter than that threshold (meaning their digital number is highter than that of the threshold) are turned white, all others are turned black. 
+* __Nobis:__ The algorithm iterates through every threshold values from a lower limit to an upper limit and finds the threshold with the highest contrast between neighboring pixels. Then the image is thresholded using the found value.
+* __Single Binary:__ Upper and lower corners are calculated from a histogram (formatted as an array) of DN (digital number) values of all pixels in the image. The threshold used is the midpoint between the upper and lower corners; any pixels brighter than that threshold (meaning their digital number is highter than that of the threshold) are turned white, all others are turned black.
 * __DHP:__ Lower threshold and upper threshold are calculated using the upper and lower corners. All pixels with DN (digital number) lower than the lower threshold are turned black, all pixels with DN higher than the upper threshold are turned white. All other "mixed" pixels are assigned a gap fraction based on their distance from the lower or upper threshold.
 * __Local:__ Goes through every pixel and compares it with the mean of all the pixels in a 5x5 square centered on the target pixel.  If the target pixel is brighter than the mean, then that pixel is turned white.  Otherwise it is turned black.
 

@@ -10,6 +10,8 @@ import java.io.IOException;
 
 
 class Thresholder extends Container {
+    private JButton proceed;
+    private JButton[] algs;
     private BufferedImage blackOutput; //Black and white image created
     static int method; //Integer value representing threshold method {0: manual, 1: nobis, 2: single}
     private int currentThreshold; //Threshold value if manual method is used
@@ -27,6 +29,7 @@ class Thresholder extends Container {
      */
     Thresholder(String path, boolean[][] mask, String[] output, UI ui, boolean flag) {
         Thresholder.path =path;
+        algs = new JButton[4];
         this.mask = mask;
         setLayout(new GridBagLayout());
         JLabel imageLabel;
@@ -74,6 +77,7 @@ class Thresholder extends Container {
         //Nobis Algorithm radio button
         JButton nobis = new JButton("Nobis Algorithm");
         JLabel finalImageLabel = imageLabel;
+        algs[0]=nobis;
         nobis.addActionListener(e -> {
             try {
                 //Opens original image and calls nobis algorithm
@@ -95,6 +99,7 @@ class Thresholder extends Container {
 
         //Single Binary Threshold radio button
         JButton single = new JButton("Single Binary Threshold Algorithm");
+        algs[1]=single;
         single.addActionListener(e -> {
             try {
                 //Creates black & white image using single binary algorithm
@@ -115,6 +120,7 @@ class Thresholder extends Container {
 
         //DHP Algorithm radio button
         JButton dhp = new JButton("DHP Algorithm");
+        algs[2]=dhp;
         dhp.addActionListener(e -> {
             try {
                 BufferedImage bl = Algorithms.dhp(path);
@@ -160,7 +166,7 @@ class Thresholder extends Container {
         add(consoleScroll,c);
 
         //Give proceed button functionality
-        JButton proceed = new JButton("Save & Continue");
+        proceed = new JButton("Save & Continue");
         //Adds action listener that either saves and closes program or continues to batch
         proceed.addActionListener(e -> {
             String[] methods = new String[]{"Manual","Nobis","Single Binary","DHP"};
@@ -214,6 +220,22 @@ class Thresholder extends Container {
      */
     void setCurrentThreshold(int currentThreshold) { this.currentThreshold = currentThreshold; }
 
+    /**
+     * Returns algorithm buttons for UItest
+     * @return array of alg buttons
+     */
+    JButton[] getAlgButtons() {
+        return algs;
+    }
+
+    /**
+     * Returns the Proceed button
+     * Used by UI test
+     * @return proceed button
+     */
+    JButton getProceedButton() {
+        return proceed;
+    }
 }
 
 class UpdateAction implements ActionListener {
