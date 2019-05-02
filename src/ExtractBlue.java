@@ -50,7 +50,7 @@ public class ExtractBlue {
 
     //This method prints out blueExtractOutput to a file after removal of blue hues
     private static void printImage(){
-        File outputFile = new File("bblueExtractOutput.jpg");
+        File outputFile = new File("blueExtractOutput.jpg");
         try {
             ImageIO.write(blueExtractOutput, "jpg", outputFile);
         } catch (IOException e) {System.out.println("There was an error in ExtractBlue.printImage()");}
