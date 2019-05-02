@@ -19,7 +19,6 @@ class Circle extends Container {
     private static JLabel canopyLabel; //Label where image is shown
     private JButton proceed;
     static double circleZ;
-    private static double circleZDistance;
     private static Shape dot;
 
     /**
@@ -171,7 +170,6 @@ class Circle extends Container {
     static void setCircleZ (JTextField zenithInputField) { circleZ = Double.parseDouble(zenithInputField.getText());}
     static void setBorder(Shape circleInput) { border = circleInput; }
     static void setCircleDot(Shape dotInput) { dot = dotInput;}
-    static void setCircleZDistance(double zDistanceInput) { circleZDistance = zDistanceInput;}
 
     /**
      * Creates image from path of image file
@@ -211,6 +209,10 @@ class Circle extends Container {
         catch (IOException e) { e.printStackTrace(); }
     }
 
+    /**
+     * Draws a yellow dot on the border ring that represents the location of the sun
+     * @param sun Shape to be drawn to image
+     */
     static void drawZenith(Shape sun) {
         try {
             BufferedImage base = readImage(filepath);
@@ -256,6 +258,10 @@ class Circle extends Container {
         circleN=n;
     }
 
+    /**
+     * Used by test to proceed to next page
+     * @return proceed button
+     */
     JButton getProceed(){
         return proceed;
     }
@@ -387,18 +393,23 @@ class NorthAction implements ActionListener {
 class ZenithAction implements ActionListener {
     private JTextField zenith;
 
+    /**
+     * Gets the zenith text field
+     * @param zenithInputField text field
+     */
     ZenithAction(JTextField zenithInputField){
         zenith = zenithInputField;
     }
 
+    /**
+     * Used to calculate the position of the sun based on the time of day
+     * Then calls drawSun method to draw it on the image
+     * THIS ASSUMES BEING CLOSE TO THE EQUATOR
+     * @param e Add zenith button clicked
+     */
     public void actionPerformed(ActionEvent e) {
         //Sets variable for later call
         Circle.setCircleZ(zenith);
-        /*
-        ATTENTION
-        THIS ASSUMES BEING CLOSE TO THE EQUATOR
-        Assumes sun travels simply from East to West along the centre of the image
-         */
         double zenith = Circle.circleZ;
         double zenDistance;
         //These if statements assume sun will rise at or around 06:00 and sets at or around 18:00 daily
@@ -407,11 +418,11 @@ class ZenithAction implements ActionListener {
         else if (zenith >= 6.0 && zenith <= 18.0) { zenDistance = ((double)Circle.circleR * Math.cos(((Math.PI/12) * zenith) + (Math.PI/2))); }
         else{ zenDistance = (double)Circle.circleR; }
 
-        Circle.setCircleZDistance(zenDistance);
         double yZenith = Circle.circleY+zenDistance*Math.cos(Circle.circleN*(Math.PI/180)+(Math.PI/2));
         double xZenith = Circle.circleX+zenDistance*Math.sin(Circle.circleN*(Math.PI/180)+(Math.PI/2));
 
         Shape sun = new Ellipse2D.Double(xZenith-15, yZenith-15, 30,30);
+
         Circle.drawZenith(sun);
     }
 }

@@ -12,7 +12,7 @@ class CSVTest {
     @BeforeEach
     void setUp() throws IOException {
         String[] data = {"1.csv","Manual","1","N/A",".5"};
-        path = "C:\\Users\\Elias\\IdeaProjects\\sofdev-sp19-forest\\test.csv";
+        path = "/Users/kepler/IdeaProjects/sofdev-sp19-forest/test.csv";
         out = CSV.write(data,path);
 
     }

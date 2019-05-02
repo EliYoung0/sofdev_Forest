@@ -34,21 +34,21 @@ abstract class Algorithms {
      * Limits should eventually be input (lc and uc) however using defaults from matlab atm.
      *
      * @param image original color image input
-     * @param mask 2d boolean array defining region of pixels to be used
+     * @param mask  2d boolean array defining region of pixels to be used
      * @return returns black & white image created by nobis algorithm
      */
-    static BufferedImage nobis(BufferedImage image,boolean[][] mask) {
+    static BufferedImage nobis(BufferedImage image, boolean[][] mask) {
 
-            return nobis(image,140,170,mask);
+        return nobis(image, 140, 170, mask);
     }
 
     /**
      * Creates black & white image from image using nobis method
      *
      * @param image color image to be processed
-     * @param liml lower threshold limit
-     * @param limh upper threshold limit
-     * @param mask image mask of image. Currently not used
+     * @param liml  lower threshold limit
+     * @param limh  upper threshold limit
+     * @param mask  image mask of image. Currently not used
      * @return black & white image of input image
      */
     private static BufferedImage nobis(BufferedImage image, int liml, int limh, boolean[][] mask) {
@@ -57,80 +57,88 @@ abstract class Algorithms {
         int n = image.getHeight();
 
         //Turn Image into array of blue pixel values
-        double[][] blue = toArray(image,m,n);
+        double[][] blue = toArray(image, m, n);
 
         //Create delta arrays of image
         double[][][] db = new double[4][m - 1][n - 1];
-        db[0]=abSubTwoD(getSubArray(blue,0,m-2,0,n-2),getSubArray(blue,1,m-1,0,n-2),m-1,n-1);
-        db[1]=abSubTwoD(getSubArray(blue,0,m-2,0,n-2),getSubArray(blue,0,m-2,1,n-1),m-1,n-1);
-        db[2]=abSubTwoD(getSubArray(blue,0,m-2,0,n-2),getSubArray(blue,1,m-1,1,n-1),m-1,n-1);
-        db[3]=abSubTwoD(getSubArray(blue,1,m-1,0,n-2),getSubArray(blue,0,m-2,1,n-1),m-1,n-1);
+        db[0] = abSubTwoD(getSubArray(blue, 0, m - 2, 0, n - 2), getSubArray(blue, 1, m - 1, 0, n - 2), m - 1, n - 1);
+        db[1] = abSubTwoD(getSubArray(blue, 0, m - 2, 0, n - 2), getSubArray(blue, 0, m - 2, 1, n - 1), m - 1, n - 1);
+        db[2] = abSubTwoD(getSubArray(blue, 0, m - 2, 0, n - 2), getSubArray(blue, 1, m - 1, 1, n - 1), m - 1, n - 1);
+        db[3] = abSubTwoD(getSubArray(blue, 1, m - 1, 0, n - 2), getSubArray(blue, 0, m - 2, 1, n - 1), m - 1, n - 1);
 
         double[][] ones = new double[m][n];
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                ones[i][j]=1;
+                ones[i][j] = 1;
             }
         }
         double[] zeroes = new double[256];
-        double[][][] d1 = new double[4][m-1][n-1];
+        double[][][] d1 = new double[4][m - 1][n - 1];
         ArrayList[] use = new ArrayList[4];
-        for (int tr=limit[0];tr<=limit[1];tr++) {
+        for (int tr = limit[0]; tr <= limit[1]; tr++) {
             for (int a = 0; a < m; a++) {
                 for (int b = 0; b < n; b++) {
-                    if(blue[a][b]<=tr){ ones[a][b]=0; }
-                }
-            }
-            d1[0]=abSubTwoD(getSubArray(ones,0,m-2,0,n-2),getSubArray(blue,1,m-1,0,n-2),m-1,n-1);
-            d1[1]=abSubTwoD(getSubArray(ones,0,m-2,0,n-2),getSubArray(blue,0,m-2,1,n-1),m-1,n-1);
-            d1[2]=abSubTwoD(getSubArray(ones,0,m-2,0,n-2),getSubArray(blue,1,m-1,1,n-1),m-1,n-1);
-            d1[3]=abSubTwoD(getSubArray(ones,1,m-1,0,n-2),getSubArray(blue,0,m-2,1,n-1),m-1,n-1);
-            for (int e = 0; e < 4; e++) {
-                use[e]=new ArrayList<>();
-                for (int c = 0; c < m-1; c++) {
-                    for (int d = 0; d < n-1; d++) {
-                        if(d1[e][c][d]==1){use[e].add(new int[]{c,d});}
+                    if (blue[a][b] <= tr) {
+                        ones[a][b] = 0;
                     }
                 }
             }
-            zeroes[tr+1]=average(db,use);
-        }
-        int tr=limit[1];
-        double max = max(zeroes);
-        double thresh=max-1;
-        while(thresh==limit[1]&&tr<255){
-            tr++;
-            limit[1]++;
-            for(int a = 0; a < m; a++) {
-                for (int b = 0; b < n; b++) {
-                    if(blue[a][b]<=tr){ ones[a][b]=0; }
-                }
-            }
-            d1[0]=abSubTwoD(getSubArray(ones,0,m-2,0,n-2),getSubArray(blue,1,m-1,0,n-2),m-1,n-1);
-            d1[1]=abSubTwoD(getSubArray(ones,0,m-2,0,n-2),getSubArray(blue,0,m-2,1,n-1),m-1,n-1);
-            d1[2]=abSubTwoD(getSubArray(ones,0,m-2,0,n-2),getSubArray(blue,1,m-1,1,n-1),m-1,n-1);
-            d1[3]=abSubTwoD(getSubArray(ones,1,m-1,0,n-2),getSubArray(blue,0,m-2,1,n-1),m-1,n-1);
+            d1[0] = abSubTwoD(getSubArray(ones, 0, m - 2, 0, n - 2), getSubArray(blue, 1, m - 1, 0, n - 2), m - 1, n - 1);
+            d1[1] = abSubTwoD(getSubArray(ones, 0, m - 2, 0, n - 2), getSubArray(blue, 0, m - 2, 1, n - 1), m - 1, n - 1);
+            d1[2] = abSubTwoD(getSubArray(ones, 0, m - 2, 0, n - 2), getSubArray(blue, 1, m - 1, 1, n - 1), m - 1, n - 1);
+            d1[3] = abSubTwoD(getSubArray(ones, 1, m - 1, 0, n - 2), getSubArray(blue, 0, m - 2, 1, n - 1), m - 1, n - 1);
             for (int e = 0; e < 4; e++) {
-                use[e]=new ArrayList<>();
+                use[e] = new ArrayList<>();
                 for (int c = 0; c < m - 1; c++) {
                     for (int d = 0; d < n - 1; d++) {
-                        if(d1[e][c][d]==1){use[e].add(new int[]{c,d});}
+                        if (d1[e][c][d] == 1) {
+                            use[e].add(new int[]{c, d});
+                        }
                     }
                 }
             }
-            zeroes[tr+1]=average(db,use);
-            max= max(zeroes);
-            thresh=max-1;
+            zeroes[tr + 1] = average(db, use);
+        }
+        int tr = limit[1];
+        double max = max(zeroes);
+        double thresh = max - 1;
+        while (thresh == limit[1] && tr < 255) {
+            tr++;
+            limit[1]++;
+            for (int a = 0; a < m; a++) {
+                for (int b = 0; b < n; b++) {
+                    if (blue[a][b] <= tr) {
+                        ones[a][b] = 0;
+                    }
+                }
+            }
+            d1[0] = abSubTwoD(getSubArray(ones, 0, m - 2, 0, n - 2), getSubArray(blue, 1, m - 1, 0, n - 2), m - 1, n - 1);
+            d1[1] = abSubTwoD(getSubArray(ones, 0, m - 2, 0, n - 2), getSubArray(blue, 0, m - 2, 1, n - 1), m - 1, n - 1);
+            d1[2] = abSubTwoD(getSubArray(ones, 0, m - 2, 0, n - 2), getSubArray(blue, 1, m - 1, 1, n - 1), m - 1, n - 1);
+            d1[3] = abSubTwoD(getSubArray(ones, 1, m - 1, 0, n - 2), getSubArray(blue, 0, m - 2, 1, n - 1), m - 1, n - 1);
+            for (int e = 0; e < 4; e++) {
+                use[e] = new ArrayList<>();
+                for (int c = 0; c < m - 1; c++) {
+                    for (int d = 0; d < n - 1; d++) {
+                        if (d1[e][c][d] == 1) {
+                            use[e].add(new int[]{c, d});
+                        }
+                    }
+                }
+            }
+            zeroes[tr + 1] = average(db, use);
+            max = max(zeroes);
+            thresh = max - 1;
         }
 
         gapmask = new double[m][n];
 
         for (int x = 0; x < m; x++) {
             for (int y = 0; y < n; y++) {
-                Color black = new Color(0,0,0);
-                Color white = new Color(255,255,255);
+                Color black = new Color(0, 0, 0);
+                Color white = new Color(255, 255, 255);
                 //Compares pixel to threshold
-                if(blue[x][y]>tr) {
+                if (blue[x][y] > tr) {
                     image.setRGB(x, y, white.getRGB());
                     gapmask[x][y] = 1;
                 } else {
@@ -150,12 +158,12 @@ abstract class Algorithms {
      */
     private static double max(double[] a) {
         //Sets max to be first index
-        int max=0;
+        int max = 0;
         //Goes through each index
         for (int i = 1; i < 256; i++) {
             //if contents of index i is greater than contents of max sets max to i
-            if(a[i]>a[max]){
-                max=i;
+            if (a[i] > a[max]) {
+                max = i;
             }
         }
         //returns contents max
@@ -173,12 +181,12 @@ abstract class Algorithms {
         double sum = 0;
         double count = 0;
         for (int i = 0; i < use.length; i++) {
-            for (int[] index:use[i]) {
-                sum+=db[i][index[0]][index[1]];
+            for (int[] index : use[i]) {
+                sum += db[i][index[0]][index[1]];
                 count++;
             }
         }
-        return (sum/count);
+        return (sum / count);
     }
 
     /**
@@ -189,10 +197,10 @@ abstract class Algorithms {
      * @param l length of arrays
      * @return 1d array of absolute values of differences between a and b
      */
-    private static double[] abSubOneD(double[] a,double[] b, int l){
+    private static double[] abSubOneD(double[] a, double[] b, int l) {
         double[] c = new double[l];
         for (int i = 0; i < l; i++) {
-            c[i]=Math.abs(a[i]-b[i]);
+            c[i] = Math.abs(a[i] - b[i]);
         }
         return c;
     }
@@ -206,10 +214,10 @@ abstract class Algorithms {
      * @param m length of inner array
      * @return 2d array of absolute values of differences between a and b
      */
-    private static double[][] abSubTwoD(double[][] a,double[][] b, int l, int m){
+    private static double[][] abSubTwoD(double[][] a, double[][] b, int l, int m) {
         double[][] c = new double[l][m];
         for (int i = 0; i < l; i++) {
-            c[i]=abSubOneD(a[i],b[i],m);
+            c[i] = abSubOneD(a[i], b[i], m);
         }
         return c;
     }
@@ -218,19 +226,19 @@ abstract class Algorithms {
      * Turns a bufferedImage into a 2d array of the blue pixel values
      *
      * @param input image to be used
-     * @param w width of image
-     * @param h height of image
+     * @param w     width of image
+     * @param h     height of image
      * @return 2d array of blue pixel values of image
      */
-    private static double[][] toArray(BufferedImage input, int w, int h){
-        double[][] output=new double[w][h];
+    private static double[][] toArray(BufferedImage input, int w, int h) {
+        double[][] output = new double[w][h];
         ColorModel c = input.getColorModel();
-        Object pixel= null;
+        Object pixel = null;
         Raster raster = input.getRaster();
-        for (int i = 0; i < w ; i++) {
+        for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
                 pixel = raster.getDataElements(i, j, pixel);
-                output[i][j]=c.getBlue(pixel);
+                output[i][j] = c.getBlue(pixel);
             }
         }
         return output;
@@ -238,17 +246,20 @@ abstract class Algorithms {
 
     /**
      * Gets a sub array of 2d array a
-     * @param a array to get subarray of
+     *
+     * @param a  array to get subarray of
      * @param x0 starting x for subarray
      * @param x1 ending x for subarray, inclusive
      * @param y0 starting y for subarray
      * @param y1 ending y for subarray, inclusive
      * @return sub array a from (x0,y0) to (x1,y1)
      */
-    private static double[][] getSubArray(double[][] a, int x0, int x1, int y0, int y1){
-        double[][] b = new double[x1-x0+1][y1-y0+1];
+    private static double[][] getSubArray(double[][] a, int x0, int x1, int y0, int y1) {
+        double[][] b = new double[x1 - x0 + 1][y1 - y0 + 1];
         for (int i = x0; i <= x1; i++) {
-            for (int j = y0; j <= y1; j++) { b[i-x0][j-y0]=a[i][j]; }
+            for (int j = y0; j <= y1; j++) {
+                b[i - x0][j - y0] = a[i][j];
+            }
         }
         return b;
     }
@@ -261,7 +272,7 @@ abstract class Algorithms {
      * @throws IOException throws exception if file does not exist
      */
     static BufferedImage single(String path) throws IOException {
-        return single(ImageIO.read(new File(path)));
+        return single(image);
     }
 
     /**
@@ -276,10 +287,10 @@ abstract class Algorithms {
 
         for (int x = 0; x < m; x++) {
             for (int y = 0; y < n; y++) {
-                Color black = new Color(0,0,0);
-                Color white = new Color(255,255,255);
+                Color black = new Color(0, 0, 0);
+                Color white = new Color(255, 255, 255);
                 //Compares pixel to threshold
-                if(blue[x][y] > (lc + (0.5*(uc-lc)))) {
+                if (blue[x][y] > (lc + (0.5 * (uc - lc)))) {
                     image.setRGB(x, y, white.getRGB());
                     gapmask[x][y] = 1;
                 } else {
@@ -289,10 +300,8 @@ abstract class Algorithms {
             }
         }
 
-
         return image;
     }
-
 
     /**
      * Caller for DHP algorithm with image path provided
@@ -302,7 +311,7 @@ abstract class Algorithms {
      * @throws IOException throws exception if file does not exist
      */
     static BufferedImage dhp(String path) throws IOException {
-        return dhp(ImageIO.read(new File(path)));
+        return dhp(image);
     }
 
     /**
@@ -311,7 +320,7 @@ abstract class Algorithms {
      * @param image original image to be processed
      * @return black & white version of image
      */
-    static BufferedImage dhp(BufferedImage image) {
+    private static BufferedImage dhp(BufferedImage image) {
 
         double tl = lc + ((uc - lc) * (0.25));
         double th = lc + ((uc - lc) * (0.75));
@@ -346,9 +355,7 @@ abstract class Algorithms {
      * Calculates maxleft, maxright, average pixels, max frequency, upper corner and lower corner
      * Called from Thresholder to make values available to all algorithms
      */
-
-
-    public static void calcValues() {
+    static void calcValues() {
 
         {
             try {
@@ -368,9 +375,9 @@ abstract class Algorithms {
                 int R1 = 200;
                 int R2 = 250;
 
-        //find maxright and maxleft
-        maxleft = findMax(L1, L2, DN);
-        maxright = findMax(R1, R2, DN);
+                //find maxright and maxleft
+                maxleft = findMax(L1, L2, DN);
+                maxright = findMax(R1, R2, DN);
 
                 while((L2 -maxleft) < 10){
                     L2 = L2 + 25;
@@ -382,7 +389,7 @@ abstract class Algorithms {
                     maxright = findMax(R1, R2, DN);
                 }
 
-        average = averagePixels(DN);
+                average = averagePixels(DN);
 
                 if(max >average) {
                     maxfrequency = (int) average;
@@ -425,8 +432,8 @@ abstract class Algorithms {
      */
     private static int findMax(int lo, int hi, double[] DN) {
         int max = lo;
-        for(int i = lo; i<=hi; i++){
-            if(DN[i] > DN[max]){
+        for (int i = lo; i <= hi; i++) {
+            if (DN[i] > DN[max]) {
                 max = i;
             }
         }
@@ -441,12 +448,11 @@ abstract class Algorithms {
      */
     private static double averagePixels(double[] DN) {
         double total = 0;
-        for(int i=0; i<=255; i++){
-            total+=DN[i];
+        for (int i = 0; i <= 255; i++) {
+            total += DN[i];
         }
-        return total/255;
+        return total / 255;
     }
-
 
     /**
      * Calculates upper corner value needed to calculate various thresholds
@@ -462,8 +468,8 @@ abstract class Algorithms {
         double maxd = 0;
         int maxindex = 0;
         double d;
-        for(int i=maxleft; i<=maxright; i++){
-            if(DN[i] < (slope*i)) {
+        for (int i = maxleft; i <= maxright; i++) {
+            if (DN[i] < (slope * i)) {
                 d = (Math.abs((slope * i) - DN[i])) / (Math.sqrt((slope * slope) + 1));
                 if (d > maxd) {
                     maxd = d;
@@ -486,10 +492,10 @@ abstract class Algorithms {
      */
     private static int lowerCorner(double[] DN, int slope, int maxfrequency, int maxleft, int maxright) {
         double maxd = 0;
-        int maxindex=0;
+        int maxindex = 0;
         double d;
-        for(int i=maxleft; i<=maxright; i++){
-            if(DN[i] < ((slope * i) + (maxfrequency - (slope * maxright)))) {
+        for (int i = maxleft; i <= maxright; i++) {
+            if (DN[i] < ((slope * i) + (maxfrequency - (slope * maxright)))) {
                 d = (Math.abs((slope * i) - DN[i] + (maxfrequency - (slope * maxright)))) / (Math.sqrt((slope * slope) + 1));
                 if (d > maxd) {
                     maxd = d;
@@ -500,7 +506,6 @@ abstract class Algorithms {
         return maxindex;
 
     }
-
 
     /**
      * Checks if 2 images are equal based on same pixel values
@@ -529,7 +534,6 @@ abstract class Algorithms {
      * @param blue array of blue channel of image
      * @param image image to be processed
      */
-
     private static void makeHistogram(double[] DN, double[][] blue, BufferedImage image) {
         for (int i = 0; i < image.getWidth(); i++) {
             for (int j = 0; j < image.getHeight(); j++) {
@@ -542,7 +546,6 @@ abstract class Algorithms {
             }
         }
     }
-
     /**
      * Caller for local algorithm with image path provided
      *
@@ -606,3 +609,4 @@ abstract class Algorithms {
         return image;
     }
 }
+
