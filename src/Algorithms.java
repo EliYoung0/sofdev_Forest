@@ -23,11 +23,7 @@ abstract class Algorithms {
     private static int maxfrequency;
     private static int uc;
     private static int lc;
-
-    public static double[][] gapmask;
-
-
-
+    static double[][] gapmask;
 
     /**
      * Caller method for nobis. Calls inner nobis with upper and lower threshold limits
@@ -546,7 +542,6 @@ abstract class Algorithms {
             }
         }
     }
-
     /**
      * Caller for local algorithm with image path provided
      *
@@ -626,4 +621,3 @@ abstract class Algorithms {
         return image;
     }
 }
-

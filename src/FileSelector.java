@@ -12,8 +12,8 @@ class FileSelector extends Container {
     private static boolean flag; //determines if batch processing is needed. True for yes
     private JTextArea address; //Text area where address is input
     private JLabel warning; //Label where warnings are displayed
-    private JButton open;
-    private Boolean goodExit;
+    private JButton open; //Used by UI test to proceed to next window
+    private Boolean goodExit; //Boolean that tells if exit is successful.
 
     /**
      * File Selector Container Constructor
@@ -67,7 +67,6 @@ class FileSelector extends Container {
         add(fileBrowser,BorderLayout.CENTER);
         add(openPanel,BorderLayout.PAGE_END);
     }
-
 
     /**
      * Creates the Browser frame
@@ -214,14 +213,6 @@ class FileSelector extends Container {
      */
     Boolean getGoodExit() {
         return goodExit;
-    }
-
-    /**
-     * Used by test class.
-     * @return full path for batch
-     */
-    String[] getFull() {
-        return full;
     }
 
 }

@@ -77,9 +77,10 @@ abstract class Black {
     static double getGapFraction(BufferedImage black,boolean[][] mask){
         double rgbCount = 0.0;
         double totalCount = 0.0;
-
+        //Iterates through each pixel in image
         for (int x = 0; x < black.getWidth(); x++) {
             for (int y = 0; y < black.getHeight(); y++) {
+                //Checks if pixel is within the image mask
                 if (mask[x][y]) {
                     rgbCount = rgbCount + Algorithms.gapmask[x][y];
                     totalCount++;

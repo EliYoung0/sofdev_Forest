@@ -61,10 +61,10 @@ class Circle extends Container {
         JLabel directionText = new JLabel("<html> Input values for the circle below. " +
                 "<br> (Circle must be drawn before placing north) </html>");
         //X-input
-        JLabel xText = new JLabel("Centre x pixel value: ");
+        JLabel xText = new JLabel("Center x pixel value: ");
         JTextField xInputField = new JTextField(20);
         //Y-input
-        JLabel yText = new JLabel("Centre y pixel value: ");
+        JLabel yText = new JLabel("Center y pixel value: ");
         JTextField yInputField = new JTextField(20);
         //Radius input
         JLabel radiusText = new JLabel("Radius pixel value: ");
@@ -149,26 +149,35 @@ class Circle extends Container {
      * @param xInputField label where x center is stored
      */
     static void setCircleX (JTextField xInputField) { circleX = Integer.parseInt(xInputField.getText()); }
-
     /**
      * Sets the center y value
      * @param yInputField label where y center is stored
      */
     static void setCircleY (JTextField yInputField) { circleY = Integer.parseInt(yInputField.getText()); }
-
     /**
      * Sets the radius of the image section of the file
      * @param radiusInputField label where radius is input
      */
     static void setCircleR (JTextField radiusInputField) { circleR = Integer.parseInt(radiusInputField.getText()); }
-
     /**
      * Sets the north location of the image (degrees)
-     * @param northInputField component where north value is stored
+     * @param northInputField label where north value is stored
      */
     static void setCircleN (JTextField northInputField) { circleN = Double.parseDouble(northInputField.getText()); }
+    /**
+     * Sets the location of the zenith in hours (where 1:30pm is 13.5)
+     * @param zenithInputField label where zenith value is stored
+     */
     static void setCircleZ (JTextField zenithInputField) { circleZ = Double.parseDouble(zenithInputField.getText());}
+    /**
+     * Saves the circle ring for redrawing purposes
+     * @param circleInput the 2D Shape that is the ring around the canopy image
+     */
     static void setBorder(Shape circleInput) { border = circleInput; }
+    /**
+     * Sets the North 2D Graphic for redrawing purposes
+     * @param dotInput 2D Graphic of the North location on the canopy image
+     */
     static void setCircleDot(Shape dotInput) { dot = dotInput;}
 
     /**

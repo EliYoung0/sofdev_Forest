@@ -8,7 +8,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-
 class Thresholder extends Container {
     private JButton proceed;
     private JButton[] algs;
@@ -337,16 +336,17 @@ class SaveDialog extends JDialog{
         //Outer container that holds this dialog
         setTitle("Save CSV");
         setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        setSize(new Dimension(300,200));
+        GridBagConstraints c = new GridBagConstraints(); //Height 0-3, width 0-2
+        setSize(new Dimension(500,200));
         //Make Panel
         JPanel browserPanel = new JPanel();
         browserPanel.setLayout(new GridBagLayout());
         GridBagConstraints d = new GridBagConstraints();
-        address = new JTextField("",10);
+        address = new JTextField("",30);
         address.setToolTipText("Input Save File Location including CSV");
         JScrollPane scroll = new JScrollPane(address, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         JButton browse = new JButton("Browse");
+        JLabel warning = new JLabel("Do not forget to add '.csv' to the end of the file.");
         browse.addActionListener(e -> {
             JFileChooser fc = new JFileChooser();
             fc.setDialogTitle("Specify a file to save");
@@ -390,8 +390,10 @@ class SaveDialog extends JDialog{
         c.gridwidth=4;
         add(browserPanel,c);
         c.gridy=1;
-        add(warnings,c);
+        add(warning,c);
         c.gridy=2;
+        add(warnings,c);
+        c.gridy=3;
         c.gridwidth=2;
         add(save,c);
         c.gridx=2;
@@ -457,5 +459,4 @@ class SaveDialog extends JDialog{
      * @return saveLocation where csv is to be created
      */
     String getSaveLocation() { return saveLocation; }
-
 }

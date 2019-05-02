@@ -10,8 +10,7 @@ class UI extends JFrame {
      */
     UI(){
         try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); } catch (Exception e) {e.printStackTrace(); }
-        //TODO:Replace with better name
-        setTitle("Forest Canopy Program");
+        setTitle("Forest Canopy Sunlight Analyzer");
         //File Selector is initial container in frame
         setContentPane(new FileSelector(this));
         pack();
