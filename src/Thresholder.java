@@ -141,8 +141,8 @@ class Thresholder extends Container {
                 BufferedImage bl = Algorithms.local(path, mask);
                 //Redraws image
                 Image i = bl.getScaledInstance((500 * bl.getWidth()) / bl.getHeight(), 500, Image.SCALE_SMOOTH);
-                finalImageLabel1.setIcon(new ImageIcon(i));
-                finalImageLabel1.repaint();
+                finalImageLabel.setIcon(new ImageIcon(i));
+                finalImageLabel.repaint();
                 setBlack(bl);
                 //Displayed calculated gap fraction
                 consoleOutput.append("\nMethod: Local");
