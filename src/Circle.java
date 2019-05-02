@@ -11,8 +11,8 @@ import java.io.IOException;
 
 class Circle extends Container {
     private static String filepath; //File path of image being processed
-    static int circleX; //Center x value of image
-    static int circleY; //Center y value of image
+    static int circleX; //Centre x value of image
+    static int circleY; //Centre y value of image
     static int circleR; //Radius of image
     static double circleN; //North direction of image in degrees
     private static Shape border; //Border shape to be drawn to image
@@ -23,7 +23,7 @@ class Circle extends Container {
 
     /**
      * Constructor of Circle Container
-     * Used to define image center location, radius, and north direction
+     * Used to define image centre location, radius, and north direction
      * @param output String array containing output data including image path
      * @param ui outer window
      * @param flag true if batch is to be called
@@ -61,10 +61,10 @@ class Circle extends Container {
         JLabel directionText = new JLabel("<html> Input values for the circle below. " +
                 "<br> (Circle must be drawn before placing north) </html>");
         //X-input
-        JLabel xText = new JLabel("Center x pixel value: ");
+        JLabel xText = new JLabel("Centre x pixel value: ");
         JTextField xInputField = new JTextField(20);
         //Y-input
-        JLabel yText = new JLabel("Center y pixel value: ");
+        JLabel yText = new JLabel("Centre y pixel value: ");
         JTextField yInputField = new JTextField(20);
         //Radius input
         JLabel radiusText = new JLabel("Radius pixel value: ");
