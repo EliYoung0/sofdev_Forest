@@ -152,7 +152,7 @@ class FileSelector extends Container {
                         isValidFile(fi.getAbsolutePath());
                     }
                     //Sets path for GUI to use to be the first file
-                    full=new String[]{files[0].getAbsolutePath()};
+                    full=paths;
                     path = files[0].getAbsolutePath();
                     return true;
                 }

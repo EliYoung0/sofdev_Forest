@@ -6,7 +6,6 @@ import java.io.IOException;
 class SquareTheCircle {
     private static String squareFilepath; //Filepath of cropped square version of original image
     private static boolean[][] imageMask = null; //2d boolean array of pixels to be used. True if used.
-    private static String originalPath;
 
     /**
      * Creates and saves a cropped square version of image provided.
@@ -18,7 +17,6 @@ class SquareTheCircle {
             //Opens original image
             File og = new File(filepath);
             BufferedImage original = ImageIO.read(og);
-            originalPath=og.getAbsolutePath();
             //Crops image to square
             BufferedImage square = buildASquare(original);
             //Saves this square image to filepath similar to the one given
@@ -49,14 +47,9 @@ class SquareTheCircle {
      * @param square square image to be saved
      */
     private static void saveTheSquare(String filepath, BufferedImage square) {
-        String dirPath = originalPath.substring(0,originalPath.lastIndexOf('/'))+"/square/";
-        File dir = new File(dirPath);
-        //noinspection ResultOfMethodCallIgnored
-        dir.mkdir();
         //Creates file path "filepath_square_time.jpg"
-        String newFilepath = filepath.replaceAll("(.[a-zA-Z]{3,4}$)",
+        squareFilepath = filepath.replaceAll("(.[a-zA-Z]{3,4}$)",
                 "_square_" + java.time.LocalDate.now())+".jpg";
-        squareFilepath = dirPath+newFilepath.substring(newFilepath.lastIndexOf('/')+1);
         //Saves square to created filepath
         File outputFile = new File(squareFilepath);
         try { ImageIO.write(square, "jpg", outputFile);}
