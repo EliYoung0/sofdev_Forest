@@ -12,7 +12,7 @@ class CSVTest {
     @BeforeEach
     void setUp() throws IOException {
         String[] data = {"1.csv","Manual","1","N/A",".5"};
-        path = "/Users/kepler/IdeaProjects/sofdev-sp19-forest/test.csv";
+        path = "./testresources/test.csv";
         out = CSV.write(data,path);
 
     }
@@ -63,11 +63,6 @@ class CSVTest {
         for (int i = 0; i <data.length ; i++) {
             assertEquals(data[i],csvdata.get(1)[i+1]);
         }
-    }
-
-    @Test
-    void outputsCorrectPath(){
-        assertEquals(out, path);
     }
 
     @Test

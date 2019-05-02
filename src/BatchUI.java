@@ -16,6 +16,11 @@ class BatchUI extends Container {
 
     class Batch extends SwingWorker<Void,Void>{
 
+        /**
+         * Batch processing of image. Processes each image using options selected in the GUI
+         * @return null
+         * @throws Exception if image cannot be opened
+         */
         @Override
         protected Void doInBackground() throws Exception {
             //This is tracked by a property change listener
@@ -37,7 +42,7 @@ class BatchUI extends Container {
             if(temp.isDirectory()) {
                 File[] files = temp.listFiles((dir, name) -> name.toLowerCase().endsWith(".jpg"));
                 if(files==null){return null;}
-                paths = new String[files.length-1];
+                paths = new String[files.length];
                 for (int a = 1; a < files.length; a++) {
                     paths[a-1]=files[a].getAbsolutePath();
                 }
@@ -79,6 +84,9 @@ class BatchUI extends Container {
             return null;
         }
 
+        /**
+         * Enables finish button when batch processing has finished
+         */
         @Override
         public void done(){
             output.append("Done.\n");
@@ -86,6 +94,13 @@ class BatchUI extends Container {
         }
     }
 
+    /**
+     * Reads in the image mask, file to save info and outer container
+     * Creates the UI and gives the start button functionality to start batch processing
+     * @param mask image mask
+     * @param csv file to save data to
+     * @param ui outer container
+     */
     BatchUI(boolean[][] mask, String csv,UI ui){
         this.mask = mask;
         csvPath=csv;
