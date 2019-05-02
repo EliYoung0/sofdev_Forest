@@ -68,7 +68,6 @@ class BatchUI extends Container {
                 else {
                     black = Algorithms.dhp(paths[i]);
                     gapFraction = Black.getGapFraction(black, mask);
-
                 }
                 //Calculates gap fraction
                 String[] data = new String[]{paths[i],methods[method],"N/A", String.valueOf(IndirectSiteFactor.getISF(black)),String.valueOf(gapFraction)};
