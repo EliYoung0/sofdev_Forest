@@ -542,4 +542,82 @@ abstract class Algorithms {
             }
         }
     }
+    /**
+     * Caller for local algorithm with image path provided
+     *
+     * @param path filepath to image to be processed
+     * @return Black & white image created by the local algorithm
+     * @throws IOException throws exception if file does not exist
+     */
+    static BufferedImage local(String path, boolean[][] mask) throws IOException {
+        return local(ImageIO.read(new File(path)), mask);
+    }
+
+    /**
+     * Creates Black & white version of image using the local method
+     *
+     * @param image original image to be processed
+     * @return black & white version of image
+     */
+    static BufferedImage local(BufferedImage image, boolean[][] mask) {
+        int m = image.getWidth();
+        int n = image.getHeight();
+        gapmask = new double[m][n];
+
+        //Turn Image into array of blue pixel values
+        double[][] blue = toArray(image, m, n);
+
+        //for every row
+        for(int x1 = 0; x1 < n; x1++) {
+            //for every column
+            for (int y1 = 0; y1 < m; y1++) {
+                //if not in the mask (false outside image, true inside)
+                if (mask[x1][y1]) {
+                    //if it is below the lower corner, turn it black
+                    if (blue[x1][y1] <= lc) {
+                        image.setRGB(x1, y1, black.getRGB());
+                        gapmask[x1][y1] = 0;
+                    }
+                    //if it is above the upper corner, turn it white
+                    else if (blue[x1][y1] >= uc) {
+                        image.setRGB(x1, y1, white.getRGB());
+                        gapmask[x1][y1] = 1;
+                    }
+                    //otherwise (mixed pixels) run the algorithm
+                    else {
+                        //go in a circle around it (5 sq) adding together the blue values that aren't in the mask
+                        double avg = 0;
+                        int count = 0;
+                        for (int x2 = -2; x2 < 3; x2++) {
+                            for (int y2 = -2; y2 < 3; y2++) {
+                                if ((x1 + x2 > 0) && (y1 + y2 > 0) && (x1 + x2 < m) && (y1 + y2 < n)) {
+                                    if (mask[x1 + x2][y1 + y2]) {
+                                        avg += blue[x1 + x2][y1 + y2];
+                                        count++;
+                                    }
+                                }
+                            }
+                        }
+                        //figure out the average
+                        avg = avg / count;
+                        //if this pixel is above the average
+                        if (blue[x1][y1] > avg) {
+                            //make it white
+                            image.setRGB(x1, y1, white.getRGB());
+                            gapmask[x1][y1] = 1;
+                        }
+                        //else
+                        else {
+                            //make it black
+                            image.setRGB(x1, y1, black.getRGB());
+                            gapmask[x1][y1] = 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        //return the created image
+        return image;
+    }
 }
